@@ -1,0 +1,96 @@
+[
+  {
+    "title": "Classic Chicken Fried Rice", 
+    "prep_time": 15,
+    "cook_time": 12,
+    "servings": 4,
+    "difficulty": "Beginner",
+    "ingredients": [
+      "2 cups cooked jasmine rice, cooled",
+      "2 boneless chicken breasts, diced small", 
+      "3 large eggs, beaten",
+      "1 cup frozen mixed vegetables",
+      "3 green onions, sliced thin",
+      "3 tablespoons soy sauce",
+      "2 tablespoons vegetable oil",
+      "1 teaspoon sesame oil",
+      "Salt and pepper to taste"
+    ],
+    "instructions": [
+      "Heat 1 tablespoon vegetable oil in large wok or skillet over medium-high heat",
+      "Add diced chicken, cook 5-6 minutes until fully cooked and lightly browned",
+      "Push chicken to one side, add beaten eggs to empty side",
+      "Scramble eggs until just set, then mix with chicken",
+      "Add frozen vegetables, cook 2-3 minutes until heated through",
+      "Add cold rice, breaking up clumps with spatula",
+      "Stir in soy sauce and sesame oil, cook 2-3 minutes",
+      "Add sliced green onions, toss to combine",
+      "Season with salt and pepper, serve immediately"
+    ]
+  },
+  {
+    "title": "Beef and Broccoli Stir Fry",
+    "prep_time": 20,
+    "cook_time": 10,
+    "servings": 4,
+    "difficulty": "Beginner",
+    "ingredients": [
+      "1 lb flank steak, sliced thin against the grain",
+      "4 cups fresh broccoli florets",
+      "3 cloves garlic, minced",
+      "1 tablespoon fresh ginger, grated",
+      "3 tablespoons soy sauce",
+      "2 tablespoons oyster sauce",
+      "1 tablespoon cornstarch",
+      "2 tablespoons vegetable oil",
+      "1 teaspoon sesame oil",
+      "2 tablespoons water",
+      "Cooked white rice for serving"
+    ],
+    "instructions": [
+      "Mix cornstarch with 2 tablespoons water to create slurry, set aside",
+      "Heat 1 tablespoon vegetable oil in wok over high heat",
+      "Add beef slices in single layer, cook 2-3 minutes without stirring",
+      "Stir-fry beef another 1-2 minutes until browned, remove and set aside",
+      "Add remaining oil, then broccoli florets to wok",
+      "Stir-fry broccoli 3-4 minutes until bright green and tender-crisp",
+      "Add garlic and ginger, cook 30 seconds until fragrant",
+      "Return beef to wok, add soy sauce and oyster sauce",
+      "Add cornstarch slurry, toss everything for 1-2 minutes until sauce thickens",
+      "Drizzle with sesame oil, serve immediately over rice"
+    ]
+  },
+  {
+    "title": "Vegetable Pad Thai",
+    "prep_time": 25,
+    "cook_time": 8,
+    "servings": 4,
+    "difficulty": "Intermediate",
+    "ingredients": [
+      "8 oz rice noodles, soaked in warm water",
+      "2 cups mixed vegetables (bell peppers, carrots, snap peas)",
+      "1 cup bean sprouts",
+      "3 large eggs, beaten",
+      "4 green onions, cut in 2-inch pieces",
+      "3 tablespoons tamarind paste",
+      "2 tablespoons fish sauce",
+      "2 tablespoons brown sugar",
+      "2 tablespoons vegetable oil",
+      "1/4 cup crushed peanuts",
+      "Lime wedges for serving",
+      "Fresh cilantro for garnish"
+    ],
+    "instructions": [
+      "Drain soaked noodles and set aside",
+      "Mix tamarind paste, fish sauce, and brown sugar in small bowl",
+      "Heat oil in large wok or skillet over high heat",
+      "Add mixed vegetables, stir-fry 2-3 minutes until tender-crisp",
+      "Push vegetables to one side, add beaten eggs to empty side",
+      "Scramble eggs until just set, then mix with vegetables",
+      "Add drained noodles and sauce mixture to wok",
+      "Toss everything together 2-3 minutes until noodles are heated through",
+      "Add bean sprouts and green onions, toss for 1 minute",
+      "Serve immediately topped with crushed peanuts, lime wedges, and cilantro"
+    ]
+  }
+]
