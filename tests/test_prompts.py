@@ -19,7 +19,7 @@ class TestPrompts(unittest.TestCase):
         
         self.assertIsInstance(prompt, str)
         self.assertIn(ingredients, prompt)
-        self.assertIn("expert chef", prompt)
+        self.assertIn("Chef Marcus", prompt)
         self.assertIn("JSON", prompt)
         self.assertIn("Example Recipe:", prompt)
 
@@ -86,7 +86,7 @@ class TestPrompts(unittest.TestCase):
         
         self.assertIsInstance(prompt, str)
         self.assertIn(ingredients, prompt)
-        self.assertIn("expert chef", prompt)
+        self.assertIn("Chef Marcus", prompt)
 
     def test_select_prompt_template_quick(self):
         """Test template selection for quick meals"""
