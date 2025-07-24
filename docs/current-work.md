@@ -7,6 +7,8 @@
 
 ## Active Files
 - data/example_recipes.json - Created with 3 recipe examples
+- main.py - Added test_examples() proof of concept
+- src/examples.py - Recipe loading functionality
 - Documentation tracking system active
 
 ## Next Steps

@@ -17,3 +17,7 @@
   - Classic Chicken Fried Rice (provided by user)
   - Beef and Broccoli Stir Fry (Asian stir-fry theme)
   - Vegetable Pad Thai (Asian noodle dish theme)
+- [14:xx] Adding proof of concept test to main.py to use src/examples.py
+- [14:xx] Added test_examples() function that:
+  - Loads and displays all example recipes with summary info
+  - Shows formatted few-shot examples for potential AI prompting
