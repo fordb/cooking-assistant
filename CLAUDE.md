@@ -11,10 +11,14 @@ During development:
 2. Note any discoveries, issues, or decisions in real-time
 3. Update `docs/current-work.md` when changing files or status
 
-At the end of each session:
+At the end of each session (or before git commits):
 1. Summarize accomplishments in `docs/session-notes.md`
 2. Update `docs/current-work.md` with current state
 3. Add key insights to `docs/progress-log.md` if significant
+
+**Use `/end-session` command** to systematically complete all three steps above.
+
+**Git Integration**: A pre-commit hook ensures documentation is updated before each commit, tying commits to documented session work.
 
 ## Documentation Standards
 - Use clear, descriptive headers

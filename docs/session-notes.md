@@ -21,3 +21,44 @@
 - [14:xx] Added test_examples() function that:
   - Loads and displays all example recipes with summary info
   - Shows formatted few-shot examples for potential AI prompting
+
+## Session 2025-07-24 - Documentation Workflow Issue
+
+### Goals
+- Fix progress-log.md not being updated at session end per CLAUDE.md
+- Ensure consistent documentation workflow compliance
+
+### Progress
+- [14:30] Identified issue: progress-log.md updates specified but not happening automatically
+- [14:35] Created `/end-session` slash command (end-session.md) to systematically handle all 3 end-of-session steps
+- [14:40] Updated CLAUDE.md to reference the new `/end-session` workflow
+- [14:45] Created git pre-commit hook that prompts for documentation workflow completion before commits
+- [14:50] Updated CLAUDE.md to document git integration for tying commits to session work
+
+### Session Summary
+**Accomplishments:**
+- Fixed documentation workflow gap where progress-log.md wasn't being updated consistently
+- Implemented systematic `/end-session` command to ensure all CLAUDE.md requirements are met
+- Created git pre-commit hook (.git/hooks/pre-commit) to tie documentation workflow to commit process
+- Enhanced CLAUDE.md with better workflow integration and git documentation requirements
+
+**Issues Encountered:**
+- Initial confusion about why progress-log.md wasn't being updated - discovered need for more systematic approach
+- Required creating additional tooling (end-session.md) to ensure compliance with existing documentation standards
+
+**Session Complete: 2025-07-24 Documentation Workflow Improvements**
+
+## Session 2025-07-24 - Pre-commit Hook Debug
+
+### Goals
+- Fix pre-commit hook that fails even after running /end-session
+- Ensure git workflow integration works properly
+
+### Progress
+- [Current] Investigating pre-commit hook failure issue
+- [Current] Fixed pre-commit hook to automatically detect recent documentation updates (within 10 minutes)
+- [Current] Hook now passes automatically after /end-session runs, but still prompts if docs are stale
+
+---
+
+## Archived Sessions
