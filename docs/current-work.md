@@ -7,16 +7,17 @@
 
 ## Active Files
 - data/example_recipes.json - Expanded to 15 diverse recipes covering multiple cuisines and difficulty levels
-- main.py - Added test_examples() proof of concept
+- main.py - **ENHANCED**: Added prompt template integration with test_prompt_templates() and show_template_usage() functions
 - src/examples.py - Recipe loading functionality
 - src/output_validator.py - Recipe validation system with structure and measurement checking
 - src/recipe_generator.py - Enhanced with validation integration and error handling
-- src/prompts.py - Cleaned up (removed unused constants)
-- tests/ - **NEW**: Comprehensive unit test suite with 20 tests across 4 files:
+- src/prompts.py - **COMPLETE**: Full prompt template system with 5 template types and select_prompt_template function
+- tests/ - **EXPANDED**: Comprehensive unit test suite with 35 tests across 5 files:
   - tests/test_models.py - Recipe model validation and edge cases (7 tests)
   - tests/test_examples.py - Example loading and formatting (5 tests)
   - tests/test_output_validator.py - Structure and measurement validation (4 tests)
   - tests/test_recipe_generator.py - Generation with mocked API calls (4 tests)
+  - tests/test_prompts.py - **NEW**: Prompt template system testing (15 tests)
 - CLAUDE.md - Enhanced with testing section and workflow integration
 - end-session.md - Slash command for systematic session closure
 - .git/hooks/pre-commit - Enhanced git hook with automated test execution
@@ -38,7 +39,8 @@
 - **Testing Integration**: Automated test execution via pre-commit hooks and clear documentation
 
 ## Testing Status
-- **Test Coverage**: 20 unit tests across 4 test files (100% pass rate)
+- **Test Coverage**: 35 unit tests across 5 test files (100% pass rate)
+- **Recent Addition**: 15 new prompt template tests covering all template types
 - **Automation**: Pre-commit hook runs tests before each commit
 - **Documentation**: Complete testing instructions in CLAUDE.md
 - **Quality Assurance**: Tests cover core functionality, edge cases, and error conditions
