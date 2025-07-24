@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from src.recipe_generator import generate_basic_recipe
+from src.recipe_generator import generate_recipe
 from src.models import Recipe
 
 
@@ -27,7 +27,7 @@ class TestRecipeGenerator(unittest.TestCase):
         mock_openai.return_value = mock_client
         
         # Test the function
-        result = generate_basic_recipe("test ingredients")
+        result = generate_recipe("test ingredients", "basic")
         
         # Assertions
         self.assertIsInstance(result, Recipe)
@@ -60,7 +60,7 @@ class TestRecipeGenerator(unittest.TestCase):
         
         # Should raise an exception or handle gracefully
         with self.assertRaises((ValueError, Exception)):
-            generate_basic_recipe("test ingredients")
+            generate_recipe("test ingredients", "basic")
 
 
 if __name__ == '__main__':

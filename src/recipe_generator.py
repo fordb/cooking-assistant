@@ -1,14 +1,19 @@
 from openai import OpenAI
 from config import OPENAI_API_KEY
-from src.prompts import create_basic_recipe_prompt
+from src.prompts import select_prompt_template, TEMPLATE_TYPES
 from src.models import Recipe
 from src.output_validator import validate_recipe_structure, validate_measurements
 from src.safety_validator import validate_recipe_safety
 import json
 
-def generate_basic_recipe(ingredients: str) -> Recipe:
+def generate_recipe(ingredients: str, template_type: str = "basic", **kwargs) -> Recipe:
+    """Generate recipe using specified template."""
+
+    if template_type not in TEMPLATE_TYPES:
+        raise ValueError(f"Invalid template type. Options: {list(TEMPLATE_TYPES.keys())}")
+
     client = OpenAI(api_key=OPENAI_API_KEY)
-    prompt = create_basic_recipe_prompt(ingredients)
+    prompt = select_prompt_template(template_type, ingredients=ingredients, **kwargs)
     
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
