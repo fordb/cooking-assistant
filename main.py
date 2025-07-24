@@ -2,6 +2,7 @@ from openai import OpenAI
 from config import OPENAI_API_KEY
 from src.models import Recipe
 from src.examples import load_example_recipes, get_few_shot_examples
+from src.recipe_generator import generate_basic_recipe
 
 def test_connection():
     client = OpenAI(api_key=OPENAI_API_KEY)
@@ -28,7 +29,13 @@ def test_examples():
     few_shot = get_few_shot_examples(5)
     print(few_shot)
 
+def test_basic_generation():
+    recipe = generate_basic_recipe("chicken, rice, broccoli")
+    print(recipe)
+    
+
 if __name__ == "__main__":
     test_connection()
     test_model()
     test_examples()
+    test_basic_generation()
