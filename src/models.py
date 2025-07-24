@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import List
+from src.exceptions import RecipeValidationError
 
 class Recipe(BaseModel):
     title: str = Field(..., description="Recipe name")
@@ -14,7 +15,14 @@ class Recipe(BaseModel):
     @classmethod
     def validate_times(cls, v):
         if v < 0:
-            raise ValueError("Time cannot be negative")
+            raise RecipeValidationError("Time cannot be negative")
+        return v
+    
+    @field_validator('servings')
+    @classmethod
+    def validate_servings(cls, v):
+        if v < 1 or v > 50:  # Allow for batch recipes like cookies
+            raise RecipeValidationError("Servings must be between 1-50")
         return v
     
     @field_validator('difficulty')
@@ -22,22 +30,41 @@ class Recipe(BaseModel):
     def validate_difficulty(cls, v):
         valid_difficulties = ["Beginner", "Intermediate", "Advanced"]
         if v not in valid_difficulties:
-            raise ValueError(f"Difficulty must be one of: {valid_difficulties}")
+            raise RecipeValidationError(f"Difficulty must be one of: {valid_difficulties}")
         return v
     
     @field_validator('ingredients')
     @classmethod
     def validate_ingredients(cls, v):
-        if len(v) == 0:
-            raise ValueError("Recipe must have at least one ingredient")
+        if len(v) < 2:
+            raise RecipeValidationError("Recipe must have at least 2 ingredients")
         return v
     
     @field_validator('instructions')
     @classmethod
     def validate_instructions(cls, v):
-        if len(v) == 0:
-            raise ValueError("Recipe must have at least one instruction")
+        if len(v) < 3:
+            raise RecipeValidationError("Recipe must have at least 3 instruction steps")
         return v
+    
+    @model_validator(mode='after')
+    def validate_measurements(self):
+        """Check ingredients have realistic measurements."""
+        measurement_words = ['cup', 'tablespoon', 'teaspoon', 'pound', 'ounce', 'gram', 'piece', 'clove']
+        warnings = []
+        
+        for ingredient in self.ingredients:
+            has_measurement = any(word in ingredient.lower() for word in measurement_words)
+            has_number = any(char.isdigit() for char in ingredient)
+            
+            if not (has_measurement or has_number):
+                warnings.append(f"Ingredient missing measurement: {ingredient}")
+        
+        if warnings:
+            import warnings as warn_module
+            warn_module.warn(f"Measurement warnings: {warnings}")
+        
+        return self
     
     @property
     def total_time(self) -> int:

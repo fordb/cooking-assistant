@@ -1,11 +1,13 @@
 import unittest
-from src.output_validator import validate_recipe_structure, validate_measurements
+import warnings
+from src.models import Recipe
+from src.exceptions import RecipeValidationError
 
 
-class TestOutputValidator(unittest.TestCase):
-    def test_validate_recipe_structure_valid(self):
-        """Test validation with valid recipe structure"""
-        valid_recipe = {
+class TestRecipeValidation(unittest.TestCase):
+    def test_recipe_creation_valid(self):
+        """Test creating a valid recipe"""
+        valid_recipe_data = {
             "title": "Test Recipe",
             "prep_time": 10,
             "cook_time": 20,
@@ -15,11 +17,11 @@ class TestOutputValidator(unittest.TestCase):
             "instructions": ["Mix ingredients", "Cook for 10 minutes", "Serve hot"]
         }
         
-        is_valid, errors = validate_recipe_structure(valid_recipe)
-        self.assertTrue(is_valid)
-        self.assertEqual(len(errors), 0)
+        recipe = Recipe(**valid_recipe_data)
+        self.assertEqual(recipe.title, "Test Recipe")
+        self.assertEqual(recipe.total_time, 30)
 
-    def test_validate_recipe_structure_missing_field(self):
+    def test_recipe_validation_missing_field(self):
         """Test validation with missing required field"""
         invalid_recipe = {
             "title": "Test Recipe",
@@ -27,15 +29,14 @@ class TestOutputValidator(unittest.TestCase):
             # missing cook_time
             "servings": 4,
             "difficulty": "Beginner",
-            "ingredients": ["1 cup flour"],
-            "instructions": ["Mix ingredients"]
+            "ingredients": ["1 cup flour", "2 eggs"],
+            "instructions": ["Mix ingredients", "Cook", "Serve"]
         }
         
-        is_valid, errors = validate_recipe_structure(invalid_recipe)
-        self.assertFalse(is_valid)
-        self.assertIn("cook_time", str(errors))
+        with self.assertRaises(Exception):  # Pydantic will raise validation error
+            Recipe(**invalid_recipe)
 
-    def test_validate_recipe_structure_invalid_difficulty(self):
+    def test_recipe_validation_invalid_difficulty(self):
         """Test validation with invalid difficulty"""
         invalid_recipe = {
             "title": "Test Recipe",
@@ -43,51 +44,60 @@ class TestOutputValidator(unittest.TestCase):
             "cook_time": 20,
             "servings": 4,
             "difficulty": "Expert",  # Invalid difficulty
-            "ingredients": ["1 cup flour"],
-            "instructions": ["Mix ingredients"]
+            "ingredients": ["1 cup flour", "2 eggs"],
+            "instructions": ["Mix ingredients", "Cook", "Serve"]
         }
         
-        is_valid, errors = validate_recipe_structure(invalid_recipe)
-        self.assertFalse(is_valid)
-        self.assertIn("difficulty", str(errors))
+        with self.assertRaises(RecipeValidationError):
+            Recipe(**invalid_recipe)
 
-    def test_validate_measurements_valid(self):
-        """Test measurement validation with valid measurements"""
-        valid_ingredients = [
-            "1 cup flour",
-            "2 tablespoons sugar",
-            "1/2 teaspoon salt",
-            "3 large eggs"
-        ]
+    def test_recipe_validation_insufficient_ingredients(self):
+        """Test validation with insufficient ingredients"""
+        invalid_recipe = {
+            "title": "Test Recipe",
+            "prep_time": 10,
+            "cook_time": 20,
+            "servings": 4,
+            "difficulty": "Beginner",
+            "ingredients": ["1 cup flour"],  # Only 1 ingredient
+            "instructions": ["Mix ingredients", "Cook", "Serve"]
+        }
         
-        is_valid, errors = validate_measurements(valid_ingredients)
-        self.assertTrue(is_valid)
-        self.assertEqual(len(errors), 0)
+        with self.assertRaises(RecipeValidationError):
+            Recipe(**invalid_recipe)
 
-    def test_validate_measurements_missing_amounts(self):
-        """Test measurement validation with missing amounts"""
-        invalid_ingredients = [
-            "flour",  # Missing amount
-            "2 tablespoons sugar",
-            "salt"    # Missing amount
-        ]
+    def test_recipe_validation_insufficient_instructions(self):
+        """Test validation with insufficient instructions"""
+        invalid_recipe = {
+            "title": "Test Recipe",
+            "prep_time": 10,
+            "cook_time": 20,
+            "servings": 4,
+            "difficulty": "Beginner",
+            "ingredients": ["1 cup flour", "2 eggs"],
+            "instructions": ["Mix ingredients", "Cook"]  # Only 2 instructions
+        }
         
-        is_valid, errors = validate_measurements(invalid_ingredients)
-        self.assertFalse(is_valid)
-        self.assertGreater(len(errors), 0)
+        with self.assertRaises(RecipeValidationError):
+            Recipe(**invalid_recipe)
 
-    def test_validate_measurements_mixed_valid_invalid(self):
-        """Test measurement validation with mix of valid and invalid"""
-        mixed_ingredients = [
-            "1 cup flour",      # Valid
-            "some sugar",       # Invalid - vague amount
-            "2 eggs",          # Valid
-            "a pinch of salt"  # Valid - acceptable vague measurement
-        ]
+    def test_recipe_measurement_warnings(self):
+        """Test measurement validation warnings"""
+        recipe_with_missing_measurements = {
+            "title": "Test Recipe",
+            "prep_time": 10,
+            "cook_time": 20,
+            "servings": 4,
+            "difficulty": "Beginner",
+            "ingredients": ["flour", "2 eggs"],  # First ingredient missing measurement
+            "instructions": ["Mix ingredients", "Cook for 10 minutes", "Serve hot"]
+        }
         
-        is_valid, errors = validate_measurements(mixed_ingredients)
-        # Should flag the vague "some sugar" but accept "a pinch"
-        self.assertFalse(is_valid)
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            recipe = Recipe(**recipe_with_missing_measurements)
+            self.assertGreater(len(w), 0)
+            self.assertIn("measurement", str(w[0].message))
 
 
 if __name__ == '__main__':

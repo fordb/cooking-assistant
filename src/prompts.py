@@ -1,4 +1,5 @@
 from src.examples import get_few_shot_examples
+from src.exceptions import TemplateError
 
 TEMPLATE_TYPES = {
     "basic": "General recipe generation",
@@ -82,15 +83,22 @@ def create_substitution_prompt(original_recipe: str, missing_ingredients: str, a
     Return only JSON recipe in standard format."""
 
 def select_prompt_template(template_type: str, **kwargs) -> str:
-    if template_type == "basic":
-        return create_basic_recipe_prompt(kwargs["ingredients"])
-    elif template_type == "quick":
-        return create_quick_meal_prompt(kwargs["ingredients"], kwargs.get("max_time", 30))
-    elif template_type == "dietary":
-        return create_dietary_prompt(kwargs["ingredients"], kwargs["dietary_type"])
-    elif template_type == "cuisine":
-        return create_cuisine_prompt(kwargs["ingredients"], kwargs["cuisine"])
-    elif template_type == "substitution":
-        return create_substitution_prompt(kwargs["original_recipe"], kwargs["missing"], kwargs["available"])
-    else:
-        raise ValueError(f"Unknown template type: {template_type}")
+    """Select and create appropriate prompt template."""
+    if template_type not in TEMPLATE_TYPES:
+        raise TemplateError(f"Unknown template type: {template_type}. Valid options: {list(TEMPLATE_TYPES.keys())}")
+    
+    try:
+        if template_type == "basic":
+            return create_basic_recipe_prompt(kwargs["ingredients"])
+        elif template_type == "quick":
+            return create_quick_meal_prompt(kwargs["ingredients"], kwargs.get("max_time", 30))
+        elif template_type == "dietary":
+            return create_dietary_prompt(kwargs["ingredients"], kwargs["dietary_type"])
+        elif template_type == "cuisine":
+            return create_cuisine_prompt(kwargs["ingredients"], kwargs["cuisine"])
+        elif template_type == "substitution":
+            return create_substitution_prompt(kwargs["original_recipe"], kwargs["missing"], kwargs["available"])
+    except KeyError as e:
+        raise TemplateError(f"Missing required parameter for {template_type} template: {e}")
+    except Exception as e:
+        raise TemplateError(f"Error creating {template_type} template: {e}")

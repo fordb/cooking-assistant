@@ -8,6 +8,7 @@ from src.prompts import (
     select_prompt_template,
     TEMPLATE_TYPES
 )
+from src.exceptions import TemplateError
 
 
 class TestPrompts(unittest.TestCase):
@@ -132,7 +133,7 @@ class TestPrompts(unittest.TestCase):
 
     def test_select_prompt_template_invalid_type(self):
         """Test template selection with invalid type"""
-        with self.assertRaises(ValueError) as context:
+        with self.assertRaises(TemplateError) as context:
             select_prompt_template("invalid_type", ingredients="test")
         
         self.assertIn("Unknown template type", str(context.exception))
@@ -154,15 +155,15 @@ class TestPrompts(unittest.TestCase):
     def test_select_prompt_template_missing_kwargs(self):
         """Test template selection with missing required kwargs"""
         # Basic template missing ingredients
-        with self.assertRaises(KeyError):
+        with self.assertRaises(TemplateError):
             select_prompt_template("basic")
         
         # Dietary template missing dietary_type
-        with self.assertRaises(KeyError):
+        with self.assertRaises(TemplateError):
             select_prompt_template("dietary", ingredients="test")
         
         # Cuisine template missing cuisine
-        with self.assertRaises(KeyError):
+        with self.assertRaises(TemplateError):
             select_prompt_template("cuisine", ingredients="test")
 
     def test_prompt_contains_examples(self):

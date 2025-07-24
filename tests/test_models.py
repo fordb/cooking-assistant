@@ -1,5 +1,6 @@
 import unittest
 from src.models import Recipe
+from src.exceptions import RecipeValidationError
 
 
 class TestRecipe(unittest.TestCase):
@@ -11,7 +12,7 @@ class TestRecipe(unittest.TestCase):
             "servings": 2,
             "difficulty": "Beginner",
             "ingredients": ["1 cup rice", "2 cups water"],
-            "instructions": ["Cook rice in water", "Serve hot"]
+            "instructions": ["Cook rice in water", "Let simmer", "Serve hot"]
         }
 
     def test_recipe_creation_valid(self):
@@ -23,7 +24,7 @@ class TestRecipe(unittest.TestCase):
         self.assertEqual(recipe.servings, 2)
         self.assertEqual(recipe.difficulty, "Beginner")
         self.assertEqual(len(recipe.ingredients), 2)
-        self.assertEqual(len(recipe.instructions), 2)
+        self.assertEqual(len(recipe.instructions), 3)
 
     def test_recipe_total_time(self):
         """Test total time calculation"""
@@ -35,7 +36,7 @@ class TestRecipe(unittest.TestCase):
         invalid_data = self.valid_recipe_data.copy()
         invalid_data["difficulty"] = "Expert"
         
-        with self.assertRaises(ValueError):
+        with self.assertRaises(RecipeValidationError):
             Recipe(**invalid_data)
 
     def test_recipe_negative_times(self):
@@ -43,7 +44,7 @@ class TestRecipe(unittest.TestCase):
         invalid_data = self.valid_recipe_data.copy()
         invalid_data["prep_time"] = -5
         
-        with self.assertRaises(ValueError):
+        with self.assertRaises(RecipeValidationError):
             Recipe(**invalid_data)
 
     def test_recipe_empty_ingredients(self):
@@ -51,7 +52,7 @@ class TestRecipe(unittest.TestCase):
         invalid_data = self.valid_recipe_data.copy()
         invalid_data["ingredients"] = []
         
-        with self.assertRaises(ValueError):
+        with self.assertRaises(RecipeValidationError):
             Recipe(**invalid_data)
 
     def test_recipe_empty_instructions(self):
@@ -59,7 +60,7 @@ class TestRecipe(unittest.TestCase):
         invalid_data = self.valid_recipe_data.copy()
         invalid_data["instructions"] = []
         
-        with self.assertRaises(ValueError):
+        with self.assertRaises(RecipeValidationError):
             Recipe(**invalid_data)
 
 
