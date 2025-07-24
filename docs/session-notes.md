@@ -90,6 +90,30 @@
 
 **Session Complete: 2025-07-24 Recipe Data Expansion**
 
+## Session 2025-07-24 - Unit Testing Implementation
+
+### Goals
+- Move basic testing functionality from main.py to proper unit tests
+- Add testing instructions to CLAUDE.md
+- Set up pre-commit hooks to run tests before commits
+
+### Progress
+- [Current] Starting unit testing implementation
+- [Current] Created comprehensive unit test suite in tests/ directory:
+  - test_models.py - Recipe model validation, edge cases, error conditions
+  - test_examples.py - Example recipe loading and few-shot formatting
+  - test_output_validator. - Recipe structure and measurement validation
+  - test_recipe_generator.py - AI recipe generation with mocked OpenAI calls
+- [Current] Updated CLAUDE.md with testing instructions and workflow integration
+- [Current] Enhanced pre-commit hook to run tests before commits, ensuring code quality
+- [Current] Running test suite to verify all tests pass before finalizing implementation
+- [Current] Fixed multiple test failures:
+  - Updated Recipe model with proper Pydantic v2 field_validator syntax
+  - Fixed test assertions to match actual output format ("Example Recipe:" vs "## Recipe")
+  - Enhanced validation rules for minimum ingredients/instructions count
+  - Added proper validation for negative times and invalid difficulty levels
+- [Current] All 20 tests now pass successfully ✅
+
 ## Session 2025-07-24 - End Session Documentation Check
 
 ### Goals
@@ -111,6 +135,41 @@
 **Status:** All documentation current, no new work to document since last session completion
 
 **Session Complete: 2025-07-24 End Session Documentation Check**
+
+## Session 2025-07-24 - Recipe Generation Validation System
+
+### Goals
+- Execute /end-session command and document additional work found since last session
+- Document recipe validation system implementation
+
+### Progress
+- [Current] Discovered undocumented work: recipe validation system implemented
+- [Current] Added output_validator.py module with structure and measurement validation
+- [Current] Enhanced recipe_generator.py with validation integration
+- [Current] Minor cleanup in prompts.py (removed unused BASIC_TEMPLATE)
+
+### Session Summary
+**Accomplishments:**
+- **Created output_validator.py**: New validation module with two key functions:
+  - `validate_recipe_structure()`: Ensures recipes meet schema requirements, proper timing, serving counts, and minimum ingredient/instruction counts
+  - `validate_measurements()`: Checks that ingredients include realistic measurements and quantities
+- **Enhanced recipe_generator.py**: Integrated validation into generation workflow:
+  - Added structure validation with error handling that raises ValueError for invalid recipes
+  - Added measurement validation with warnings for missing measurements
+  - Ensures generated recipes meet quality standards before returning
+- **Code cleanup**: Removed unused BASIC_TEMPLATE constant from prompts.py
+
+**Technical Details:**
+- Validation includes reasonable bounds checking (1-20 servings, positive timing, min 2 ingredients, min 3 steps)
+- Measurement validation recognizes common units: cup, tablespoon, teaspoon, pound, ounce, gram, piece, clove
+- Error handling differentiates between critical failures (structure) and warnings (measurements)
+
+**Quality Impact:**
+- Prevents invalid or poorly structured recipes from being returned to users
+- Ensures consistency with example recipe dataset standards
+- Provides clear error messages for debugging and improvement
+
+**Session Complete: 2025-07-24 Recipe Generation Validation System**
 
 ---
 

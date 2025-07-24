@@ -34,8 +34,5 @@ def test_basic_generation():
     print(recipe)
     
 
-if __name__ == "__main__":
-    test_connection()
-    test_model()
-    test_examples()
+if __name__ == "__main__"
     test_basic_generation()

@@ -19,5 +19,3 @@ Requirements:
 - Make it practical for home cooking
 
 Return only the JSON recipe, no other text."""
-
-BASIC_TEMPLATE = "basic"

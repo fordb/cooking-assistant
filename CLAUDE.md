@@ -33,9 +33,32 @@ At the end of each session (or before git commits):
 - Update `docs/current-work.md` before ending sessions
 - Add weekly summaries to `docs/progress-log.md`
 
+# Testing
+
+## Running Tests
+- **Run all tests**: `python -m pytest tests/`
+- **Run specific test file**: `python -m pytest tests/test_models.py`
+- **Run single test**: `python -m pytest tests/test_models.py::TestRecipe::test_recipe_creation_valid`
+- **Run with verbose output**: `python -m pytest tests/ -v`
+
+## Test Requirements
+- All new functionality MUST have corresponding unit tests
+- Tests should cover core functionality, edge cases, and error conditions
+- Run tests before committing changes to ensure functionality remains intact
+- Prefer running single test files during development for performance
+
+## Test Structure
+- `tests/test_models.py` - Recipe model validation and creation
+- `tests/test_examples.py` - Example recipe loading and formatting
+- `tests/test_output_validator.py` - Recipe structure and measurement validation
+- `tests/test_recipe_generator.py` - AI recipe generation functionality
+
 # Bash commands
-- To add!
+- **Test runner**: `python -m pytest tests/`
+- **Install test dependencies**: `pip install pytest`
 
 # Workflow
+- Run relevant tests when making changes to ensure functionality works
+- Run full test suite before major commits or releases
 - Be sure to typecheck when you're done making a series of code changes
-- Prefer running single tests, and not the whole test suite, for performance
+- Prefer running single tests, and not the whole test suite, for performance during development
