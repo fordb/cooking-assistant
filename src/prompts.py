@@ -9,25 +9,59 @@ TEMPLATE_TYPES = {
     "substitution": "Ingredient substitutions"
 }
 
-def create_basic_recipe_prompt(ingredients: str) -> str:
-    examples = get_few_shot_examples(3)
+def create_basic_recipe_prompt(ingredients: str, skill_level: str = "intermediate") -> str:
+    ingredient_list = [ing.strip() for ing in ingredients.split(',') if ing.strip()]
+    few_shot_examples = get_few_shot_examples(3)
     
-    return f"""You are an expert chef. Create a recipe using the provided ingredients.
+    return f"""You are an expert chef and recipe developer. Create a delicious, practical recipe using the provided ingredients.
 
-    Here are examples of perfect recipe format:
+=== INGREDIENTS TO USE ===
+{', '.join(ingredient_list)}
 
-    {examples}
+=== EXAMPLE RECIPES FOR REFERENCE ===
+{few_shot_examples}
 
-    Now create a recipe using these ingredients: {ingredients}
+=== RECIPE REQUIREMENTS ===
+• Use ALL provided ingredients as main components (not just garnishes)
+• Suggest common pantry staples (salt, pepper, oil, etc.) if needed
+• Provide realistic prep time (5-45 min) and cook time (10-120 min)
+• Include serving size (1-8 people)
+• Use proper cooking techniques with clear instructions
+• Ensure food safety (internal temperatures, safe ingredient combinations)
+• Scale measurements appropriately for serving size
+• Make it achievable for {skill_level} level cooks
 
-    Requirements:
-    - Use realistic measurements and cooking times
-    - Include proper cooking techniques
-    - Ensure food safety (proper temperatures, safe combinations)
-    - Format as valid JSON matching the examples exactly
-    - Make it practical for home cooking
+=== SAFETY REQUIREMENTS ===
+• Never suggest raw or undercooked meat/eggs without proper safety warnings
+• Avoid dangerous ingredient combinations
+• Include internal temperature guidelines for meat dishes
+• Suggest proper food storage if relevant
 
-    Return only the JSON recipe, no other text."""
+=== QUALITY STANDARDS ===
+• Balance flavors (sweet, salty, sour, bitter, umami)
+• Consider texture variety
+• Ensure nutritional balance when possible
+• Make the recipe sound appetizing and achievable
+
+=== OUTPUT FORMAT ===
+Return ONLY valid JSON matching this exact structure:
+{{
+    "name": "Recipe Name",
+    "description": "Brief appetizing description",
+    "prep_time_minutes": number,
+    "cook_time_minutes": number,
+    "servings": number,
+    "difficulty": "easy|medium|hard",
+    "ingredients": [
+        {{"item": "ingredient name", "amount": "quantity", "unit": "measurement"}}
+    ],
+    "instructions": [
+        "Step 1 instruction",
+        "Step 2 instruction"
+    ],
+    "tips": ["helpful cooking tip"],
+    "nutrition_notes": "brief nutritional highlights"
+}}"""
 
 def create_quick_meal_prompt(ingredients: str, max_time: int = 30) -> str:
     examples = get_few_shot_examples(2)  # Use fewer for speed
@@ -89,7 +123,7 @@ def select_prompt_template(template_type: str, **kwargs) -> str:
     
     try:
         if template_type == "basic":
-            return create_basic_recipe_prompt(kwargs["ingredients"])
+            return create_basic_recipe_prompt(kwargs["ingredients"], kwargs.get("skill_level", "intermediate"))
         elif template_type == "quick":
             return create_quick_meal_prompt(kwargs["ingredients"], kwargs.get("max_time", 30))
         elif template_type == "dietary":
