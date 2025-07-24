@@ -136,6 +136,66 @@
 
 **Session Complete: 2025-07-24 End Session Documentation Check**
 
+## Session 2025-07-24 - Comprehensive Unit Testing Implementation
+
+### Goals
+- Move basic testing functionality from main.py to proper unit tests
+- Add testing instructions to CLAUDE.md  
+- Set up pre-commit hooks to run tests before commits
+
+### Progress
+- [Current] Starting unit testing implementation per /end-session documentation review
+- [Current] Created comprehensive unit test suite in tests/ directory:
+  - test_models.py - Recipe model validation, edge cases, error conditions (7 tests)
+  - test_examples.py - Example recipe loading and few-shot formatting (5 tests)
+  - test_output_validator.py - Recipe structure and measurement validation (4 tests)
+  - test_recipe_generator.py - AI recipe generation with mocked OpenAI calls (4 tests)
+- [Current] Updated CLAUDE.md with testing instructions and workflow integration
+- [Current] Enhanced pre-commit hook to run tests before commits, ensuring code quality
+- [Current] Fixed multiple test failures discovered during implementation:
+  - Updated Recipe model with proper Pydantic v2 field_validator syntax
+  - Fixed test assertions to match actual output format ("Example Recipe:" vs "## Recipe")
+  - Enhanced validation rules for minimum ingredients/instructions count
+  - Added proper validation for negative times and invalid difficulty levels
+- [Current] All 20 tests now pass successfully ✅
+
+### Session Summary
+**Accomplishments:**
+- **Comprehensive Unit Test Suite**: Created 20 unit tests across 4 test files covering all major functionality
+  - Recipe model validation with edge cases and error conditions
+  - Example recipe loading and few-shot prompt formatting
+  - Output validation for structure and measurements
+  - Recipe generation with mocked OpenAI API calls
+- **CLAUDE.md Testing Integration**: Added detailed testing section with commands, requirements, and structure documentation
+- **Pre-commit Hook Enhancement**: Enhanced existing git hook to run pytest before commits, ensuring code quality
+- **Bug Fixes**: Resolved multiple test failures by fixing Pydantic v2 syntax, validation logic, and output formatting
+- **Quality Assurance**: Established automated testing workflow with 100% test pass rate
+
+**Technical Details:**
+- Tests cover core functionality, edge cases, and error conditions as specified in requirements
+- Mock testing approach for external API dependencies (OpenAI)
+- Validation testing for recipe structure, measurements, and business rules
+- Integration testing for example recipe loading and prompt formatting
+
+**Quality Metrics:**
+- 20 comprehensive unit tests covering all modules
+- 100% test pass rate achieved
+- Automated pre-commit testing integration
+- Clear testing documentation and workflow established
+
+**Issues Encountered:**
+- Initial Pydantic v2 field_validator syntax incompatibility - resolved with proper decorator usage
+- Test assertion mismatches with actual output format - fixed by updating expectations
+- Missing validation logic for edge cases - enhanced with proper bounds checking and error handling
+
+**Impact:**
+- Establishes reliable testing foundation for continued development
+- Prevents regressions through automated pre-commit testing
+- Ensures code quality and functionality verification before releases
+- Provides clear testing workflow documentation for future development
+
+**Session Complete: 2025-07-24 Comprehensive Unit Testing Implementation**
+
 ## Session 2025-07-24 - Recipe Generation Validation System
 
 ### Goals
