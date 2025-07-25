@@ -1,0 +1,51 @@
+[
+  {
+    "timestamp": "2025-07-24T20:05:21.273055",
+    "metadata": {
+      "category": "basic",
+      "sample_size": 2,
+      "judge_model": "gpt-3.5-turbo",
+      "total_test_cases": 2
+    },
+    "summary": {
+      "total_cases": 2,
+      "successful": 0,
+      "failed": 2,
+      "success_rate": 0.0
+    },
+    "results": [
+      {
+        "test_case": "chicken thighs, carrots, celery, onions",
+        "template_type": "basic",
+        "recipe": null,
+        "scores": [],
+        "performance_metrics": {
+          "start_time": 1753401912.080168,
+          "generation_time": 0,
+          "evaluation_time": 0,
+          "total_tokens": 0,
+          "success": false,
+          "total_time": 4.503190040588379
+        },
+        "error": "Failed to parse recipe JSON: Expecting value: line 1 column 1 (char 0)",
+        "average_score": 0.0
+      },
+      {
+        "test_case": "shrimp, quinoa, avocado, lime, cilantro",
+        "template_type": "basic",
+        "recipe": null,
+        "scores": [],
+        "performance_metrics": {
+          "start_time": 1753401916.58339,
+          "generation_time": 0,
+          "evaluation_time": 0,
+          "total_tokens": 0,
+          "success": false,
+          "total_time": 4.6896209716796875
+        },
+        "error": "Failed to parse recipe JSON: Expecting value: line 1 column 1 (char 0)",
+        "average_score": 0.0
+      }
+    ]
+  }
+]

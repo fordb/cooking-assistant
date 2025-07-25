@@ -106,12 +106,25 @@ def interactive_mode():
             print(f"❌ Unexpected Error: {e}")
 
 
+def run_evaluation():
+    """Run recipe evaluation pipeline."""
+    try:
+        from evaluations.run_eval import run_evaluation as run_eval
+        print("🔄 Running recipe evaluation...")
+        run_eval(category="basic", sample_size=5)  # Quick sample for demo
+    except ImportError:
+        print("❌ Evaluation module not available. Run: python -m evaluations.run_eval")
+    except Exception as e:
+        print(f"❌ Evaluation failed: {e}")
+
+
 def main():
     """Main entry point with command line argument support."""
     parser = argparse.ArgumentParser(description="AI Recipe Generator")
     parser.add_argument("--test-examples", action="store_true", help="Test example recipe loading")
     parser.add_argument("--test-templates", action="store_true", help="Test prompt templates")
     parser.add_argument("--show-usage", action="store_true", help="Show template usage guide")
+    parser.add_argument("--evaluate", action="store_true", help="Run recipe evaluation")
     
     args = parser.parse_args()
     
@@ -121,6 +134,8 @@ def main():
         test_prompt_templates()
     elif args.show_usage:
         show_template_usage()
+    elif args.evaluate:
+        run_evaluation()
     else:
         interactive_mode()
 
