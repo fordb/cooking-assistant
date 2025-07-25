@@ -10,6 +10,7 @@ During development:
 1. Update `docs/session-notes.md` with progress after each major task
 2. Note any discoveries, issues, or decisions in real-time
 3. Update `docs/current-work.md` when changing files or status
+4. **Update `README.md` when making major changes** - Keep it current with new features, usage patterns, or architectural changes
 
 At the end of each session:
 1. Summarize accomplishments in `docs/session-notes.md`
@@ -24,6 +25,7 @@ At the end of each session:
 - Explain WHY decisions were made, not just WHAT
 - Note any trade-offs or alternative approaches considered
 - Keep technical details at appropriate level for future context
+- **README.md Maintenance**: When adding new features, evaluation capabilities, or changing usage patterns, update README.md to reflect current functionality and usage examples
 
 ## File Management
 - Keep `docs/session-notes.md` current and active
