@@ -6,7 +6,9 @@ Analyzes cooking queries to determine optimal prompting strategy.
 import re
 from typing import Dict, List, Tuple
 from enum import Enum
-from .config import get_query_config
+from .config import get_query_config, get_logger
+
+logger = get_logger(__name__)
 
 class QueryComplexity(Enum):
     SIMPLE = "simple"
@@ -175,7 +177,7 @@ if __name__ == "__main__":
     classifier = QueryClassifier()
     for query in test_queries:
         complexity, confidence, reasoning = classifier.classify_query(query)
-        print(f"Query: '{query}'")
-        print(f"Classification: {complexity.value} (confidence: {confidence:.2f})")
-        print(f"Reasoning: {reasoning}")
-        print("-" * 50)
+        logger.debug(f"Demo query: '{query}'")
+        logger.debug(f"Demo classification: {complexity.value} (confidence: {confidence:.2f})")
+        logger.debug(f"Demo reasoning: {reasoning}")
+        logger.debug("-" * 50)

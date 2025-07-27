@@ -619,4 +619,73 @@ The configuration system transforms the codebase from having scattered magic num
 
 **Session Complete: 2025-07-27 Code Cleanup and Optimization**
 
+## Session 2025-07-27 - Logging Implementation
+
+### Goals
+- Replace print statements throughout codebase with proper logging
+- Implement standardized logging with appropriate severity levels
+- Improve scalability and debugging capabilities
+
+### Progress
+- [14:00] ✅ Created comprehensive logging configuration system (LoggingConfig dataclass)
+- [14:15] ✅ Implemented centralized logging setup with console and file handlers
+- [14:30] ✅ Replaced print statements in main.py with appropriate logging levels
+- [14:45] ✅ Updated src/conversation_memory.py with logging for preference updates
+- [15:00] ✅ Converted debug prints in src/query_classifier.py and src/meta_prompting.py to logging
+- [15:15] ✅ Added logging to evaluations files while preserving user output prints
+- [15:30] ✅ Created comprehensive logging tests and verified all 86 tests still pass
+- [15:45] ✅ Verified end-to-end logging functionality with console and file output
+
+### Session Summary
+**Accomplishments:**
+- **Complete Logging System Implementation**: Built comprehensive logging infrastructure to replace print statements
+  - LoggingConfig dataclass with environment variable support
+  - Centralized setup_logging() function with console and file handlers
+  - Log rotation support (10MB max, 5 backups)
+  - Hierarchical logger naming (cooking_assistant.module.function)
+  - Different log levels for console (INFO) vs file (DEBUG)
+- **Strategic Print Statement Replacement**: Replaced 74+ print statements across 7 files
+  - System messages converted to appropriate log levels (DEBUG, INFO, ERROR)
+  - User interface prints preserved for direct user interaction
+  - Progress indicators converted to INFO level
+  - Error handling upgraded to ERROR level with stack traces
+- **Comprehensive Testing**: Added 4 new logging tests to config test suite
+- **Production Ready**: All 86 tests pass with no functionality regressions
+
+**Technical Implementation:**
+- `src/config.py`: LoggingConfig dataclass with setup_logging() and get_logger() functions
+- `main.py`: Strategic logging for session tracking, strategy selection, and error handling
+- `src/conversation_memory.py`: User preference update logging
+- `src/query_classifier.py` & `src/meta_prompting.py`: Demo function logging
+- `evaluations/`: Progress tracking and system operation logging
+- Log format: "[timestamp] - [level] - [module] - [function:line] - [message]"
+
+**Quality Metrics:**
+- 74+ print statements strategically replaced with logging
+- 86 tests passing (100% pass rate maintained)
+- 4 new logging configuration tests added
+- File and console logging working with proper rotation
+- Environment variable configuration support
+
+**Benefits Achieved:**
+- **Scalability**: Configurable log levels and destinations for different environments
+- **Debugging**: Comprehensive system behavior tracking with timestamps and source locations
+- **Production Ready**: Professional logging with rotation and monitoring integration
+- **Standardization**: Consistent logging format across entire application
+- **Maintainability**: Centralized logging configuration with environment overrides
+
+**Files Updated:**
+- src/config.py (LoggingConfig + setup functions)
+- main.py (session and error logging)
+- src/conversation_memory.py (preference tracking)
+- src/query_classifier.py (demo logging)
+- src/meta_prompting.py (demo logging) 
+- evaluations/evaluator.py (progress logging)
+- evaluations/run_eval.py (evaluation tracking)
+- evaluations/results.py (system operation logging)
+- tests/test_config.py (logging tests added)
+
+**Impact:**
+This logging implementation transforms the codebase from scattered print statements to a professional, scalable logging system. The application now provides proper system monitoring, debugging capabilities, and production-ready logging infrastructure while maintaining all existing functionality.
+
 ## Archived Sessions

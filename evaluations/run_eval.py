@@ -14,6 +14,9 @@ import random
 from evaluations.evaluator import RecipeEvaluator
 from evaluations.test_cases import get_test_cases, get_test_case_summary
 from evaluations.results import EvaluationResults
+from src.config import get_logger
+
+logger = get_logger(__name__)
 
 
 def run_evaluation(category: str = "all", sample_size: int = None, judge_model: str = "gpt-3.5-turbo"):
@@ -22,6 +25,8 @@ def run_evaluation(category: str = "all", sample_size: int = None, judge_model: 
     print(f"🧑‍🍳 Starting Recipe Evaluation")
     print("=" * 50)
     
+    logger.info(f"Starting recipe evaluation - category: {category}, judge_model: {judge_model}")
+    
     # Get test cases
     test_cases = get_test_cases(category)
     
@@ -29,6 +34,7 @@ def run_evaluation(category: str = "all", sample_size: int = None, judge_model: 
     if sample_size and sample_size < len(test_cases):
         test_cases = random.sample(test_cases, sample_size)
         print(f"Running on random sample of {sample_size} cases")
+        logger.info(f"Sampling {sample_size} cases from {len(test_cases)} available")
     
     print(f"Test cases: {len(test_cases)}")
     print(f"Judge model: {judge_model}")
@@ -39,6 +45,7 @@ def run_evaluation(category: str = "all", sample_size: int = None, judge_model: 
     
     # Run evaluation
     print(f"\n🔄 Running Evaluations...")
+    logger.info(f"Beginning evaluation of {len(test_cases)} test cases")
     evaluations = evaluator.batch_evaluate(test_cases)
     
     # Save and display results
@@ -53,6 +60,7 @@ def run_evaluation(category: str = "all", sample_size: int = None, judge_model: 
     results_tracker.display_results(evaluations)
     
     print(f"\n💾 Results saved with timestamp: {timestamp}")
+    logger.info(f"Evaluation completed, results saved with timestamp: {timestamp}")
     return evaluations
 
 
@@ -104,6 +112,7 @@ def main():
         print("=" * 30)
         for category, count in summary.items():
             print(f"{category.capitalize()}: {count}")
+        logger.info(f"Test case summary displayed: {dict(summary)}")
         return
     
     # Run evaluation

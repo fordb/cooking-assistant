@@ -14,6 +14,9 @@ from src.config import (
     get_openai_config,
     get_ui_config,
     get_test_config,
+    get_logging_config,
+    setup_logging,
+    get_logger,
     reload_config
 )
 
@@ -144,6 +147,60 @@ class TestCookingAssistantConfig(unittest.TestCase):
         self.assertEqual(openai_config.COMPLEX_TEMPERATURE, 0.7)
         self.assertEqual(openai_config.SIMPLE_MAX_TOKENS, 150)
         self.assertEqual(openai_config.COMPLEX_MAX_TOKENS, 800)
+        
+        # Test logging config access
+        logging_config = get_logging_config()
+        self.assertEqual(logging_config.LOG_LEVEL, "INFO")
+        self.assertEqual(logging_config.CONSOLE_LOG_LEVEL, "INFO")
+        self.assertEqual(logging_config.FILE_LOG_LEVEL, "DEBUG")
+        self.assertEqual(logging_config.ROOT_LOGGER, "cooking_assistant")
+
+    def test_logging_configuration_values(self):
+        """Test that logging configuration values are set correctly."""
+        config = CookingAssistantConfig()
+        
+        # Test default logging values
+        self.assertEqual(config.logging.LOG_LEVEL, "INFO")
+        self.assertEqual(config.logging.CONSOLE_LOG_LEVEL, "INFO")
+        self.assertEqual(config.logging.FILE_LOG_LEVEL, "DEBUG")
+        self.assertEqual(config.logging.LOG_FILE, "logs/cooking_assistant.log")
+        self.assertEqual(config.logging.ROOT_LOGGER, "cooking_assistant")
+        self.assertEqual(config.logging.MAX_LOG_SIZE, 10 * 1024 * 1024)
+        self.assertEqual(config.logging.BACKUP_COUNT, 5)
+        
+        # Test silence loggers initialization
+        self.assertIn("httpcore", config.logging.SILENCE_LOGGERS)
+        self.assertIn("httpx", config.logging.SILENCE_LOGGERS)
+        self.assertIn("openai", config.logging.SILENCE_LOGGERS)
+
+    def test_logging_setup_and_logger_creation(self):
+        """Test that logging setup works and loggers can be created."""
+        import logging
+        
+        # Test setup
+        setup_logging()
+        
+        # Test logger creation
+        logger = get_logger(__name__)
+        self.assertIsInstance(logger, logging.Logger)
+        self.assertEqual(logger.name, "cooking_assistant.tests.test_config")
+        
+        # Test module name conversion
+        logger2 = get_logger("src.config")
+        self.assertEqual(logger2.name, "cooking_assistant.config")
+        
+        # Test existing cooking_assistant prefix
+        logger3 = get_logger("cooking_assistant.core")
+        self.assertEqual(logger3.name, "cooking_assistant.core")
+
+    def test_config_includes_logging(self):
+        """Test that logging config is included in main config."""
+        config = CookingAssistantConfig()
+        config_dict = config.to_dict()
+        
+        self.assertIn('logging', config_dict)
+        self.assertIn('LOG_LEVEL', config_dict['logging'])
+        self.assertIn('ROOT_LOGGER', config_dict['logging'])
 
 
 if __name__ == '__main__':

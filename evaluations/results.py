@@ -8,6 +8,9 @@ from datetime import datetime
 from typing import List, Dict, Any
 from statistics import mean, stdev
 from evaluations.evaluator import RecipeEvaluation
+from src.config import get_logger
+
+logger = get_logger(__name__)
 
 
 class EvaluationResults:
@@ -136,6 +139,7 @@ class EvaluationResults:
     
     def display_results(self, evaluations: List[RecipeEvaluation]):
         """Display evaluation results in a readable format."""
+        logger.info(f"Displaying evaluation results for {len(evaluations)} evaluations")
         print("\n🧑‍🍳 Recipe Evaluation Results")
         print("=" * 50)
         
@@ -189,6 +193,7 @@ class EvaluationResults:
         """Compare results between two evaluation runs."""
         if not os.path.exists(self.results_path):
             print("No results file found.")
+            logger.warning(f"Results file not found: {self.results_path}")
             return
         
         with open(self.results_path, 'r') as f:
@@ -224,6 +229,7 @@ class EvaluationResults:
         """List all available evaluation runs."""
         if not os.path.exists(self.results_path):
             print("No results file found.")
+            logger.warning(f"Results file not found: {self.results_path}")
             return
         
         with open(self.results_path, 'r') as f:
