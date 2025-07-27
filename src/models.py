@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import List
 from src.exceptions import RecipeValidationError
+from src.config import get_recipe_config
 
 class Recipe(BaseModel):
     title: str = Field(..., description="Recipe name")
@@ -14,15 +15,17 @@ class Recipe(BaseModel):
     @field_validator('prep_time', 'cook_time')
     @classmethod
     def validate_times(cls, v):
-        if v < 0:
-            raise RecipeValidationError("Time cannot be negative")
+        config = get_recipe_config()
+        if v < config.MIN_PREP_TIME:
+            raise RecipeValidationError(f"Time must be at least {config.MIN_PREP_TIME} minutes")
         return v
     
     @field_validator('servings')
     @classmethod
     def validate_servings(cls, v):
-        if v < 1 or v > 50:  # Allow for batch recipes like cookies
-            raise RecipeValidationError("Servings must be between 1-50")
+        config = get_recipe_config()
+        if v < config.MIN_SERVINGS or v > config.MAX_SERVINGS:
+            raise RecipeValidationError(f"Servings must be between {config.MIN_SERVINGS}-{config.MAX_SERVINGS}")
         return v
     
     @field_validator('difficulty')
@@ -36,15 +39,17 @@ class Recipe(BaseModel):
     @field_validator('ingredients')
     @classmethod
     def validate_ingredients(cls, v):
-        if len(v) < 2:
-            raise RecipeValidationError("Recipe must have at least 2 ingredients")
+        config = get_recipe_config()
+        if len(v) < config.MIN_INGREDIENTS:
+            raise RecipeValidationError(f"Recipe must have at least {config.MIN_INGREDIENTS} ingredients")
         return v
     
     @field_validator('instructions')
     @classmethod
     def validate_instructions(cls, v):
-        if len(v) < 3:
-            raise RecipeValidationError("Recipe must have at least 3 instruction steps")
+        config = get_recipe_config()
+        if len(v) < config.MIN_INSTRUCTIONS:
+            raise RecipeValidationError(f"Recipe must have at least {config.MIN_INSTRUCTIONS} instruction steps")
         return v
     
     @model_validator(mode='after')

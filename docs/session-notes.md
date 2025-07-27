@@ -503,6 +503,74 @@ Project now has a clean, focused conversational interface that eliminates comple
 
 **Session Complete: 2025-07-27 CLI and Demo Reference Cleanup**
 
+## Session 2025-07-27 - Configuration System for Magic Numbers
+
+### Goals
+- Identify magic numbers and hardcoded values throughout the codebase
+- Create a centralized configuration system for better maintainability
+- Replace magic numbers with configurable constants
+- Improve code readability and maintainability
+
+### Progress
+- [16:00] ✅ Identified magic numbers throughout codebase using grep search
+- [16:15] ✅ Created comprehensive configuration system (src/config.py) with 7 config sections
+- [16:30] ✅ Replaced magic numbers in key files: query_classifier.py, models.py, main.py
+- [16:45] ✅ Updated meta_prompting.py, conversation_memory.py, recipe_generator.py with config references
+- [17:00] ✅ Created test suite for configuration system (tests/test_config.py)
+- [17:15] ✅ Verified all 81 tests still pass with new configuration system
+
+### Session Summary
+**Accomplishments:**
+- **Centralized Configuration System**: Created src/config.py with 7 configuration sections covering all major components
+- **Magic Number Elimination**: Identified and replaced 50+ magic numbers with configurable constants
+- **Environment Variable Support**: Added ability to override config via environment variables
+- **Comprehensive Testing**: Created 6 new tests specifically for configuration system
+- **Backward Compatibility**: All existing functionality preserved while improving maintainability
+
+**Configuration Sections Created:**
+- `QueryClassificationConfig`: Word count thresholds, scoring weights, constraint limits
+- `ConversationMemoryConfig`: Context limits, time parsing, response preview lengths
+- `RecipeConfig`: Validation limits, default values, response processing
+- `PromptConfig`: Example counts, chef experience, time limits
+- `OpenAIConfig`: Model settings, temperature values, token limits
+- `UIConfig`: Display formatting, separator lengths
+- `TestConfig`: Expected dataset values, test limits
+
+**Key Magic Numbers Replaced:**
+- Query classification: word count thresholds (6, 15), scoring weights (0.2, 0.3, 0.4)
+- Recipe validation: min ingredients (2), min instructions (3), serving limits (1-50)
+- OpenAI parameters: temperatures (0.3, 0.7), token limits (150, 800)
+- UI formatting: separator lengths (60, 40, 30)
+- Default recipe values: prep time (15), cook time (30), servings (4)
+
+**Technical Benefits:**
+- **Maintainability**: All configurable values in one place
+- **Readability**: Clear, descriptive constant names instead of raw numbers
+- **Flexibility**: Easy to adjust behavior without code changes
+- **Environment Support**: Production vs development configurations
+- **Testing**: Easier to test with different parameter values
+
+**Files Updated:**
+- src/config.py (new) - Centralized configuration system
+- src/query_classifier.py - Query complexity thresholds and scoring
+- src/models.py - Recipe validation limits
+- src/meta_prompting.py - OpenAI parameters and prompt settings
+- src/conversation_memory.py - Memory limits and processing
+- src/recipe_generator.py - Default recipe values
+- main.py - UI formatting constants
+- tests/test_config.py (new) - Configuration system tests
+
+**Quality Assurance:**
+- 81 total tests passing (75 existing + 6 new config tests)
+- All existing functionality preserved
+- Environment variable override capability tested
+- Configuration consistency verified across modules
+
+**Impact:**
+The configuration system transforms the codebase from having scattered magic numbers to a professional, maintainable system with centralized settings. This makes it much easier to tune behavior, deploy to different environments, and maintain the system over time.
+
+**Session Complete: 2025-07-27 Configuration System for Magic Numbers**
+
 ## Session 2025-07-27 - Code Cleanup and Optimization
 
 ### Goals

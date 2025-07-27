@@ -6,6 +6,7 @@ Routes recipe generation through the meta-prompting system.
 from src.models import Recipe
 from src.exceptions import RecipeGenerationError
 from src.meta_prompting import process_cooking_query
+from src.config import get_recipe_config
 import json
 
 def generate_recipe(ingredients: str, template_type: str = "basic", **kwargs) -> Recipe:
@@ -30,7 +31,8 @@ def generate_recipe(ingredients: str, template_type: str = "basic", **kwargs) ->
     try:
         # Construct query based on template type and parameters
         if template_type == "quick":
-            max_time = kwargs.get("max_time", 30)
+            config = get_recipe_config()
+            max_time = kwargs.get("max_time", config.DEFAULT_COOK_TIME)
             query = f"Quick {max_time}-minute recipe using {ingredients}"
         elif template_type == "dietary":
             dietary_type = kwargs.get("dietary_type", "vegetarian")
@@ -67,39 +69,41 @@ def generate_recipe(ingredients: str, template_type: str = "basic", **kwargs) ->
                 return Recipe(**recipe_data)
             else:
                 # If no JSON found, return a basic recipe structure
+                config = get_recipe_config()
                 ingredient_list = [ing.strip() for ing in ingredients.split(',') if ing.strip()]
-                if len(ingredient_list) < 2:
-                    ingredient_list = [ingredients, "salt", "pepper"]  # Ensure minimum 2 ingredients
+                if len(ingredient_list) < config.MIN_INGREDIENTS:
+                    ingredient_list = [ingredients, "salt", "pepper"]  # Ensure minimum ingredients
                 
                 return Recipe(
                     title=f"Recipe using {ingredients}",
-                    prep_time=15,
-                    cook_time=30,
-                    servings=4,
-                    difficulty="Intermediate",
+                    prep_time=config.DEFAULT_PREP_TIME,
+                    cook_time=config.DEFAULT_COOK_TIME,
+                    servings=config.DEFAULT_SERVINGS,
+                    difficulty=config.DEFAULT_DIFFICULTY,
                     ingredients=ingredient_list,
                     instructions=[
                         f"Use the ingredients: {ingredients}",
-                        response_text[:200] + "..." if len(response_text) > 200 else response_text,
+                        response_text[:config.RESPONSE_PREVIEW_LENGTH] + "..." if len(response_text) > config.RESPONSE_PREVIEW_LENGTH else response_text,
                         "Adjust seasoning and cooking time as needed"
                     ]
                 )
                 
         except (json.JSONDecodeError, ValueError) as e:
             # Fallback: create basic recipe with response as instructions
+            config = get_recipe_config()
             ingredient_list = [ing.strip() for ing in ingredients.split(',') if ing.strip()]
-            if len(ingredient_list) < 2:
-                ingredient_list = [ingredients, "salt", "pepper"]  # Ensure minimum 2 ingredients
+            if len(ingredient_list) < config.MIN_INGREDIENTS:
+                ingredient_list = [ingredients, "salt", "pepper"]  # Ensure minimum ingredients
                 
             return Recipe(
                 title=f"Recipe using {ingredients}",
-                prep_time=15,
-                cook_time=30,
-                servings=4,
-                difficulty="Intermediate", 
+                prep_time=config.DEFAULT_PREP_TIME,
+                cook_time=config.DEFAULT_COOK_TIME,
+                servings=config.DEFAULT_SERVINGS,
+                difficulty=config.DEFAULT_DIFFICULTY, 
                 ingredients=ingredient_list,
                 instructions=[
-                    f"Generated response: {response_text[:500]}...",
+                    f"Generated response: {response_text[:config.RESPONSE_FULL_LENGTH]}...",
                     "Follow cooking instructions as provided",
                     "Adjust seasoning and timing to taste"
                 ]

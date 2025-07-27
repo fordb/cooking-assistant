@@ -5,6 +5,7 @@ Conversational interface for intelligent cooking assistance.
 
 from src.core import CookingAssistant
 from src.exceptions import CookingAssistantError
+from src.config import get_ui_config
 
 def main():
     """Interactive conversation mode with intelligent prompting and memory."""
@@ -15,7 +16,8 @@ def main():
     assistant = CookingAssistant()
     
     while True:
-        print("\n" + "=" * 60)
+        config = get_ui_config()
+        print("\n" + "=" * config.SEPARATOR_LENGTH)
         query = input("💬 What can I help you cook today? ")
         
         if query.lower() == 'quit':
@@ -51,7 +53,7 @@ def main():
                 print(f"💡 Reasoning: {result['reasoning']}")
             
             print(f"\n🧑‍🍳 Chef's Response:")
-            print("-" * 40)
+            print("-" * config.SHORT_SEPARATOR_LENGTH)
             print(result['response'])
             
         except CookingAssistantError as e:
@@ -61,8 +63,9 @@ def main():
 
 def show_help():
     """Show help information."""
+    config = get_ui_config()
     print("\n🆘 Cooking Assistant Help")
-    print("=" * 40)
+    print("=" * config.SHORT_SEPARATOR_LENGTH)
     print("💬 Commands in conversation:")
     print("  • Ask any cooking question naturally")
     print("  • 'help' - Show this help")
@@ -77,8 +80,9 @@ def show_help():
 
 def show_memory_status(assistant: CookingAssistant):
     """Show current memory status."""
+    config = get_ui_config()
     print("\n🧠 Memory Status")
-    print("=" * 30)
+    print("=" * config.MEMORY_SEPARATOR_LENGTH)
     
     prefs = assistant.get_preferences()
     

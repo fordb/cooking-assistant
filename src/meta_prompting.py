@@ -9,6 +9,7 @@ from config import OPENAI_API_KEY
 from src.query_classifier import QueryClassifier, QueryComplexity
 from src.prompts import select_prompt_template
 from src.exceptions import RecipeGenerationError
+from src.config import get_openai_config, get_prompt_config
 import json
 
 class PromptingStrategy:
@@ -36,7 +37,8 @@ Provide a clear, practical answer in 1-3 sentences. Focus on the specific inform
             return select_prompt_template("basic", ingredients=ingredients)
         else:
             # General cooking question with examples
-            examples = get_few_shot_examples(2)
+            config = get_prompt_config()
+            examples = get_few_shot_examples(config.QUICK_EXAMPLES_COUNT)
             return f"""You are a skilled cooking assistant. Here are some example recipes for reference:
 
 {examples}
@@ -159,12 +161,13 @@ class MetaPromptingSystem:
         """Generate response using OpenAI API."""
         
         # Adjust model parameters based on complexity
-        temperature = 0.3 if complexity == QueryComplexity.SIMPLE else 0.7
-        max_tokens = 150 if complexity == QueryComplexity.SIMPLE else 800
+        config = get_openai_config()
+        temperature = config.SIMPLE_TEMPERATURE if complexity == QueryComplexity.SIMPLE else config.COMPLEX_TEMPERATURE
+        max_tokens = config.SIMPLE_MAX_TOKENS if complexity == QueryComplexity.SIMPLE else config.COMPLEX_MAX_TOKENS
         
         try:
             response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model=config.DEFAULT_MODEL,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=temperature,
                 max_tokens=max_tokens
