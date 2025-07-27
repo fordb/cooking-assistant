@@ -9,8 +9,10 @@ from config import OPENAI_API_KEY
 from src.query_classifier import QueryClassifier, QueryComplexity
 from src.prompts import select_prompt_template
 from src.exceptions import RecipeGenerationError
-from src.config import get_openai_config, get_prompt_config
+from src.config import get_openai_config, get_prompt_config, get_logger
 import json
+
+logger = get_logger(__name__)
 
 class PromptingStrategy:
     """Defines different prompting strategies for different complexity levels."""
@@ -243,9 +245,9 @@ if __name__ == "__main__":
     system = MetaPromptingSystem()
     
     for query in test_scenarios:
-        print(f"Query: '{query}'")
+        logger.debug(f"Demo query: '{query}'")
         result = system.process_query(query)
-        print(f"Strategy: {result['strategy']} (complexity: {result['complexity']})")
-        print(f"Reasoning: {result['reasoning']}")
-        print(f"Response preview: {result['response'][:100]}...")
-        print("-" * 60)
+        logger.debug(f"Demo strategy: {result['strategy']} (complexity: {result['complexity']})")
+        logger.debug(f"Demo reasoning: {result['reasoning']}")
+        logger.debug(f"Demo response preview: {result['response'][:100]}...")
+        logger.debug("-" * 60)

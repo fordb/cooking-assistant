@@ -10,6 +10,9 @@ from dataclasses import dataclass
 from config import OPENAI_API_KEY
 from src.models import Recipe
 from src.recipe_generator import generate_recipe
+from src.config import get_logger
+
+logger = get_logger(__name__)
 
 
 @dataclass
@@ -166,7 +169,7 @@ Respond in this exact JSON format:
         results = []
         
         for i, test_case in enumerate(test_cases, 1):
-            print(f"Evaluating {i}/{len(test_cases)}: {test_case['ingredients']}")
+            logger.info(f"Evaluating {i}/{len(test_cases)}: {test_case['ingredients']}")
             
             result = self.evaluate_recipe(
                 ingredients=test_case["ingredients"],

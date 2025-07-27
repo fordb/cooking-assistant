@@ -5,6 +5,7 @@ Centralizes all configurable constants and magic numbers.
 
 from typing import Dict, Any
 import os
+import logging
 from dataclasses import dataclass
 
 
@@ -128,6 +129,35 @@ class TestConfig:
     ZERO_EXAMPLES_COUNT: int = 0
 
 
+@dataclass
+class LoggingConfig:
+    """Configuration for logging system."""
+    # Log levels
+    LOG_LEVEL: str = "INFO"
+    CONSOLE_LOG_LEVEL: str = "INFO"
+    FILE_LOG_LEVEL: str = "DEBUG"
+    
+    # Log formatting
+    CONSOLE_FORMAT: str = "%(levelname)s - %(name)s - %(message)s"
+    FILE_FORMAT: str = "%(asctime)s - %(levelname)s - %(name)s - %(funcName)s:%(lineno)d - %(message)s"
+    DATE_FORMAT: str = "%Y-%m-%d %H:%M:%S"
+    
+    # File logging
+    LOG_FILE: str = "logs/cooking_assistant.log"
+    MAX_LOG_SIZE: int = 10 * 1024 * 1024  # 10MB
+    BACKUP_COUNT: int = 5
+    
+    # Logger names
+    ROOT_LOGGER: str = "cooking_assistant"
+    
+    # Silence noisy loggers
+    SILENCE_LOGGERS: list = None
+    
+    def __post_init__(self):
+        if self.SILENCE_LOGGERS is None:
+            self.SILENCE_LOGGERS = ["httpcore", "httpx", "openai"]
+
+
 class CookingAssistantConfig:
     """Main configuration class that consolidates all config sections."""
     
@@ -139,6 +169,7 @@ class CookingAssistantConfig:
         self.openai = OpenAIConfig()
         self.ui = UIConfig()
         self.testing = TestConfig()
+        self.logging = LoggingConfig()
     
     @classmethod
     def from_env(cls) -> 'CookingAssistantConfig':
@@ -158,6 +189,16 @@ class CookingAssistantConfig:
         if os.getenv('COMPLEX_TEMPERATURE'):
             config.openai.COMPLEX_TEMPERATURE = float(os.getenv('COMPLEX_TEMPERATURE'))
         
+        # Logging environment overrides
+        if os.getenv('LOG_LEVEL'):
+            config.logging.LOG_LEVEL = os.getenv('LOG_LEVEL')
+        
+        if os.getenv('CONSOLE_LOG_LEVEL'):
+            config.logging.CONSOLE_LOG_LEVEL = os.getenv('CONSOLE_LOG_LEVEL')
+        
+        if os.getenv('LOG_FILE'):
+            config.logging.LOG_FILE = os.getenv('LOG_FILE')
+        
         return config
     
     def to_dict(self) -> Dict[str, Any]:
@@ -169,7 +210,8 @@ class CookingAssistantConfig:
             'prompts': self.prompts.__dict__,
             'openai': self.openai.__dict__,
             'ui': self.ui.__dict__,
-            'testing': self.testing.__dict__
+            'testing': self.testing.__dict__,
+            'logging': self.logging.__dict__
         }
 
 
@@ -223,3 +265,87 @@ def get_ui_config() -> UIConfig:
 def get_test_config() -> TestConfig:
     """Get test configuration."""
     return config.testing
+
+
+def get_logging_config() -> LoggingConfig:
+    """Get logging configuration."""
+    return config.logging
+
+
+def setup_logging() -> None:
+    """Setup logging configuration for the application."""
+    from logging.handlers import RotatingFileHandler
+    import os
+    
+    log_config = get_logging_config()
+    
+    # Create logs directory if it doesn't exist
+    log_dir = os.path.dirname(log_config.LOG_FILE)
+    if log_dir and not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    
+    # Create root logger
+    root_logger = logging.getLogger(log_config.ROOT_LOGGER)
+    root_logger.setLevel(getattr(logging, log_config.LOG_LEVEL.upper()))
+    
+    # Clear any existing handlers
+    root_logger.handlers.clear()
+    
+    # Console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(getattr(logging, log_config.CONSOLE_LOG_LEVEL.upper()))
+    console_formatter = logging.Formatter(
+        log_config.CONSOLE_FORMAT, 
+        datefmt=log_config.DATE_FORMAT
+    )
+    console_handler.setFormatter(console_formatter)
+    root_logger.addHandler(console_handler)
+    
+    # File handler with rotation
+    if log_config.LOG_FILE:
+        file_handler = RotatingFileHandler(
+            log_config.LOG_FILE,
+            maxBytes=log_config.MAX_LOG_SIZE,
+            backupCount=log_config.BACKUP_COUNT
+        )
+        file_handler.setLevel(getattr(logging, log_config.FILE_LOG_LEVEL.upper()))
+        file_formatter = logging.Formatter(
+            log_config.FILE_FORMAT,
+            datefmt=log_config.DATE_FORMAT
+        )
+        file_handler.setFormatter(file_formatter)
+        root_logger.addHandler(file_handler)
+    
+    # Silence noisy third-party loggers
+    for logger_name in log_config.SILENCE_LOGGERS:
+        logging.getLogger(logger_name).setLevel(logging.WARNING)
+    
+    # Set propagation
+    root_logger.propagate = False
+
+
+def get_logger(name: str) -> logging.Logger:
+    """Get a logger with the application's logging configuration.
+    
+    Args:
+        name: Logger name (typically __name__ from calling module)
+    
+    Returns:
+        Configured logger instance
+    """
+    log_config = get_logging_config()
+    
+    # Ensure logging is setup
+    if not logging.getLogger(log_config.ROOT_LOGGER).handlers:
+        setup_logging()
+    
+    # Create hierarchical logger name
+    if name.startswith(log_config.ROOT_LOGGER):
+        logger_name = name
+    else:
+        # Convert module path to logger hierarchy
+        if name.startswith('src.'):
+            name = name[4:]  # Remove 'src.' prefix
+        logger_name = f"{log_config.ROOT_LOGGER}.{name}"
+    
+    return logging.getLogger(logger_name)

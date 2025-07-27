@@ -6,8 +6,10 @@ Maintains session-level context and user preferences during conversations.
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from dataclasses import dataclass, field
-from src.config import get_memory_config
+from src.config import get_memory_config, get_logger
 import re
+
+logger = get_logger(__name__)
 
 @dataclass
 class UserPreferences:
@@ -147,7 +149,7 @@ class ConversationMemory:
         
         # Log preference updates if any
         if preference_updates:
-            print(f"📝 Updated preferences: {', '.join(preference_updates)}")
+            logger.info(f"Updated user preferences: {', '.join(preference_updates)}")
     
     def get_context_for_query(self, current_query: str) -> Dict[str, Any]:
         """Get relevant context for the current query."""
@@ -285,12 +287,12 @@ if __name__ == "__main__":
     
     for query in test_queries:
         context = memory.get_context_for_query(query)
-        print(f"Query: {query}")
-        print(f"Context: {context}")
+        logger.debug(f"Demo query: {query}")
+        logger.debug(f"Demo context: {context}")
         
         # Simulate response
         memory.add_turn(query, "Sample response", "test_strategy", "moderate")
-        print("-" * 50)
+        logger.debug("Demo turn added")
     
-    print("\nSession Summary:")
-    print(memory.get_session_summary())
+    logger.info("Demo session summary:")
+    logger.info(memory.get_session_summary())

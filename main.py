@@ -5,7 +5,11 @@ Conversational interface for intelligent cooking assistance.
 
 from src.core import CookingAssistant
 from src.exceptions import CookingAssistantError
-from src.config import get_ui_config
+from src.config import get_ui_config, setup_logging, get_logger
+
+# Setup logging
+setup_logging()
+logger = get_logger(__name__)
 
 def main():
     """Interactive conversation mode with intelligent prompting and memory."""
@@ -13,6 +17,7 @@ def main():
     print("I use intelligent prompting strategies and remember our conversation.")
     print("Commands: 'help', 'memory', 'reset', 'quit'")
     
+    logger.info("Starting AI Cooking Assistant interactive session")
     assistant = CookingAssistant()
     
     while True:
@@ -22,6 +27,7 @@ def main():
         
         if query.lower() == 'quit':
             summary = assistant.get_memory_status()
+            logger.info(f"Session ended - Duration: {summary['duration_minutes']:.1f}min, Questions: {summary['turns_count']}, Strategies: {summary['strategies_used']}")
             print(f"\n📊 Session Summary:")
             print(f"Duration: {summary['duration_minutes']:.1f} minutes")
             print(f"Questions: {summary['turns_count']}")
@@ -39,13 +45,18 @@ def main():
             
         elif query.lower() == 'reset':
             assistant.reset_memory()
+            logger.info("User reset conversation memory")
             print("🔄 Memory reset. Starting fresh conversation.")
             continue
         
         try:
             # Process query
+            logger.debug(f"Processing user query: {query[:50]}...")
             print("\n🤔 Analyzing your question...")
             result = assistant.ask(query)
+            
+            # Log strategy selection
+            logger.info(f"Query classified as {result['complexity']}, using {result['strategy']} strategy")
             
             # Show strategy and response
             print(f"📋 Strategy: {result['strategy']} (complexity: {result['complexity']})")
@@ -57,8 +68,10 @@ def main():
             print(result['response'])
             
         except CookingAssistantError as e:
+            logger.error(f"Cooking assistant error: {e}")
             print(f"❌ Cooking Error: {e}")
         except Exception as e:
+            logger.error(f"Unexpected error in main loop: {e}", exc_info=True)
             print(f"❌ Unexpected Error: {e}")
 
 def show_help():
