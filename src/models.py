@@ -17,7 +17,7 @@ class Recipe(BaseModel):
     def validate_times(cls, v):
         config = get_recipe_config()
         if v < config.MIN_PREP_TIME:
-            raise RecipeValidationError("Time cannot be negative")
+            raise RecipeValidationError(f"Time must be at least {config.MIN_PREP_TIME} minutes")
         return v
     
     @field_validator('servings')
