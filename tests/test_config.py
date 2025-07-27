@@ -175,7 +175,7 @@ class TestCookingAssistantConfig(unittest.TestCase):
 
     def test_logging_setup_and_logger_creation(self):
         """Test that logging setup works and loggers can be created."""
-        import logging
+        
         
         # Test setup
         setup_logging()
