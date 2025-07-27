@@ -6,6 +6,7 @@ Analyzes cooking queries to determine optimal prompting strategy.
 import re
 from typing import Dict, List, Tuple
 from enum import Enum
+from .config import get_query_config
 
 class QueryComplexity(Enum):
     SIMPLE = "simple"
@@ -66,15 +67,17 @@ class QueryClassifier:
         question_marks = query.count('?')
         
         # Adjust scores based on query structure
-        if word_count <= 6 and question_marks <= 1:
-            simple_score += 0.3
-        elif word_count >= 15 or question_marks >= 2:
-            complex_score += 0.2
+        config = get_query_config()
+        
+        if word_count <= config.SIMPLE_WORD_COUNT_THRESHOLD and question_marks <= config.SIMPLE_QUESTION_MARKS_THRESHOLD:
+            simple_score += config.SIMPLE_WORD_COUNT_SCORE
+        elif word_count >= config.COMPLEX_WORD_COUNT_THRESHOLD or question_marks >= config.COMPLEX_QUESTION_MARKS_THRESHOLD:
+            complex_score += config.COMPLEX_WORD_COUNT_SCORE
             
         # Check for multiple constraints (indicates complexity)
         constraint_count = self._count_constraints(query_lower)
-        if constraint_count >= 2:
-            complex_score += 0.4
+        if constraint_count >= config.MIN_CONSTRAINTS_FOR_COMPLEX:
+            complex_score += config.CONSTRAINT_SCORE_WEIGHT
             
         # Determine classification with tie-breaking logic
         scores = {
@@ -103,20 +106,21 @@ class QueryClassifier:
     
     def _calculate_score(self, query: str, indicators: Dict[str, List[str]]) -> float:
         """Calculate score for a complexity level based on keyword indicators."""
+        config = get_query_config()
         score = 0.0
         matches = []
         
         for category, keywords in indicators.items():
             for keyword in keywords:
                 if keyword in query:
-                    score += 0.2
+                    score += config.KEYWORD_MATCH_SCORE
                     matches.append(keyword)
                     
         # Bonus for multiple matches in same category
         if len(matches) > 1:
-            score += 0.1
+            score += config.MULTIPLE_MATCHES_BONUS
             
-        return min(score, 1.0)  # Cap at 1.0
+        return min(score, config.MAX_SCORE_CAP)
     
     def _count_constraints(self, query: str) -> int:
         """Count dietary/cooking constraints in query."""
