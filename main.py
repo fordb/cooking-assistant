@@ -1,144 +1,110 @@
-import argparse
-from src.recipe_generator import generate_recipe
-from src.prompts import TEMPLATE_TYPES, select_prompt_template
-from src.examples import load_example_recipes, get_few_shot_examples
+"""
+Intelligent Cooking Assistant
+Conversational interface for intelligent cooking assistance.
+"""
+
+from src.core import CookingAssistant
 from src.exceptions import CookingAssistantError
 
-
-def test_examples():
-    """Load and display example recipes."""
-    print("🧑‍🍳 Loading Example Recipes")
-    print("=" * 50)
+def main():
+    """Interactive conversation mode with intelligent prompting and memory."""
+    print("🧑‍🍳 Welcome to AI Cooking Assistant!")
+    print("I use intelligent prompting strategies and remember our conversation.")
+    print("Commands: 'help', 'memory', 'reset', 'quit'")
     
-    try:
-        recipes = load_example_recipes()
-        print(f"Loaded {len(recipes)} example recipes:")
-        
-        for i, recipe in enumerate(recipes[:5], 1):  # Show first 5
-            print(f"\n{i}. {recipe.title}")
-            print(f"   Difficulty: {recipe.difficulty} | Time: {recipe.total_time} min | Serves: {recipe.servings}")
-            print(f"   Ingredients: {len(recipe.ingredients)} | Steps: {len(recipe.instructions)}")
-            
-    except Exception as e:
-        print(f"❌ Error loading examples: {e}")
-
-
-def test_prompt_templates():
-    """Demonstrate all prompt template types."""
-    print("\n🧑‍🍳 Testing Prompt Templates")
-    print("=" * 50)
-    
-    ingredients = "chicken, rice, vegetables"
-    
-    for template_type, description in TEMPLATE_TYPES.items():
-        print(f"\n{template_type.upper()} Template ({description}):")
-        print("-" * 40)
-        
-        try:
-            if template_type == "dietary":
-                prompt = select_prompt_template(template_type, ingredients=ingredients, dietary_type="vegetarian")
-            elif template_type == "cuisine":
-                prompt = select_prompt_template(template_type, ingredients=ingredients, cuisine="Italian")
-            elif template_type == "substitution":
-                prompt = select_prompt_template(template_type, 
-                                              original_recipe="Chicken Rice Bowl",
-                                              missing="chicken",
-                                              available="tofu")
-            else:
-                prompt = select_prompt_template(template_type, ingredients=ingredients)
-            
-            # Show first 200 characters of prompt
-            print(f"Prompt preview: {prompt[:200]}...")
-            
-        except Exception as e:
-            print(f"❌ Error: {e}")
-
-
-def show_template_usage():
-    """Show usage examples for each template type."""
-    print("\n🧑‍🍳 Template Usage Guide")
-    print("=" * 50)
-    
-    usage_examples = {
-        "basic": "general recipe generation with any ingredients",
-        "quick": "meals that can be prepared in under 30 minutes",
-        "dietary": "recipes for specific dietary needs (vegetarian, vegan, gluten-free, etc.)",
-        "cuisine": "recipes in specific cuisine styles (Italian, Mexican, Asian, etc.)",
-        "substitution": "modify existing recipes by substituting unavailable ingredients"
-    }
-    
-    for template_type, usage in usage_examples.items():
-        print(f"\n{template_type.upper()}: {usage}")
-
-
-def interactive_mode():
-    """Interactive recipe generation mode."""
-    print("🧑‍🍳 Welcome to AI Recipe Generator!")
-    print("Type 'help' for template options, 'examples' to see example recipes, or 'quit' to exit.")
+    assistant = CookingAssistant()
     
     while True:
-        print("\n" + "-" * 50)
-        ingredients = input("What ingredients do you have? ")
+        print("\n" + "=" * 60)
+        query = input("💬 What can I help you cook today? ")
         
-        if ingredients.lower() == 'quit':
+        if query.lower() == 'quit':
+            summary = assistant.get_memory_status()
+            print(f"\n📊 Session Summary:")
+            print(f"Duration: {summary['duration_minutes']:.1f} minutes")
+            print(f"Questions: {summary['turns_count']}")
+            print(f"Strategies: {', '.join(summary['strategies_used'])}")
             print("👋 Happy cooking!")
             break
-        elif ingredients.lower() == 'help':
-            show_template_usage()
+            
+        elif query.lower() == 'help':
+            show_help()
             continue
-        elif ingredients.lower() == 'examples':
-            test_examples()
+            
+        elif query.lower() == 'memory':
+            show_memory_status(assistant)
             continue
-        
-        recipe_type = input(f"Recipe type ({'/'.join(TEMPLATE_TYPES.keys())}): ") or "basic"
+            
+        elif query.lower() == 'reset':
+            assistant.reset_memory()
+            print("🔄 Memory reset. Starting fresh conversation.")
+            continue
         
         try:
-            print("\n🔄 Generating recipe...")
-            recipe = generate_recipe(ingredients, recipe_type)
+            # Process query
+            print("\n🤔 Analyzing your question...")
+            result = assistant.ask(query)
             
-            print("\n✅ Recipe Generated!")
-            print("=" * 50)
-            print(recipe.model_dump_json(indent=2))
+            # Show strategy and response
+            print(f"📋 Strategy: {result['strategy']} (complexity: {result['complexity']})")
+            if 'reasoning' in result:
+                print(f"💡 Reasoning: {result['reasoning']}")
+            
+            print(f"\n🧑‍🍳 Chef's Response:")
+            print("-" * 40)
+            print(result['response'])
             
         except CookingAssistantError as e:
-            print(f"❌ Recipe Error: {e}")
+            print(f"❌ Cooking Error: {e}")
         except Exception as e:
             print(f"❌ Unexpected Error: {e}")
 
+def show_help():
+    """Show help information."""
+    print("\n🆘 Cooking Assistant Help")
+    print("=" * 40)
+    print("💬 Commands in conversation:")
+    print("  • Ask any cooking question naturally")
+    print("  • 'help' - Show this help")
+    print("  • 'memory' - See what I remember")
+    print("  • 'reset' - Start fresh conversation")
+    print("  • 'quit' - Exit with summary")
+    print("\n🤖 I automatically:")
+    print("  • Classify questions by complexity")
+    print("  • Choose the best prompting strategy")
+    print("  • Remember your preferences")
+    print("  • Provide context-aware responses")
 
-def run_evaluation():
-    """Run recipe evaluation pipeline."""
-    try:
-        from evaluations.run_eval import run_evaluation as run_eval
-        print("🔄 Running recipe evaluation...")
-        run_eval(category="basic", sample_size=5)  # Quick sample for demo
-    except ImportError:
-        print("❌ Evaluation module not available. Run: python -m evaluations.run_eval")
-    except Exception as e:
-        print(f"❌ Evaluation failed: {e}")
-
-
-def main():
-    """Main entry point with command line argument support."""
-    parser = argparse.ArgumentParser(description="AI Recipe Generator")
-    parser.add_argument("--test-examples", action="store_true", help="Test example recipe loading")
-    parser.add_argument("--test-templates", action="store_true", help="Test prompt templates")
-    parser.add_argument("--show-usage", action="store_true", help="Show template usage guide")
-    parser.add_argument("--evaluate", action="store_true", help="Run recipe evaluation")
+def show_memory_status(assistant: CookingAssistant):
+    """Show current memory status."""
+    print("\n🧠 Memory Status")
+    print("=" * 30)
     
-    args = parser.parse_args()
+    prefs = assistant.get_preferences()
     
-    if args.test_examples:
-        test_examples()
-    elif args.test_templates:
-        test_prompt_templates()
-    elif args.show_usage:
-        show_template_usage()
-    elif args.evaluate:
-        run_evaluation()
-    else:
-        interactive_mode()
-
+    if prefs['dietary_restrictions']:
+        print(f"🥗 Dietary: {', '.join(prefs['dietary_restrictions'])}")
+    
+    if prefs['cuisine_preferences']:
+        print(f"🌍 Cuisines: {', '.join(prefs['cuisine_preferences'])}")
+    
+    if prefs['skill_level']:
+        print(f"👨‍🍳 Skill: {prefs['skill_level']}")
+    
+    if prefs['cooking_time_preference']:
+        print(f"⏱️ Time: {prefs['cooking_time_preference']}")
+    
+    if prefs['family_size']:
+        print(f"👨‍👩‍👧‍👦 Family: {prefs['family_size']} people")
+    
+    if prefs['equipment_available']:
+        print(f"🔧 Equipment: {', '.join(prefs['equipment_available'])}")
+    
+    if prefs['budget_conscious']:
+        print("💰 Budget conscious: Yes")
+    
+    summary = assistant.get_memory_status()
+    print(f"💬 Questions asked: {summary['turns_count']}")
 
 if __name__ == "__main__":
     main()

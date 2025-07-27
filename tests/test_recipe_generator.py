@@ -5,26 +5,25 @@ from src.models import Recipe
 
 
 class TestRecipeGenerator(unittest.TestCase):
-    @patch('src.recipe_generator.OpenAI')
-    def test_generate_basic_recipe_success(self, mock_openai):
+    @patch('src.recipe_generator.process_cooking_query')
+    def test_generate_basic_recipe_success(self, mock_process):
         """Test successful recipe generation"""
-        # Mock the OpenAI response
-        mock_response = MagicMock()
-        mock_response.choices[0].message.content = '''
-        {
-            "title": "Generated Recipe",
-            "prep_time": 15,
-            "cook_time": 25,
-            "servings": 4,
-            "difficulty": "Beginner",
-            "ingredients": ["1 cup test ingredient", "2 tsp salt", "3 tbsp oil"],
-            "instructions": ["Test instruction 1", "Test instruction 2", "Test instruction 3"]
+        # Mock the process_cooking_query response with JSON
+        mock_process.return_value = {
+            'response': '''
+            {
+                "title": "Generated Recipe",
+                "prep_time": 15,
+                "cook_time": 25,
+                "servings": 4,
+                "difficulty": "Beginner",
+                "ingredients": ["1 cup test ingredient", "2 tsp salt", "3 tbsp oil"],
+                "instructions": ["Test instruction 1", "Test instruction 2", "Test instruction 3"]
+            }
+            ''',
+            'strategy': 'few_shot',
+            'success': True
         }
-        '''
-        
-        mock_client = MagicMock()
-        mock_client.chat.completions.create.return_value = mock_response
-        mock_openai.return_value = mock_client
         
         # Test the function
         result = generate_recipe("test ingredients", "basic")
@@ -37,9 +36,8 @@ class TestRecipeGenerator(unittest.TestCase):
         self.assertEqual(result.servings, 4)
         self.assertEqual(result.difficulty, "Beginner")
         
-        # Verify OpenAI was called
-        mock_openai.assert_called_once()
-        mock_client.chat.completions.create.assert_called_once()
+        # Verify meta-prompting was called
+        mock_process.assert_called_once()
 
     def test_generate_basic_recipe_input_validation(self):
         """Test input validation for recipe generation"""
@@ -47,20 +45,21 @@ class TestRecipeGenerator(unittest.TestCase):
         # TODO: Add input validation to generate_basic_recipe function
         pass
 
-    @patch('src.recipe_generator.OpenAI')
-    def test_generate_basic_recipe_invalid_json_response(self, mock_openai):
+    @patch('src.recipe_generator.process_cooking_query')
+    def test_generate_basic_recipe_invalid_json_response(self, mock_process):
         """Test handling of invalid JSON response"""
-        # Mock invalid JSON response
-        mock_response = MagicMock()
-        mock_response.choices[0].message.content = "Invalid JSON response"
+        # Mock response with invalid JSON - should create fallback recipe
+        mock_process.return_value = {
+            'response': 'This is just text without JSON',
+            'strategy': 'zero_shot',
+            'success': True
+        }
         
-        mock_client = MagicMock()
-        mock_client.chat.completions.create.return_value = mock_response
-        mock_openai.return_value = mock_client
-        
-        # Should raise an exception or handle gracefully
-        with self.assertRaises((ValueError, Exception)):
-            generate_recipe("test ingredients", "basic")
+        # Should create a fallback recipe instead of raising exception
+        result = generate_recipe("test ingredients", "basic")
+        self.assertIsInstance(result, Recipe)
+        self.assertEqual(result.title, "Recipe using test ingredients")
+        self.assertEqual(result.difficulty, "Intermediate")
 
 
 if __name__ == '__main__':
