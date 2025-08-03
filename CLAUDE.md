@@ -67,6 +67,7 @@ At the end of each session:
 - Split changes up into meaningful chunks. Avoid changing too many things at once to make the review and development easier to follow and review
 - Use Snake Case for Python code when reasonable. Avoid Camel Case usage
 - Focus on adding functionality that is necessary. Don't add extra fluff or other bells and whistles that are not needed
+- Don't use generic Exceptions. Create a specific exception class or re-raise the original exception
 
 # Project Development Overview
 

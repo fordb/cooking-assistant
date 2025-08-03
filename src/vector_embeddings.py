@@ -7,6 +7,7 @@ import openai
 from typing import List, Dict, Any, Optional
 from src.models import Recipe
 from src.config import get_vector_config, get_openai_config, get_logger
+from src.exceptions import EmbeddingGenerationError
 
 logger = get_logger(__name__)
 
@@ -66,7 +67,7 @@ class RecipeEmbeddingGenerator:
             List of embedding values
             
         Raises:
-            Exception: If OpenAI API call fails
+            EmbeddingGenerationError: If OpenAI API call fails
         """
         try:
             logger.debug(f"Generating embedding for text of length {len(text)}")
@@ -83,7 +84,7 @@ class RecipeEmbeddingGenerator:
             
         except Exception as e:
             logger.error(f"Failed to generate embedding: {e}")
-            raise Exception(f"OpenAI embedding generation failed: {e}")
+            raise EmbeddingGenerationError(f"OpenAI embedding generation failed: {e}") from e
     
     def generate_recipe_embedding(self, recipe: Recipe) -> Dict[str, Any]:
         """
@@ -144,7 +145,7 @@ class RecipeEmbeddingGenerator:
                 results.append(result)
                 logger.debug(f"Completed {i}/{len(recipes)}: {recipe.title}")
                 
-            except Exception as e:
+            except EmbeddingGenerationError as e:
                 logger.error(f"Failed to generate embedding for '{recipe.title}': {e}")
                 # Continue with other recipes instead of failing completely
                 continue

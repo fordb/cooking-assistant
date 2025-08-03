@@ -23,3 +23,7 @@ class TemplateError(CookingAssistantError):
 class SafetyValidationError(CookingAssistantError):
     """Raised when safety validation fails."""
     pass
+
+class EmbeddingGenerationError(CookingAssistantError):
+    """Raised when embedding generation fails."""
+    pass

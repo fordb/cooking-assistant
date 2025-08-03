@@ -12,6 +12,7 @@ from src.models import Recipe
 from src.vector_embeddings import RecipeEmbeddingGenerator, create_search_embedding, extract_recipe_keywords
 from src.vector_store import VectorRecipeStore, VectorStoreError
 from src.recipe_ingestion import RecipeIngestionPipeline
+from src.exceptions import EmbeddingGenerationError
 
 class TestRecipeEmbeddingGenerator(unittest.TestCase):
     """Test recipe embedding generation functionality."""

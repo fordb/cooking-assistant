@@ -752,5 +752,11 @@ This logging implementation transforms the codebase from scattered print stateme
   - Updated README with direct Python usage examples
   - Kept focus on core functionality: VectorRecipeStore, RecipeIngestionPipeline
   - All tests still pass (13/13)
+- [20:30] ✅ Fixed generic exception usage in vector_embeddings.py:
+  - Added EmbeddingGenerationError to src/exceptions.py
+  - Replaced generic Exception with specific EmbeddingGenerationError
+  - Used proper exception chaining with "from e" for better debugging
+  - Updated exception handling in batch processing
+  - All tests still pass (13/13)
 
 ## Archived Sessions
