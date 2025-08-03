@@ -130,6 +130,38 @@ class TestConfig:
 
 
 @dataclass
+class VectorConfig:
+    """Configuration for vector database (Chroma) operations."""
+    # Database connection
+    HOST: str = "localhost"
+    PORT: int = 8000
+    PERSISTENCE_DIRECTORY: str = "data/chroma_db"
+    
+    # Collection settings
+    RECIPE_COLLECTION_NAME: str = "recipes"
+    EMBEDDING_DIMENSION: int = 1536  # OpenAI text-embedding-ada-002 dimension
+    
+    # Search settings
+    DEFAULT_SEARCH_LIMIT: int = 10
+    SIMILARITY_THRESHOLD: float = 0.7
+    
+    # Embedding settings
+    EMBEDDING_MODEL: str = "text-embedding-ada-002"
+    CHUNK_SIZE: int = 1000  # For text chunking if needed
+    CHUNK_OVERLAP: int = 200
+    
+    # Metadata fields
+    RECIPE_METADATA_FIELDS: list = None
+    
+    def __post_init__(self):
+        if self.RECIPE_METADATA_FIELDS is None:
+            self.RECIPE_METADATA_FIELDS = [
+                "title", "difficulty", "prep_time", "cook_time", 
+                "servings", "cuisine", "dietary_restrictions"
+            ]
+
+
+@dataclass
 class LoggingConfig:
     """Configuration for logging system."""
     # Log levels
@@ -169,6 +201,7 @@ class CookingAssistantConfig:
         self.openai = OpenAIConfig()
         self.ui = UIConfig()
         self.testing = TestConfig()
+        self.vector = VectorConfig()
         self.logging = LoggingConfig()
     
     @classmethod
@@ -199,6 +232,19 @@ class CookingAssistantConfig:
         if os.getenv('LOG_FILE'):
             config.logging.LOG_FILE = os.getenv('LOG_FILE')
         
+        # Vector database environment overrides
+        if os.getenv('CHROMA_HOST'):
+            config.vector.HOST = os.getenv('CHROMA_HOST')
+        
+        if os.getenv('CHROMA_PORT'):
+            config.vector.PORT = int(os.getenv('CHROMA_PORT'))
+        
+        if os.getenv('CHROMA_PERSISTENCE_DIR'):
+            config.vector.PERSISTENCE_DIRECTORY = os.getenv('CHROMA_PERSISTENCE_DIR')
+        
+        if os.getenv('EMBEDDING_MODEL'):
+            config.vector.EMBEDDING_MODEL = os.getenv('EMBEDDING_MODEL')
+        
         return config
     
     def to_dict(self) -> Dict[str, Any]:
@@ -211,6 +257,7 @@ class CookingAssistantConfig:
             'openai': self.openai.__dict__,
             'ui': self.ui.__dict__,
             'testing': self.testing.__dict__,
+            'vector': self.vector.__dict__,
             'logging': self.logging.__dict__
         }
 
@@ -265,6 +312,11 @@ def get_ui_config() -> UIConfig:
 def get_test_config() -> TestConfig:
     """Get test configuration."""
     return config.testing
+
+
+def get_vector_config() -> VectorConfig:
+    """Get vector database configuration."""
+    return config.vector
 
 
 def get_logging_config() -> LoggingConfig:

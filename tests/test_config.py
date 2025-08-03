@@ -4,6 +4,7 @@ Tests for configuration system.
 
 import unittest
 import os
+import logging
 from src.config import (
     CookingAssistantConfig,
     get_config,
@@ -14,6 +15,7 @@ from src.config import (
     get_openai_config,
     get_ui_config,
     get_test_config,
+    get_vector_config,
     get_logging_config,
     setup_logging,
     get_logger,

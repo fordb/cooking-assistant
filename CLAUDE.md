@@ -63,6 +63,9 @@ At the end of each session:
 - Be sure to typecheck when you're done making a series of code changes
 - Prefer running single tests, and not the whole test suite, for performance during development
 
+# Development Pratcies
+- Split changes up into meaningful chunks. Avoid changing too many things at once to make the review and development easier to follow and review
+
 # Project Development Overview
 
 Use the overview in this section to guide your development. This describes the long-term plan for the project
