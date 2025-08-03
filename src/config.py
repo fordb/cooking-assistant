@@ -147,18 +147,6 @@ class VectorConfig:
     
     # Embedding settings
     EMBEDDING_MODEL: str = "text-embedding-ada-002"
-    CHUNK_SIZE: int = 1000  # For text chunking if needed
-    CHUNK_OVERLAP: int = 200
-    
-    # Metadata fields
-    RECIPE_METADATA_FIELDS: list = None
-    
-    def __post_init__(self):
-        if self.RECIPE_METADATA_FIELDS is None:
-            self.RECIPE_METADATA_FIELDS = [
-                "title", "difficulty", "prep_time", "cook_time", 
-                "servings", "cuisine", "dietary_restrictions"
-            ]
 
 
 @dataclass
