@@ -5,6 +5,8 @@ Handles batch processing and data migration from example recipes.
 
 from typing import List, Dict, Any, Optional
 from datetime import datetime
+import hashlib
+import json
 
 from src.models import Recipe
 from src.examples import load_example_recipes
@@ -169,19 +171,31 @@ class RecipeIngestionPipeline:
     
     def _generate_recipe_id(self, recipe: Recipe) -> str:
         """
-        Generate a consistent ID for a recipe based on its title.
+        Generate unique, deterministic ID based on recipe content.
+        
+        Uses SHA256 hash of key recipe attributes to ensure uniqueness
+        while maintaining deterministic behavior for the same recipe.
         
         Args:
             recipe: Recipe object
             
         Returns:
-            Generated recipe ID
+            Generated recipe ID (format: recipe_{hash})
         """
-        # Create ID from title (lowercase, replace spaces with underscores, remove special chars)
-        title_id = recipe.title.lower().replace(' ', '_').replace('-', '_')
-        # Keep only alphanumeric characters and underscores
-        clean_id = ''.join(c for c in title_id if c.isalnum() or c == '_')
-        return f"recipe_{clean_id}"
+        # Create recipe content for hashing
+        recipe_content = {
+            'title': recipe.title,
+            'ingredients': sorted(recipe.ingredients),  # Sort for consistency
+            'prep_time': recipe.prep_time,
+            'cook_time': recipe.cook_time
+        }
+        
+        # Generate deterministic hash
+        content_hash = hashlib.sha256(
+            json.dumps(recipe_content, sort_keys=True).encode()
+        ).hexdigest()[:12]
+        
+        return f"recipe_{content_hash}"
     
     def get_ingestion_stats(self) -> Dict[str, Any]:
         """Get current ingestion statistics."""

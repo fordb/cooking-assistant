@@ -325,7 +325,7 @@ class TestRecipeIngestionPipeline(unittest.TestCase):
         self.assertEqual(pipeline.stats['failed'], 0)
     
     def test_recipe_id_generation(self):
-        """Test recipe ID generation from titles."""
+        """Test recipe ID generation using content-based hash."""
         pipeline = RecipeIngestionPipeline()
         recipe = Recipe(
             title="Chicken & Rice Bowl",
@@ -334,7 +334,23 @@ class TestRecipeIngestionPipeline(unittest.TestCase):
         )
         
         recipe_id = pipeline._generate_recipe_id(recipe)
-        self.assertEqual(recipe_id, "recipe_chicken__rice_bowl")  # Special chars converted to underscores
+        
+        # Should start with 'recipe_' and have 12-character hash
+        self.assertTrue(recipe_id.startswith("recipe_"))
+        self.assertEqual(len(recipe_id), 19)  # 'recipe_' (7) + hash (12)
+        
+        # Should be deterministic - same recipe should generate same ID
+        recipe_id_2 = pipeline._generate_recipe_id(recipe)
+        self.assertEqual(recipe_id, recipe_id_2)
+        
+        # Different recipe should generate different ID
+        different_recipe = Recipe(
+            title="Different Recipe",
+            prep_time=15, cook_time=25, servings=4, difficulty="Beginner",
+            ingredients=["different", "ingredients"], instructions=["step1", "step2", "step3"]
+        )
+        different_id = pipeline._generate_recipe_id(different_recipe)
+        self.assertNotEqual(recipe_id, different_id)
 
 class TestIntegration(unittest.TestCase):
     """Integration tests for vector operations."""
