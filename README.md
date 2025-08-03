@@ -26,6 +26,12 @@ AI-powered recipe generation system with advanced prompt engineering, comprehens
 
 ## Core Features
 
+### 🗃️ Vector Database
+- **Chroma DB Integration**: Local vector database for semantic recipe search
+- **Recipe Embeddings**: OpenAI text-embedding-ada-002 for high-quality vectors
+- **Semantic Search**: Find similar recipes based on ingredients, cuisine, or cooking style
+- **Docker Setup**: One-command local database deployment
+
 ### 🧑‍🍳 Recipe Generation
 - **5 Template Types**: Basic, Quick (30min), Dietary restrictions, Cuisine-specific, Ingredient substitution
 - **Advanced Prompting**: Chain-of-thought reasoning with Chef Marcus persona
@@ -67,6 +73,65 @@ python -m evaluations.run_eval --compare 2025-01-01T10:00:00 2025-01-01T11:00:00
 
 # View test case summary
 python -m evaluations.run_eval --summary
+```
+
+### Vector Database Setup & Usage
+
+#### Quick Start
+```bash
+# 1. Start the vector database (Docker required)
+./start_vector_db.sh
+
+# 2. Test connection
+python test_chroma_connection.py
+```
+
+#### Manual Docker Control
+```bash
+# Start Chroma DB
+docker-compose up -d chroma
+
+# Check status
+docker-compose ps
+
+# View logs
+docker-compose logs chroma
+
+# Stop database
+docker-compose stop chroma
+```
+
+#### Interactive Python Examples
+```python
+# Connect to database
+import chromadb
+from src.config import get_vector_config
+
+config = get_vector_config()
+client = chromadb.HttpClient(host=config.HOST, port=config.PORT)
+
+# Create a collection
+collection = client.create_collection("my_recipes")
+
+# Add some recipes
+collection.add(
+    documents=["Pasta with tomatoes and garlic", "Chicken stir fry with vegetables"],
+    metadatas=[{"cuisine": "Italian"}, {"cuisine": "Asian"}],
+    ids=["recipe1", "recipe2"]
+)
+
+# Search for similar recipes
+results = collection.query(
+    query_texts=["pasta dish with tomatoes"],
+    n_results=1
+)
+print(f"Found: {results['documents'][0][0]}")
+```
+
+#### Access Web Interface
+```bash
+# Browse collections and data at:
+open http://localhost:8000
 ```
 
 ### Testing & Development
