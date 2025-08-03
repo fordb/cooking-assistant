@@ -128,10 +128,11 @@ total_recipes = store.count_recipes()
 print(f"Total recipes in database: {total_recipes}")
 ```
 
-#### Access Web Interface
+#### API Access
 ```bash
-# Browse collections and data at:
-open http://localhost:8000
+# Chroma DB API is available at:
+# http://localhost:8000/api/v2/
+# Use the Python classes above for easier interaction
 ```
 
 ### Testing & Development
