@@ -9,7 +9,7 @@ import uuid
 from typing import List
 
 from src.models import Recipe
-from src.vector_embeddings import RecipeEmbeddingGenerator, create_search_embedding, extract_recipe_keywords
+from src.vector_embeddings import RecipeEmbeddingGenerator, create_search_embedding
 from src.vector_store import VectorRecipeStore, VectorStoreError
 from src.recipe_ingestion import RecipeIngestionPipeline
 from src.exceptions import EmbeddingGenerationError
@@ -126,17 +126,6 @@ class TestRecipeEmbeddingGenerator(unittest.TestCase):
             self.assertIn('embedding', result)
             self.assertIn('metadata', result)
     
-    def test_keyword_extraction(self):
-        """Test recipe keyword extraction."""
-        keywords = extract_recipe_keywords(self.sample_recipe)
-        
-        # Should include title words, ingredients, and difficulty
-        self.assertIn("beginner", keywords)
-        self.assertIn("chicken", keywords)
-        self.assertIn("rice", keywords)
-        
-        # Should not have duplicates
-        self.assertEqual(len(keywords), len(set(keywords)))
 
 class TestVectorRecipeStore(unittest.TestCase):
     """Test vector store operations with mocked Chroma DB."""
@@ -266,6 +255,63 @@ class TestVectorRecipeStore(unittest.TestCase):
         count = store.count_recipes()
         
         self.assertEqual(count, 42)
+    
+    @patch('chromadb.HttpClient')
+    @patch('src.vector_embeddings.RecipeEmbeddingGenerator')
+    def test_update_recipe(self, mock_generator, mock_client):
+        """Test recipe update functionality."""
+        # Mock Chroma client and collection
+        mock_client_instance = Mock()
+        mock_collection = Mock()
+        mock_client.return_value = mock_client_instance
+        mock_client_instance.heartbeat.return_value = True
+        mock_client_instance.get_collection.return_value = mock_collection
+        
+        # Mock embedding generation
+        mock_gen_instance = Mock()
+        mock_generator.return_value = mock_gen_instance
+        mock_gen_instance.generate_recipe_embedding.return_value = {
+            'embedding': [0.1, 0.2, 0.3],
+            'text': 'Updated recipe text',
+            'metadata': {'title': 'Updated Recipe', 'difficulty': 'Intermediate'}
+        }
+        
+        # Create updated recipe
+        updated_recipe = Recipe(
+            title="Updated Chicken Rice",
+            prep_time=20,
+            cook_time=25,
+            total_time=45,
+            servings=6,
+            difficulty="Intermediate",
+            ingredients=["2 cups rice", "1 lb chicken", "Updated seasonings"],
+            instructions=["Updated step 1", "Updated step 2", "Updated step 3"]
+        )
+        
+        store = VectorRecipeStore()
+        result = store.update_recipe("recipe_123", updated_recipe)
+        
+        # Verify update was successful
+        self.assertTrue(result)
+        
+        # Verify update was called once with correct recipe ID
+        mock_collection.update.assert_called_once()
+        call_args = mock_collection.update.call_args
+        
+        # Verify the call included the correct ID
+        self.assertEqual(call_args.kwargs['ids'], ["recipe_123"])
+        
+        # Verify embeddings, documents, and metadatas were provided
+        self.assertIn('embeddings', call_args.kwargs)
+        self.assertIn('documents', call_args.kwargs)
+        self.assertIn('metadatas', call_args.kwargs)
+        
+        # Verify the metadata contains the updated recipe information
+        metadata = call_args.kwargs['metadatas'][0]
+        self.assertEqual(metadata['title'], 'Updated Chicken Rice')
+        self.assertEqual(metadata['difficulty'], 'Intermediate')
+        self.assertEqual(metadata['prep_time'], 20)
+        self.assertEqual(metadata['cook_time'], 25)
 
 class TestRecipeIngestionPipeline(unittest.TestCase):
     """Test recipe ingestion pipeline."""

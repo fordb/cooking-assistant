@@ -205,7 +205,6 @@ class VectorRecipeStore:
                 result = {
                     'id': results['ids'][0][i],
                     'similarity': similarity,
-                    'distance': distance,
                     'metadata': results['metadatas'][0][i],
                     'document': results['documents'][0][i]
                 }
@@ -304,32 +303,6 @@ class VectorRecipeStore:
             logger.error(f"Failed to count recipes: {e}")
             return 0
     
-    def list_recipes(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """
-        List recipes in the store.
-        
-        Args:
-            limit: Maximum number of recipes to return
-            
-        Returns:
-            List of recipe summaries
-        """
-        try:
-            results = self.collection.peek(limit=limit)
-            
-            recipes = []
-            for i in range(len(results['ids'])):
-                recipes.append({
-                    'id': results['ids'][i],
-                    'metadata': results['metadatas'][i],
-                    'document_preview': results['documents'][i][:200] + "..." if len(results['documents'][i]) > 200 else results['documents'][i]
-                })
-            
-            return recipes
-            
-        except Exception as e:
-            logger.error(f"Failed to list recipes: {e}")
-            return []
     
     def clear_collection(self) -> bool:
         """

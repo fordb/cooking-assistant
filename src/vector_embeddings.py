@@ -167,33 +167,3 @@ def create_search_embedding(query: str, api_key: Optional[str] = None) -> List[f
     generator = RecipeEmbeddingGenerator(api_key)
     return generator.generate_embedding(query)
 
-def extract_recipe_keywords(recipe: Recipe) -> List[str]:
-    """
-    Extract key terms from a recipe for enhanced metadata.
-    
-    Args:
-        recipe: Recipe to analyze
-        
-    Returns:
-        List of important keywords
-    """
-    keywords = []
-    
-    # Add title words (excluding common words)
-    title_words = recipe.title.lower().split()
-    keywords.extend([word for word in title_words if len(word) > 3])
-    
-    # Extract key ingredients (first word of each ingredient)
-    for ingredient in recipe.ingredients:
-        # Get the main ingredient (usually the first significant word)
-        words = ingredient.lower().split()
-        for word in words:
-            if len(word) > 3 and not any(char.isdigit() for char in word):
-                keywords.append(word)
-                break
-    
-    # Add difficulty as keyword
-    keywords.append(recipe.difficulty.lower())
-    
-    # Remove duplicates and return
-    return list(set(keywords))

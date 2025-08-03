@@ -11,7 +11,6 @@ from src.examples import load_example_recipes
 from src.vector_store import VectorRecipeStore, VectorStoreError
 from src.exceptions import EmbeddingGenerationError
 from src.config import get_logger
-from src.utils import check_openai_api_key
 
 logger = get_logger(__name__)
 
@@ -201,15 +200,11 @@ class RecipeIngestionPipeline:
             # Count recipes in database
             recipe_count = self.vector_store.count_recipes()
             
-            # List some recipes
-            sample_recipes = self.vector_store.list_recipes(limit=5)
-            
             # Try a test search
             test_results = self.vector_store.search_recipes("chicken", n_results=3)
             
             verification = {
                 'total_recipes': recipe_count,
-                'sample_recipes': [r['metadata']['title'] for r in sample_recipes],
                 'test_search_results': len(test_results),
                 'status': 'success' if recipe_count > 0 else 'warning'
             }
