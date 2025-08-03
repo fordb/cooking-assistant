@@ -3,7 +3,6 @@ Recipe ingestion pipeline for loading recipes into vector database.
 Handles batch processing and data migration from example recipes.
 """
 
-import os
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 
@@ -12,6 +11,7 @@ from src.examples import load_example_recipes
 from src.vector_store import VectorRecipeStore, VectorStoreError
 from src.exceptions import EmbeddingGenerationError
 from src.config import get_logger
+from src.utils import check_openai_api_key
 
 logger = get_logger(__name__)
 
@@ -244,22 +244,3 @@ def run_example_ingestion(api_key: Optional[str] = None, clear_existing: bool = 
         result['verification'] = verification
     
     return result
-
-def check_api_key() -> bool:
-    """
-    Check if OpenAI API key is available.
-    
-    Returns:
-        True if API key is found
-    """
-    import openai
-    
-    # Check if API key is set in environment or openai module
-    api_key = getattr(openai, 'api_key', None) or os.getenv('OPENAI_API_KEY')
-    
-    if not api_key:
-        logger.warning("No OpenAI API key found. Set OPENAI_API_KEY environment variable.")
-        return False
-    
-    logger.info("OpenAI API key found")
-    return True
