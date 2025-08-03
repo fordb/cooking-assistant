@@ -10,6 +10,7 @@ from datetime import datetime
 from src.models import Recipe
 from src.examples import load_example_recipes
 from src.vector_store import VectorRecipeStore, VectorStoreError
+from src.exceptions import EmbeddingGenerationError
 from src.config import get_logger
 
 logger = get_logger(__name__)
@@ -160,7 +161,7 @@ class RecipeIngestionPipeline:
                     self.stats['successful'] += 1
                     logger.debug(f"Successfully ingested recipe {i+1}/{len(recipes)}: {recipe.title}")
                     
-                except Exception as recipe_error:
+                except (VectorStoreError, EmbeddingGenerationError) as recipe_error:
                     self.stats['failed'] += 1
                     logger.error(f"Failed to ingest recipe '{recipe.title}': {recipe_error}")
                     continue

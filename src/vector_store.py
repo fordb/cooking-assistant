@@ -70,8 +70,8 @@ class VectorRecipeStore:
                 # Try to get existing collection
                 self._collection = self.client.get_collection(self.collection_name)
                 logger.debug(f"Connected to existing collection: {self.collection_name}")
-            except:
-                # Create new collection if it doesn't exist
+            except ValueError:
+                # Create new collection if it doesn't exist (Chroma raises ValueError for missing collections)
                 self._collection = self.client.create_collection(
                     name=self.collection_name,
                     metadata={
