@@ -101,31 +101,31 @@ docker-compose logs chroma
 docker-compose stop chroma
 ```
 
-#### Interactive Python Examples
+#### Using the Vector Database in Python
 ```python
-# Connect to database
-import chromadb
-from src.config import get_vector_config
+# Import the high-level interfaces
+from src.vector_store import VectorRecipeStore
+from src.recipe_ingestion import run_example_ingestion
 
-config = get_vector_config()
-client = chromadb.HttpClient(host=config.HOST, port=config.PORT)
+# Set your OpenAI API key
+api_key = "your-openai-api-key"
 
-# Create a collection
-collection = client.create_collection("my_recipes")
+# Ingest example recipes (one time setup)
+result = run_example_ingestion(api_key, clear_existing=True)
+print(f"Ingested {result['stats']['successful']} recipes")
 
-# Add some recipes
-collection.add(
-    documents=["Pasta with tomatoes and garlic", "Chicken stir fry with vegetables"],
-    metadatas=[{"cuisine": "Italian"}, {"cuisine": "Asian"}],
-    ids=["recipe1", "recipe2"]
-)
+# Search for recipes
+store = VectorRecipeStore(api_key)
+results = store.search_recipes("chicken and rice", n_results=3)
 
-# Search for similar recipes
-results = collection.query(
-    query_texts=["pasta dish with tomatoes"],
-    n_results=1
-)
-print(f"Found: {results['documents'][0][0]}")
+for result in results:
+    metadata = result['metadata']
+    print(f"{metadata['title']} (similarity: {result['similarity']:.3f})")
+    print(f"  Time: {metadata['total_time']}min, Serves: {metadata['servings']}")
+
+# Get recipe count
+total_recipes = store.count_recipes()
+print(f"Total recipes in database: {total_recipes}")
 ```
 
 #### Access Web Interface

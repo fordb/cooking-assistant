@@ -1,0 +1,198 @@
+"""
+Recipe embedding generation using OpenAI's text-embedding-ada-002 model.
+Handles text preparation and embedding creation for vector search.
+"""
+
+import openai
+from typing import List, Dict, Any, Optional
+from src.models import Recipe
+from src.config import get_vector_config, get_openai_config, get_logger
+
+logger = get_logger(__name__)
+
+class RecipeEmbeddingGenerator:
+    """Generates embeddings for recipes using OpenAI's embedding model."""
+    
+    def __init__(self, api_key: Optional[str] = None):
+        """
+        Initialize the embedding generator.
+        
+        Args:
+            api_key: OpenAI API key. If None, will use environment variable.
+        """
+        self.vector_config = get_vector_config()
+        self.openai_config = get_openai_config()
+        
+        if api_key:
+            openai.api_key = api_key
+        
+        logger.info(f"Initialized RecipeEmbeddingGenerator with model: {self.vector_config.EMBEDDING_MODEL}")
+    
+    def prepare_recipe_text(self, recipe: Recipe) -> str:
+        """
+        Convert a recipe into optimized text for embedding generation.
+        
+        Args:
+            recipe: Recipe object to convert
+            
+        Returns:
+            Formatted text string optimized for semantic search
+        """
+        # Create comprehensive text that captures the recipe's essence
+        components = [
+            f"Recipe: {recipe.title}",
+            f"Difficulty: {recipe.difficulty}",
+            f"Cooking time: {recipe.prep_time} minutes prep, {recipe.cook_time} minutes cook",
+            f"Serves {recipe.servings} people",
+            f"Ingredients: {' | '.join(recipe.ingredients)}",
+            f"Instructions: {' '.join(recipe.instructions)}"
+        ]
+        
+        full_text = "\n".join(components)
+        
+        # Log text length for monitoring
+        logger.debug(f"Prepared text for '{recipe.title}': {len(full_text)} characters")
+        
+        return full_text
+    
+    def generate_embedding(self, text: str) -> List[float]:
+        """
+        Generate embedding for a text string using OpenAI API.
+        
+        Args:
+            text: Text to embed
+            
+        Returns:
+            List of embedding values
+            
+        Raises:
+            Exception: If OpenAI API call fails
+        """
+        try:
+            logger.debug(f"Generating embedding for text of length {len(text)}")
+            
+            response = openai.embeddings.create(
+                model=self.vector_config.EMBEDDING_MODEL,
+                input=text
+            )
+            
+            embedding = response.data[0].embedding
+            
+            logger.debug(f"Generated embedding with dimension {len(embedding)}")
+            return embedding
+            
+        except Exception as e:
+            logger.error(f"Failed to generate embedding: {e}")
+            raise Exception(f"OpenAI embedding generation failed: {e}")
+    
+    def generate_recipe_embedding(self, recipe: Recipe) -> Dict[str, Any]:
+        """
+        Generate embedding and metadata for a recipe.
+        
+        Args:
+            recipe: Recipe to embed
+            
+        Returns:
+            Dictionary with embedding, text, and metadata
+        """
+        logger.info(f"Generating embedding for recipe: {recipe.title}")
+        
+        # Prepare optimized text
+        recipe_text = self.prepare_recipe_text(recipe)
+        
+        # Generate embedding
+        embedding = self.generate_embedding(recipe_text)
+        
+        # Prepare metadata for vector database
+        metadata = {
+            "title": recipe.title,
+            "difficulty": recipe.difficulty,
+            "prep_time": recipe.prep_time,
+            "cook_time": recipe.cook_time,
+            "total_time": recipe.total_time,
+            "servings": recipe.servings,
+            "ingredient_count": len(recipe.ingredients),
+            "instruction_count": len(recipe.instructions)
+        }
+        
+        result = {
+            "embedding": embedding,
+            "text": recipe_text,
+            "metadata": metadata,
+            "recipe": recipe
+        }
+        
+        logger.info(f"Successfully generated embedding for '{recipe.title}'")
+        return result
+    
+    def generate_batch_embeddings(self, recipes: List[Recipe]) -> List[Dict[str, Any]]:
+        """
+        Generate embeddings for multiple recipes.
+        
+        Args:
+            recipes: List of recipes to embed
+            
+        Returns:
+            List of embedding dictionaries
+        """
+        logger.info(f"Generating embeddings for {len(recipes)} recipes")
+        
+        results = []
+        for i, recipe in enumerate(recipes, 1):
+            try:
+                result = self.generate_recipe_embedding(recipe)
+                results.append(result)
+                logger.debug(f"Completed {i}/{len(recipes)}: {recipe.title}")
+                
+            except Exception as e:
+                logger.error(f"Failed to generate embedding for '{recipe.title}': {e}")
+                # Continue with other recipes instead of failing completely
+                continue
+        
+        logger.info(f"Successfully generated {len(results)} embeddings out of {len(recipes)} recipes")
+        return results
+
+def create_search_embedding(query: str, api_key: Optional[str] = None) -> List[float]:
+    """
+    Generate embedding for a search query.
+    
+    Args:
+        query: Search query text
+        api_key: OpenAI API key
+        
+    Returns:
+        Embedding vector for search
+    """
+    generator = RecipeEmbeddingGenerator(api_key)
+    return generator.generate_embedding(query)
+
+def extract_recipe_keywords(recipe: Recipe) -> List[str]:
+    """
+    Extract key terms from a recipe for enhanced metadata.
+    
+    Args:
+        recipe: Recipe to analyze
+        
+    Returns:
+        List of important keywords
+    """
+    keywords = []
+    
+    # Add title words (excluding common words)
+    title_words = recipe.title.lower().split()
+    keywords.extend([word for word in title_words if len(word) > 3])
+    
+    # Extract key ingredients (first word of each ingredient)
+    for ingredient in recipe.ingredients:
+        # Get the main ingredient (usually the first significant word)
+        words = ingredient.lower().split()
+        for word in words:
+            if len(word) > 3 and not any(char.isdigit() for char in word):
+                keywords.append(word)
+                break
+    
+    # Add difficulty as keyword
+    keywords.append(recipe.difficulty.lower())
+    
+    # Remove duplicates and return
+    return list(set(keywords))
