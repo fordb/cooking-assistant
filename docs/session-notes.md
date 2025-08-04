@@ -1168,6 +1168,7 @@ The codebase is now cleaner and more maintainable with all deprecated functional
 - [24:00] ✅ Fixed recipe reconstruction from stored metadata to handle different data formats
 - [24:15] ✅ All 108 tests passing including 11 new sparse search tests
 - [24:30] ✅ Sparse search fully operational with excellent keyword matching results
+- [24:45] ✅ Fixed hardcoded ingredient padding issue in BM25 index building process
 
 ### Session Summary
 **Phase 1A: Sparse Search Implementation - COMPLETED ✅**
@@ -1216,5 +1217,146 @@ The codebase is now cleaner and more maintainable with all deprecated functional
 **Ready for Phase 1B**: Hybrid search implementation combining dense + sparse results with configurable weighting and Reciprocal Rank Fusion (RRF).
 
 **Session Complete: 2025-08-04 Phase 1A - Sparse Search Implementation**
+
+---
+
+## Session 2025-08-04 - Vector Database Foundation - Phase 1B: Hybrid Search Implementation
+
+### Goals
+- Implement hybrid search combining sparse (BM25) and dense (semantic) search
+- Add Reciprocal Rank Fusion (RRF) algorithm for result combination
+- Create configurable weighting system for search method balance
+- Maintain comprehensive test coverage for hybrid functionality
+- Demonstrate hybrid search advantages with comparison demos
+
+### Progress
+- [25:00] ✅ Added hybrid search configuration parameters to VectorConfig
+  - HYBRID_SPARSE_WEIGHT: 0.4, HYBRID_DENSE_WEIGHT: 0.6
+  - RRF_K: 60, HYBRID_ENABLED: True
+- [25:30] ✅ Implemented Reciprocal Rank Fusion (RRF) algorithm in _combine_search_results()
+  - RRF scoring: score = weight / (k + rank) for each search method
+  - Handles overlapping results between sparse and dense searches  
+  - Combines scores with configurable weights
+- [26:00] ✅ Added search_recipes_hybrid() method with comprehensive functionality
+  - Runs both sparse and dense searches in parallel
+  - Applies RRF to combine and rank results
+  - Returns unified results with combined scores and transparency
+  - Includes fallback to dense search on errors
+- [26:30] ✅ Created comprehensive test suite (tests/test_hybrid_search.py) with 9 tests
+  - RRF algorithm implementation testing
+  - Overlapping results handling
+  - Edge cases: no sparse results, no dense results, no results
+  - Custom weight configurations
+  - Result ordering verification
+  - Error fallback behavior
+- [27:00] ✅ All 117 tests passing (108 existing + 9 new hybrid search tests)
+- [27:30] ✅ Created demo script showcasing hybrid search advantages
+  - Comparative analysis of sparse vs dense vs hybrid results
+  - Weight configuration effects demonstration
+  - Real-world query examples with result analysis
+
+### Session Summary
+**Phase 1B: Hybrid Search Implementation - COMPLETED ✅**
+
+**Accomplishments:**
+- **Complete Hybrid Search System**: Successfully implemented RRF-based hybrid search combining BM25 and semantic approaches
+  - Reciprocal Rank Fusion algorithm with configurable weights (default: 40% sparse, 60% dense)
+  - Transparent result scoring showing sparse, dense, and combined RRF scores
+  - Robust handling of overlapping and non-overlapping results between search methods
+- **Comprehensive Configuration**: Added full configuration support for hybrid search tuning
+  - Configurable sparse/dense weights for different use case optimization
+  - RRF K parameter for ranking sensitivity adjustment
+  - Enable/disable toggle for hybrid search functionality
+- **Production-Ready Implementation**: Built with proper error handling and fallback mechanisms
+  - Falls back to dense search if hybrid search encounters errors
+  - Handles edge cases: empty results from either search method
+  - Maintains backward compatibility with existing search methods
+- **Extensive Testing**: 9 new comprehensive tests achieving 100% pass rate
+  - RRF algorithm correctness verification with known inputs/outputs
+  - Edge case handling for all result combination scenarios
+  - Configuration flexibility testing with custom weights
+  - Error recovery and fallback behavior verification
+
+**Technical Implementation:**
+- **Configuration**: Extended VectorConfig with HYBRID_SPARSE_WEIGHT, HYBRID_DENSE_WEIGHT, RRF_K, HYBRID_ENABLED
+- **Core Algorithm**: _combine_search_results() implementing RRF with configurable weighting
+- **Main Method**: search_recipes_hybrid() providing full hybrid search functionality
+- **Result Format**: Enhanced with combined_score, sparse_score, dense_score, rrf_sparse, rrf_dense fields
+- **Demo Script**: scripts/vector/demo_hybrid_search.py showcasing advantages and weight effects
+
+**Performance Results:**
+- Excellent hybrid combination for exact matches: "chicken fried rice" leveraged both methods
+- Graceful fallback for conceptual queries: "comfort food for cold weather" used semantic search
+- Transparent scoring allows understanding of result ranking decisions
+- Weight configuration affects ranking: sparse-heavy vs dense-heavy produces different orderings
+
+**Quality Metrics:**
+- 117 total tests passing (108 existing + 9 new hybrid search tests)
+- Complete backward compatibility with existing search functionality
+- Comprehensive error handling and logging throughout implementation
+- Demo script shows clear advantages of hybrid approach over individual methods
+
+**Impact:**
+This completes Phase 1B of the vector database foundation, providing a sophisticated hybrid search capability that combines the precision of keyword matching with the intelligence of semantic understanding. The RRF-based approach ensures robust ranking while configurable weights allow optimization for different use cases.
+
+**Ready for Phase 1C**: Advanced filtering system with metadata filters, range queries, and enhanced search capabilities.
+
+**Session Complete: 2025-08-04 Phase 1B - Hybrid Search Implementation**
+
+---
+
+## Session 2025-08-04 - Exception Handling Cleanup
+
+### Goals
+- Replace generic Exception handling with specific exceptions
+- Improve error handling and debugging capabilities
+- Maintain robust fallback behavior for search operations
+
+### Progress
+- [28:00] ✅ Added specific vector database exceptions to common/exceptions.py
+  - VectorDatabaseError: Base vector database operations
+  - VectorSearchError: Search operation failures  
+  - BM25IndexError: BM25 index building failures
+- [28:30] ✅ Replaced generic Exception handlers in VectorRecipeStore
+  - Database connection errors → VectorDatabaseError
+  - Search operation errors → VectorSearchError  
+  - BM25 index building errors → BM25IndexError
+- [29:00] ✅ Improved hybrid search resilience
+  - Individual try/catch for sparse and dense search methods
+  - Graceful fallback when one method fails completely
+  - Multiple fallback levels: hybrid → individual methods → empty results
+- [29:30] ✅ Enhanced exception chain preservation with `from e` syntax
+- [30:00] ✅ All 117 tests passing with improved exception handling
+
+### Session Summary
+**Exception Handling Cleanup - COMPLETED ✅**
+
+**Accomplishments:**
+- **Specific Exception Types**: Replaced 10+ generic Exception handlers with specific exceptions
+  - VectorDatabaseError for CRUD operations, connection issues
+  - VectorSearchError for search-specific failures
+  - BM25IndexError for sparse search index problems
+- **Robust Fallback Strategy**: Enhanced hybrid search with multi-level fallback
+  - Individual method failure handling within hybrid search
+  - Graceful degradation: hybrid → sparse/dense → empty results
+  - Prevents cascade failures when subsystems have issues
+- **Better Debugging**: Exception chaining with `from e` preserves original error context
+- **Maintained Compatibility**: All existing functionality and tests continue to work
+
+**Technical Impact:**
+- More precise error reporting for debugging and monitoring
+- Improved system resilience with graceful degradation
+- Better separation of concerns between different error types
+- Enhanced logging with appropriate log levels for different failure modes
+
+**Quality Assurance:**
+- 117 tests passing (no regressions introduced)
+- Comprehensive exception handling coverage
+- Maintained backward compatibility
+- Robust search operation fallback behavior
+
+This cleanup improves the production readiness of the vector database system by providing better error handling, more informative debugging, and robust fallback behavior for search operations.
+
+**Session Complete: 2025-08-04 Exception Handling Cleanup**
 
 ## Archived Sessions

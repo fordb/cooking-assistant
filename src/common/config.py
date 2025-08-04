@@ -155,6 +155,12 @@ class VectorConfig:
     MIN_KEYWORD_LENGTH: int = 2  # Minimum length for keywords
     STOPWORDS_ENABLED: bool = True  # Whether to filter common stopwords
     
+    # Hybrid search settings
+    HYBRID_SPARSE_WEIGHT: float = 0.4  # Weight for sparse (BM25) results
+    HYBRID_DENSE_WEIGHT: float = 0.6  # Weight for dense (semantic) results
+    RRF_K: int = 60  # Reciprocal Rank Fusion ranking constant
+    HYBRID_ENABLED: bool = True  # Whether hybrid search is enabled
+    
     # Embedding settings
     EMBEDDING_MODEL: str = "text-embedding-ada-002"
 
