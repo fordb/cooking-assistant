@@ -8,10 +8,10 @@ from typing import List, Dict, Any, Optional, Tuple
 import uuid
 from datetime import datetime
 
-from src.models import Recipe
-from src.config import get_vector_config, get_logger
-from src.vector_embeddings import RecipeEmbeddingGenerator, create_search_embedding
-from src.exceptions import CookingAssistantError
+from src.recipes.models import Recipe
+from src.common.config import get_vector_config, get_logger
+from .embeddings import RecipeEmbeddingGenerator, create_search_embedding
+from src.common.exceptions import CookingAssistantError
 
 logger = get_logger(__name__)
 

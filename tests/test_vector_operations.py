@@ -8,11 +8,11 @@ from unittest.mock import Mock, patch, MagicMock
 import uuid
 from typing import List
 
-from src.models import Recipe
-from src.vector_embeddings import RecipeEmbeddingGenerator, create_search_embedding
-from src.vector_store import VectorRecipeStore, VectorStoreError
-from src.recipe_ingestion import RecipeIngestionPipeline
-from src.exceptions import EmbeddingGenerationError
+from src.recipes.models import Recipe
+from src.vector.embeddings import RecipeEmbeddingGenerator, create_search_embedding
+from src.vector.store import VectorRecipeStore, VectorStoreError
+from src.vector.ingestion import RecipeIngestionPipeline
+from src.common.exceptions import EmbeddingGenerationError
 
 class TestRecipeEmbeddingGenerator(unittest.TestCase):
     """Test recipe embedding generation functionality."""
@@ -48,7 +48,7 @@ class TestRecipeEmbeddingGenerator(unittest.TestCase):
         self.assertIn("Ingredients:", text)
         self.assertIn("Instructions:", text)
     
-    @patch('src.vector_embeddings.OpenAI')
+    @patch('src.vector.embeddings.OpenAI')
     def test_embedding_generation(self, mock_openai_class):
         """Test OpenAI embedding generation."""
         # Mock OpenAI client and response
@@ -66,7 +66,7 @@ class TestRecipeEmbeddingGenerator(unittest.TestCase):
         self.assertEqual(embedding, [0.1, 0.2, 0.3, 0.4])
         mock_client.embeddings.create.assert_called_once()
     
-    @patch('src.vector_embeddings.OpenAI')
+    @patch('src.vector.embeddings.OpenAI')
     def test_recipe_embedding_generation(self, mock_openai_class):
         """Test complete recipe embedding generation."""
         # Mock OpenAI client and response
@@ -101,7 +101,7 @@ class TestRecipeEmbeddingGenerator(unittest.TestCase):
         self.assertEqual(metadata['ingredient_count'], 3)
         self.assertEqual(metadata['instruction_count'], 3)
     
-    @patch('src.vector_embeddings.OpenAI')
+    @patch('src.vector.embeddings.OpenAI')
     def test_batch_embedding_generation(self, mock_openai_class):
         """Test batch embedding generation."""
         # Mock OpenAI client and response
@@ -152,7 +152,7 @@ class TestVectorRecipeStore(unittest.TestCase):
         )
         
     @patch('chromadb.HttpClient')
-    @patch('src.vector_embeddings.RecipeEmbeddingGenerator')
+    @patch('src.vector.embeddings.RecipeEmbeddingGenerator')
     def test_store_initialization(self, mock_generator, mock_client):
         """Test vector store initialization."""
         mock_client_instance = Mock()
@@ -168,7 +168,7 @@ class TestVectorRecipeStore(unittest.TestCase):
         mock_client_instance.heartbeat.assert_called_once()
     
     @patch('chromadb.HttpClient')
-    @patch('src.vector_embeddings.RecipeEmbeddingGenerator')
+    @patch('src.vector.embeddings.RecipeEmbeddingGenerator')
     def test_add_single_recipe(self, mock_generator, mock_client):
         """Test adding a single recipe to vector store."""
         # Mock Chroma client
@@ -194,7 +194,7 @@ class TestVectorRecipeStore(unittest.TestCase):
         mock_collection.add.assert_called_once()
     
     @patch('chromadb.HttpClient')
-    @patch('src.vector_embeddings.RecipeEmbeddingGenerator')
+    @patch('src.vector.embeddings.RecipeEmbeddingGenerator')
     def test_search_recipes(self, mock_generator, mock_client):
         """Test recipe search functionality."""
         # Mock Chroma client and collection
@@ -216,7 +216,7 @@ class TestVectorRecipeStore(unittest.TestCase):
         mock_gen_instance = Mock()
         mock_generator.return_value = mock_gen_instance
         
-        with patch('src.vector_store.create_search_embedding', return_value=[0.1] * 1536):
+        with patch('src.vector.store.create_search_embedding', return_value=[0.1] * 1536):
             store = VectorRecipeStore()
             results = store.search_recipes("test query")
         
@@ -226,7 +226,7 @@ class TestVectorRecipeStore(unittest.TestCase):
         self.assertEqual(results[1]['similarity'], 0.7)  # 1 - 0.3
     
     @patch('chromadb.HttpClient')
-    @patch('src.vector_embeddings.RecipeEmbeddingGenerator')
+    @patch('src.vector.embeddings.RecipeEmbeddingGenerator')
     def test_get_recipe_by_id(self, mock_generator, mock_client):
         """Test retrieving recipe by ID."""
         mock_client_instance = Mock()
@@ -250,7 +250,7 @@ class TestVectorRecipeStore(unittest.TestCase):
         self.assertEqual(result['metadata']['title'], 'Test Recipe')
     
     @patch('chromadb.HttpClient')
-    @patch('src.vector_embeddings.RecipeEmbeddingGenerator')
+    @patch('src.vector.embeddings.RecipeEmbeddingGenerator')
     def test_count_recipes(self, mock_generator, mock_client):
         """Test counting recipes in store."""
         mock_client_instance = Mock()
@@ -266,7 +266,7 @@ class TestVectorRecipeStore(unittest.TestCase):
         self.assertEqual(count, 42)
     
     @patch('chromadb.HttpClient')
-    @patch('src.vector_embeddings.RecipeEmbeddingGenerator')
+    @patch('src.vector.embeddings.RecipeEmbeddingGenerator')
     def test_update_recipe(self, mock_generator, mock_client):
         """Test recipe update functionality."""
         # Mock Chroma client and collection
@@ -364,7 +364,7 @@ class TestRecipeIngestionPipeline(unittest.TestCase):
 class TestIntegration(unittest.TestCase):
     """Integration tests for vector operations."""
     
-    @patch('src.vector_embeddings.OpenAI')
+    @patch('src.vector.embeddings.OpenAI')
     @patch('chromadb.HttpClient')
     def test_end_to_end_workflow(self, mock_client, mock_openai_class):
         """Test complete workflow from embedding to search."""
@@ -402,7 +402,7 @@ class TestIntegration(unittest.TestCase):
         store = VectorRecipeStore()
         recipe_id = store.add_recipe(recipe)
         
-        with patch('src.vector_store.create_search_embedding', return_value=[0.1] * 1536):
+        with patch('src.vector.store.create_search_embedding', return_value=[0.1] * 1536):
             results = store.search_recipes("test query")
         
         self.assertIsNotNone(recipe_id)

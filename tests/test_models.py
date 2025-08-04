@@ -1,6 +1,6 @@
 import unittest
-from src.models import Recipe
-from src.exceptions import RecipeValidationError
+from src.recipes.models import Recipe
+from src.common.exceptions import RecipeValidationError
 
 
 class TestRecipe(unittest.TestCase):

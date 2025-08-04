@@ -3,10 +3,10 @@ Recipe generation module - backward compatibility wrapper.
 Routes recipe generation through the meta-prompting system.
 """
 
-from src.models import Recipe
-from src.exceptions import RecipeGenerationError
-from src.meta_prompting import process_cooking_query
-from src.config import get_recipe_config
+from .models import Recipe
+from src.common.exceptions import RecipeGenerationError
+from src.prompting.meta_prompting import process_cooking_query
+from src.common.config import get_recipe_config
 import json
 
 def generate_recipe(ingredients: str, template_type: str = "basic", **kwargs) -> Recipe:

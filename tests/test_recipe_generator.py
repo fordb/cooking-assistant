@@ -1,11 +1,11 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from src.recipe_generator import generate_recipe
-from src.models import Recipe
+from src.recipes.generator import generate_recipe
+from src.recipes.models import Recipe
 
 
 class TestRecipeGenerator(unittest.TestCase):
-    @patch('src.recipe_generator.process_cooking_query')
+    @patch('src.recipes.generator.process_cooking_query')
     def test_generate_basic_recipe_success(self, mock_process):
         """Test successful recipe generation"""
         # Mock the process_cooking_query response with JSON
@@ -45,7 +45,7 @@ class TestRecipeGenerator(unittest.TestCase):
         # TODO: Add input validation to generate_basic_recipe function
         pass
 
-    @patch('src.recipe_generator.process_cooking_query')
+    @patch('src.recipes.generator.process_cooking_query')
     def test_generate_basic_recipe_invalid_json_response(self, mock_process):
         """Test handling of invalid JSON response"""
         # Mock response with invalid JSON - should create fallback recipe

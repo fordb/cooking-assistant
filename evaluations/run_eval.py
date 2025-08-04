@@ -14,7 +14,7 @@ import random
 from evaluations.evaluator import RecipeEvaluator
 from evaluations.test_cases import get_test_cases, get_test_case_summary
 from evaluations.results import EvaluationResults
-from src.config import get_logger
+from src.common.config import get_logger
 
 logger = get_logger(__name__)
 

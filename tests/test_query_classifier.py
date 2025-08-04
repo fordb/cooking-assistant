@@ -3,7 +3,7 @@ Tests for query classification system.
 """
 
 import unittest
-from src.query_classifier import QueryClassifier, QueryComplexity, classify_cooking_query
+from src.core.query_classifier import QueryClassifier, QueryComplexity, classify_cooking_query
 
 class TestQueryClassifier(unittest.TestCase):
     """Test the query complexity classification system."""

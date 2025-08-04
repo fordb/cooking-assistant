@@ -3,9 +3,9 @@ Intelligent Cooking Assistant
 Conversational interface for intelligent cooking assistance.
 """
 
-from src.core import CookingAssistant
-from src.exceptions import CookingAssistantError
-from src.config import get_ui_config, setup_logging, get_logger
+from src.core.cooking_assistant import CookingAssistant
+from src.common import CookingAssistantError, get_config, get_logger
+from src.common.config import get_ui_config, setup_logging
 
 # Setup logging
 setup_logging()

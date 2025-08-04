@@ -7,7 +7,7 @@ Run this after starting the Chroma Docker container.
 import chromadb
 import sys
 import time
-from src.config import get_vector_config
+from src.common.config import get_vector_config
 
 def test_chroma_connection():
     """Test basic Chroma DB connection and operations."""

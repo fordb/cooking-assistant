@@ -3,8 +3,8 @@
 Test script for semantic search queries on the populated vector database.
 """
 
-from src.vector_store import VectorRecipeStore
-from src.config import get_config
+from src.vector.store import VectorRecipeStore
+from src.common.config import get_config
 
 def test_semantic_searches():
     """Test various semantic search queries."""

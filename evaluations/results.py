@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import List, Dict, Any
 from statistics import mean, stdev
 from evaluations.evaluator import RecipeEvaluation
-from src.config import get_logger
+from src.common.config import get_logger
 
 logger = get_logger(__name__)
 

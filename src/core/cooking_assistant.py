@@ -4,10 +4,8 @@ Provides unified access to all cooking assistant functionality.
 """
 
 from typing import Dict, Any, Optional
-from src.meta_prompting import MetaPromptingSystem, process_cooking_query
-from src.conversation_memory import ConversationMemory
-from src.query_classifier import classify_cooking_query, QueryComplexity
-from src.exceptions import CookingAssistantError
+from .conversation_memory import ConversationMemory
+from .query_classifier import classify_cooking_query
 
 class CookingAssistant:
     """
@@ -18,7 +16,7 @@ class CookingAssistant:
     def __init__(self):
         """Initialize the cooking assistant with memory and meta-prompting."""
         self.memory = ConversationMemory()
-        self.meta_prompting = MetaPromptingSystem()
+        self._meta_prompting = None
     
     def ask(self, query: str) -> Dict[str, Any]:
         """
@@ -31,6 +29,9 @@ class CookingAssistant:
             Dictionary with response, strategy, and metadata
         """
         try:
+            # Lazy import to avoid circular dependencies
+            from src.prompting import process_cooking_query
+            
             # Get context from conversation memory
             context = self.memory.get_context_for_query(query)
             

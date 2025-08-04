@@ -6,7 +6,7 @@ Maintains session-level context and user preferences during conversations.
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from dataclasses import dataclass, field
-from src.config import get_memory_config, get_logger
+from src.common.config import get_memory_config, get_logger
 import re
 
 logger = get_logger(__name__)

@@ -1,6 +1,6 @@
 import unittest
 import json
-from src.examples import load_example_recipes, get_few_shot_examples
+from src.prompting.examples import load_example_recipes, get_few_shot_examples
 
 
 class TestExamples(unittest.TestCase):

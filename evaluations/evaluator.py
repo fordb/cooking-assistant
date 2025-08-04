@@ -4,13 +4,13 @@ Core evaluation logic for recipe generation quality assessment.
 
 import time
 import json
+import os
 from typing import Dict, List, Any, Optional
 from openai import OpenAI
 from dataclasses import dataclass
-from config import OPENAI_API_KEY
-from src.models import Recipe
-from src.recipe_generator import generate_recipe
-from src.config import get_logger
+from src.recipes.models import Recipe
+from src.recipes.generator import generate_recipe
+from src.common.config import get_logger
 
 logger = get_logger(__name__)
 
@@ -45,7 +45,8 @@ class RecipeEvaluator:
     """Main recipe evaluation class using LLM-as-a-judge."""
     
     def __init__(self, judge_model: str = "gpt-3.5-turbo"):
-        self.client = OpenAI(api_key=OPENAI_API_KEY)
+        api_key = os.getenv('OPENAI_API_KEY')
+        self.client = OpenAI(api_key=api_key)
         self.judge_model = judge_model
         self.evaluation_prompt = self._create_evaluation_prompt()
     

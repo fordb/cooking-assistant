@@ -4,7 +4,7 @@ Shared utilities that don't belong to specific modules.
 """
 
 import os
-from src.config import get_logger
+from .config import get_logger
 
 logger = get_logger(__name__)
 

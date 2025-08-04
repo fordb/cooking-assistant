@@ -1,5 +1,5 @@
 import unittest
-from src.prompts import (
+from src.prompting.prompts import (
     create_basic_recipe_prompt,
     create_quick_meal_prompt,
     create_dietary_prompt,
@@ -8,7 +8,7 @@ from src.prompts import (
     select_prompt_template,
     TEMPLATE_TYPES
 )
-from src.exceptions import TemplateError
+from src.common.exceptions import TemplateError
 
 
 class TestPrompts(unittest.TestCase):
