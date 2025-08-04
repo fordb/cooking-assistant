@@ -48,29 +48,35 @@ class TestRecipeEmbeddingGenerator(unittest.TestCase):
         self.assertIn("Ingredients:", text)
         self.assertIn("Instructions:", text)
     
-    @patch('openai.embeddings.create')
-    def test_embedding_generation(self, mock_create):
+    @patch('src.vector_embeddings.OpenAI')
+    def test_embedding_generation(self, mock_openai_class):
         """Test OpenAI embedding generation."""
-        # Mock OpenAI response
+        # Mock OpenAI client and response
+        mock_client = Mock()
+        mock_openai_class.return_value = mock_client
+        
         mock_response = Mock()
         mock_response.data = [Mock()]
         mock_response.data[0].embedding = [0.1, 0.2, 0.3, 0.4]
-        mock_create.return_value = mock_response
+        mock_client.embeddings.create.return_value = mock_response
         
         generator = RecipeEmbeddingGenerator()
         embedding = generator.generate_embedding("test text")
         
         self.assertEqual(embedding, [0.1, 0.2, 0.3, 0.4])
-        mock_create.assert_called_once()
+        mock_client.embeddings.create.assert_called_once()
     
-    @patch('openai.embeddings.create')
-    def test_recipe_embedding_generation(self, mock_create):
+    @patch('src.vector_embeddings.OpenAI')
+    def test_recipe_embedding_generation(self, mock_openai_class):
         """Test complete recipe embedding generation."""
-        # Mock OpenAI response
+        # Mock OpenAI client and response
+        mock_client = Mock()
+        mock_openai_class.return_value = mock_client
+        
         mock_response = Mock()
         mock_response.data = [Mock()]
         mock_response.data[0].embedding = [0.1] * 1536  # Standard embedding dimension
-        mock_create.return_value = mock_response
+        mock_client.embeddings.create.return_value = mock_response
         
         generator = RecipeEmbeddingGenerator()
         result = generator.generate_recipe_embedding(self.sample_recipe)
@@ -95,14 +101,17 @@ class TestRecipeEmbeddingGenerator(unittest.TestCase):
         self.assertEqual(metadata['ingredient_count'], 3)
         self.assertEqual(metadata['instruction_count'], 3)
     
-    @patch('openai.embeddings.create')
-    def test_batch_embedding_generation(self, mock_create):
+    @patch('src.vector_embeddings.OpenAI')
+    def test_batch_embedding_generation(self, mock_openai_class):
         """Test batch embedding generation."""
-        # Mock OpenAI response
+        # Mock OpenAI client and response
+        mock_client = Mock()
+        mock_openai_class.return_value = mock_client
+        
         mock_response = Mock()
         mock_response.data = [Mock()]
         mock_response.data[0].embedding = [0.1] * 1536
-        mock_create.return_value = mock_response
+        mock_client.embeddings.create.return_value = mock_response
         
         # Create multiple recipes
         recipes = [
@@ -355,15 +364,18 @@ class TestRecipeIngestionPipeline(unittest.TestCase):
 class TestIntegration(unittest.TestCase):
     """Integration tests for vector operations."""
     
-    @patch('openai.embeddings.create')
+    @patch('src.vector_embeddings.OpenAI')
     @patch('chromadb.HttpClient')
-    def test_end_to_end_workflow(self, mock_client, mock_openai):
+    def test_end_to_end_workflow(self, mock_client, mock_openai_class):
         """Test complete workflow from embedding to search."""
-        # Mock OpenAI
+        # Mock OpenAI client
+        mock_openai_client = Mock()
+        mock_openai_class.return_value = mock_openai_client
+        
         mock_response = Mock()
         mock_response.data = [Mock()]
         mock_response.data[0].embedding = [0.1] * 1536
-        mock_openai.return_value = mock_response
+        mock_openai_client.embeddings.create.return_value = mock_response
         
         # Mock Chroma
         mock_client_instance = Mock()

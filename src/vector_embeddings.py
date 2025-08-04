@@ -3,8 +3,9 @@ Recipe embedding generation using OpenAI's text-embedding-ada-002 model.
 Handles text preparation and embedding creation for vector search.
 """
 
-import openai
+from openai import OpenAI
 from typing import List, Dict, Any, Optional
+import os
 from src.models import Recipe
 from src.config import get_vector_config, get_openai_config, get_logger
 from src.exceptions import EmbeddingGenerationError
@@ -24,8 +25,12 @@ class RecipeEmbeddingGenerator:
         self.vector_config = get_vector_config()
         self.openai_config = get_openai_config()
         
+        # Initialize OpenAI client with proper v1.x pattern
         if api_key:
-            openai.api_key = api_key
+            self.client = OpenAI(api_key=api_key)
+        else:
+            # This will automatically use OPENAI_API_KEY environment variable
+            self.client = OpenAI()
         
         logger.info(f"Initialized RecipeEmbeddingGenerator with model: {self.vector_config.EMBEDDING_MODEL}")
     
@@ -72,7 +77,7 @@ class RecipeEmbeddingGenerator:
         try:
             logger.debug(f"Generating embedding for text of length {len(text)}")
             
-            response = openai.embeddings.create(
+            response = self.client.embeddings.create(
                 model=self.vector_config.EMBEDDING_MODEL,
                 input=text
             )
