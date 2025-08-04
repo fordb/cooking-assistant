@@ -1,7 +1,6 @@
 from openai import OpenAI
-from config import OPENAI_API_KEY
-from src.models import SafetyValidation, Recipe
-from src.exceptions import SafetyValidationError
+from .models import SafetyValidation, Recipe
+from src.common.exceptions import SafetyValidationError
 import json
 
 SAFETY_PROMPT = """Analyze this recipe for safety issues:

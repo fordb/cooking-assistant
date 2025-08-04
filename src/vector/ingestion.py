@@ -8,11 +8,11 @@ from datetime import datetime
 import hashlib
 import json
 
-from src.models import Recipe
-from src.examples import load_example_recipes
-from src.vector_store import VectorRecipeStore, VectorStoreError
-from src.exceptions import EmbeddingGenerationError
-from src.config import get_logger
+from src.recipes.models import Recipe
+from src.prompting.examples import load_example_recipes
+from .store import VectorRecipeStore, VectorStoreError
+from src.common.exceptions import EmbeddingGenerationError
+from src.common.config import get_logger
 
 logger = get_logger(__name__)
 

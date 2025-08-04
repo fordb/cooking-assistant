@@ -1,11 +1,12 @@
 import json
 from typing import List
-from src.models import Recipe
-from config import EXAMPLE_RECIPES_PATH
+from src.recipes.models import Recipe
 
 def load_example_recipes() -> List[Recipe]:
     """Load example recipes from the configured path."""
-    with open(EXAMPLE_RECIPES_PATH, 'r') as f:
+    # Use hardcoded path since it's standardized
+    example_recipes_path = 'data/example_recipes.json'
+    with open(example_recipes_path, 'r') as f:
         data = json.load(f)
     return [Recipe(**recipe) for recipe in data]
 

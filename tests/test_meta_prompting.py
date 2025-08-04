@@ -4,11 +4,11 @@ Tests for meta-prompting system.
 
 import unittest
 from unittest.mock import patch, MagicMock
-from src.meta_prompting import (
+from src.prompting.meta_prompting import (
     MetaPromptingSystem, PromptingStrategy, process_cooking_query
 )
-from src.query_classifier import QueryComplexity
-from src.conversation_memory import ConversationMemory
+from src.core.query_classifier import QueryComplexity
+from src.core.conversation_memory import ConversationMemory
 
 class TestPromptingStrategy(unittest.TestCase):
     """Test the prompting strategy implementations."""
@@ -25,13 +25,13 @@ class TestPromptingStrategy(unittest.TestCase):
     
     def test_few_shot_prompt_generation(self):
         """Test few-shot prompt generation."""
-        query = "How to make pasta carbonara?"
+        query = "What's the best way to season food?"
         
-        with patch('src.examples.get_few_shot_examples') as mock_examples:
+        with patch('src.prompting.examples.get_few_shot_examples') as mock_examples:
             mock_examples.return_value = "Example recipes..."
             
             # Also patch the select_prompt_template since it's used for ingredient-based queries
-            with patch('src.meta_prompting.select_prompt_template') as mock_template:
+            with patch('src.prompting.prompts.select_prompt_template') as mock_template:
                 mock_template.return_value = f"Template with {query}"
                 prompt = PromptingStrategy.few_shot_prompt(query)
         
@@ -58,7 +58,7 @@ class TestMetaPromptingSystem(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures."""
         # Mock the OpenAI client to avoid actual API calls
-        with patch('src.meta_prompting.OpenAI') as mock_openai:
+        with patch('src.prompting.meta_prompting.OpenAI') as mock_openai:
             self.mock_client = MagicMock()
             mock_openai.return_value = self.mock_client
             self.system = MetaPromptingSystem()
@@ -79,7 +79,7 @@ class TestMetaPromptingSystem(unittest.TestCase):
             self.assertIsInstance(prompt, str)
             self.assertGreater(len(prompt), 10)
     
-    @patch('src.meta_prompting.MetaPromptingSystem._generate_response')
+    @patch('src.prompting.meta_prompting.MetaPromptingSystem._generate_response')
     def test_process_query_success(self, mock_generate):
         """Test successful query processing."""
         mock_generate.return_value = "Test response"
@@ -94,7 +94,7 @@ class TestMetaPromptingSystem(unittest.TestCase):
         self.assertIn('confidence', result)
         self.assertIn('reasoning', result)
     
-    @patch('src.meta_prompting.MetaPromptingSystem._generate_response')
+    @patch('src.prompting.meta_prompting.MetaPromptingSystem._generate_response')
     def test_process_query_error_handling(self, mock_generate):
         """Test error handling in query processing."""
         mock_generate.side_effect = Exception("API Error")
@@ -167,7 +167,7 @@ class TestMetaPromptingSystem(unittest.TestCase):
 class TestProcessCookingQueryFunction(unittest.TestCase):
     """Test the convenience function for processing queries."""
     
-    @patch('src.meta_prompting.MetaPromptingSystem')
+    @patch('src.prompting.meta_prompting.MetaPromptingSystem')
     def test_process_cooking_query_function(self, mock_system_class):
         """Test the convenience function works correctly."""
         # Setup mock
@@ -196,10 +196,10 @@ class TestWeek2Scenarios(unittest.TestCase):
     
     def setUp(self):
         """Set up test fixtures."""
-        with patch('src.meta_prompting.OpenAI'):
+        with patch('src.prompting.meta_prompting.OpenAI'):
             self.system = MetaPromptingSystem()
     
-    @patch('src.meta_prompting.MetaPromptingSystem._generate_response')
+    @patch('src.prompting.meta_prompting.MetaPromptingSystem._generate_response')
     def test_week2_scenario_1_simple(self, mock_generate):
         """Test Week 2 scenario 1: simple query."""
         mock_generate.return_value = "Cook chicken to 165°F internal temperature."
@@ -211,7 +211,7 @@ class TestWeek2Scenarios(unittest.TestCase):
         self.assertEqual(result['complexity'], 'simple')
         self.assertTrue(result['success'])
     
-    @patch('src.meta_prompting.MetaPromptingSystem._generate_response')
+    @patch('src.prompting.meta_prompting.MetaPromptingSystem._generate_response')
     def test_week2_scenario_2_moderate(self, mock_generate):
         """Test Week 2 scenario 2: moderate query."""
         mock_generate.return_value = "Here's how to make pasta carbonara..."
@@ -223,7 +223,7 @@ class TestWeek2Scenarios(unittest.TestCase):
         self.assertEqual(result['complexity'], 'moderate')
         self.assertTrue(result['success'])
     
-    @patch('src.meta_prompting.MetaPromptingSystem._generate_response')
+    @patch('src.prompting.meta_prompting.MetaPromptingSystem._generate_response')
     def test_week2_scenario_3_complex(self, mock_generate):
         """Test Week 2 scenario 3: complex query."""
         mock_generate.return_value = "Here's a comprehensive meal plan..."

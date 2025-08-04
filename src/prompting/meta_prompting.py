@@ -4,12 +4,12 @@ Automatically selects optimal prompting strategies based on query complexity.
 """
 
 from typing import Dict, Any, Optional, Tuple
+import os
 from openai import OpenAI
-from config import OPENAI_API_KEY
-from src.query_classifier import QueryClassifier, QueryComplexity
-from src.prompts import select_prompt_template
-from src.exceptions import RecipeGenerationError
-from src.config import get_openai_config, get_prompt_config, get_logger
+from src.core.query_classifier import QueryClassifier, QueryComplexity
+from .prompts import select_prompt_template
+from src.common.exceptions import RecipeGenerationError
+from src.common.config import get_openai_config, get_prompt_config, get_logger
 import json
 
 logger = get_logger(__name__)
@@ -29,7 +29,7 @@ Provide a clear, practical answer in 1-3 sentences. Focus on the specific inform
     @staticmethod
     def few_shot_prompt(query: str, context: Optional[Dict] = None) -> str:
         """Recipe generation with examples for moderate complexity queries."""
-        from src.examples import get_few_shot_examples
+        from .examples import get_few_shot_examples
         
         # Extract ingredients if mentioned in query
         ingredients = MetaPromptingSystem._extract_ingredients(query)
@@ -99,7 +99,8 @@ class MetaPromptingSystem:
     
     def __init__(self):
         self.classifier = QueryClassifier()
-        self.client = OpenAI(api_key=OPENAI_API_KEY)
+        api_key = os.getenv('OPENAI_API_KEY')
+        self.client = OpenAI(api_key=api_key)
         
     def process_query(self, query: str, conversation_context: Optional[Dict] = None) -> Dict[str, Any]:
         """

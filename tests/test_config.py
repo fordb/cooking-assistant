@@ -5,7 +5,7 @@ Tests for configuration system.
 import unittest
 import os
 import logging
-from src.config import (
+from src.common.config import (
     CookingAssistantConfig,
     get_config,
     get_query_config,

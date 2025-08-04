@@ -1,5 +1,5 @@
-from src.examples import get_few_shot_examples
-from src.exceptions import TemplateError
+from .examples import get_few_shot_examples
+from src.common.exceptions import TemplateError
 
 TEMPLATE_TYPES = {
     "basic": "General recipe generation",

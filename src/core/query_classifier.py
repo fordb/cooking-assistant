@@ -6,7 +6,7 @@ Analyzes cooking queries to determine optimal prompting strategy.
 import re
 from typing import Dict, List, Tuple
 from enum import Enum
-from .config import get_query_config, get_logger
+from src.common.config import get_query_config, get_logger
 
 logger = get_logger(__name__)
 

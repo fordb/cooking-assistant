@@ -4,9 +4,9 @@ Script to populate the vector database with example recipes.
 """
 
 import json
-from src.recipe_ingestion import RecipeIngestionPipeline
-from src.config import get_config
-from src.models import Recipe
+from src.vector.ingestion import RecipeIngestionPipeline
+from src.common.config import get_config
+from src.recipes.models import Recipe
 
 def main():
     """Populate the vector database with example recipes."""

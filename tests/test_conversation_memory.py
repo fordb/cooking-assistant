@@ -5,7 +5,7 @@ Tests for conversation memory management system.
 import unittest
 from unittest.mock import patch
 from datetime import datetime, timedelta
-from src.conversation_memory import (
+from src.core.conversation_memory import (
     ConversationMemory, UserPreferences, ConversationTurn,
     get_conversation_memory, reset_conversation_memory
 )

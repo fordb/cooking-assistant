@@ -4,8 +4,15 @@ Verify vector database population and stored data.
 This script verifies the vector database without requiring OpenAI API calls.
 """
 
-from src.vector_store import VectorRecipeStore
-from src.config import get_config
+import sys
+import os
+
+# Add the project root to the Python path
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, project_root)
+
+from src.vector.store import VectorRecipeStore
+from src.common.config import get_config
 import json
 
 def verify_vector_database():

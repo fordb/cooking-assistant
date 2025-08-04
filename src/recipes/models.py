@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import List
-from src.exceptions import RecipeValidationError
-from src.config import get_recipe_config
+from src.common.exceptions import RecipeValidationError
+from src.common.config import get_recipe_config
 
 class Recipe(BaseModel):
     title: str = Field(..., description="Recipe name")

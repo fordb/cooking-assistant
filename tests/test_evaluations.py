@@ -7,7 +7,7 @@ from unittest.mock import patch, MagicMock
 from evaluations.test_cases import get_test_cases, get_test_case_summary
 from evaluations.evaluator import RecipeEvaluator, EvaluationScore, RecipeEvaluation
 from evaluations.results import EvaluationResults
-from src.models import Recipe
+from src.recipes.models import Recipe
 
 
 class TestEvaluationFramework(unittest.TestCase):

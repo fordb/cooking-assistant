@@ -4,8 +4,8 @@ Demo script showcasing vector database search capabilities.
 This script demonstrates how to use the vector database for semantic recipe search.
 """
 
-from src.vector_store import VectorRecipeStore
-from src.config import get_config
+from src.vector.store import VectorRecipeStore
+from src.common.config import get_config
 import os
 
 def demo_vector_search():

@@ -6,9 +6,9 @@ Handles text preparation and embedding creation for vector search.
 from openai import OpenAI
 from typing import List, Dict, Any, Optional
 import os
-from src.models import Recipe
-from src.config import get_vector_config, get_openai_config, get_logger
-from src.exceptions import EmbeddingGenerationError
+from src.recipes.models import Recipe
+from src.common.config import get_vector_config, get_openai_config, get_logger
+from src.common.exceptions import EmbeddingGenerationError
 
 logger = get_logger(__name__)
 
