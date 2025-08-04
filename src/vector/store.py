@@ -13,7 +13,7 @@ from src.recipes.models import Recipe
 from src.common.config import get_vector_config, get_logger
 from .embeddings import RecipeEmbeddingGenerator, create_search_embedding
 from .keywords import extract_recipe_keywords, extract_query_keywords, build_recipe_corpus
-from src.common.exceptions import CookingAssistantError
+from src.common.exceptions import CookingAssistantError, VectorDatabaseError, VectorSearchError, BM25IndexError
 
 logger = get_logger(__name__)
 
@@ -66,7 +66,7 @@ class VectorRecipeStore:
                 self._client.heartbeat()
                 logger.debug("Connected to Chroma DB")
             except Exception as e:
-                raise VectorStoreError(f"Failed to connect to Chroma DB at {self.config.HOST}:{self.config.PORT}: {e}")
+                raise VectorDatabaseError(f"Failed to connect to Chroma DB at {self.config.HOST}:{self.config.PORT}: {e}") from e
         return self._client
     
     @property 
@@ -121,7 +121,7 @@ class VectorRecipeStore:
             return recipe_id
             
         except Exception as e:
-            raise VectorStoreError(f"Failed to add recipe '{recipe.title}': {e}")
+            raise VectorDatabaseError(f"Failed to add recipe '{recipe.title}': {e}") from e
     
     def add_recipes(self, recipes: List[Recipe], recipe_ids: Optional[List[str]] = None) -> List[str]:
         """
@@ -169,7 +169,7 @@ class VectorRecipeStore:
             return used_ids
             
         except Exception as e:
-            raise VectorStoreError(f"Failed to add recipes: {e}")
+            raise VectorDatabaseError(f"Failed to add recipes: {e}") from e
     
     def _build_bm25_index(self) -> None:
         """Build BM25 index from all recipes in the collection."""
@@ -242,7 +242,7 @@ class VectorRecipeStore:
                     recipe_metadata.append(metadata)
                     recipe_ids.append(all_data['ids'][i])
                     
-                except Exception as e:
+                except (KeyError, ValueError, TypeError) as e:
                     logger.warning(f"Failed to process recipe metadata for BM25: {e}")
                     continue
             
@@ -264,11 +264,17 @@ class VectorRecipeStore:
         except Exception as e:
             logger.error(f"Failed to build BM25 index: {e}")
             self._bm25_index = None
+            raise BM25IndexError(f"Failed to build BM25 index: {e}") from e
     
     def _ensure_bm25_index(self) -> None:
         """Ensure BM25 index is built and up-to-date."""
         if self._bm25_index is None:
-            self._build_bm25_index()
+            try:
+                self._build_bm25_index()
+            except BM25IndexError:
+                # Index building failed, sparse search will not be available
+                logger.warning("BM25 index building failed, sparse search unavailable")
+                pass
     
     def search_recipes_sparse(self, query: str, n_results: Optional[int] = None) -> List[Dict[str, Any]]:
         """
@@ -321,9 +327,12 @@ class VectorRecipeStore:
             logger.info(f"Sparse search for '{query}' returned {len(results)} results")
             return results
             
+        except BM25IndexError as e:
+            logger.error(f"Sparse search failed due to BM25 index error: {e}")
+            return []  # Return empty results instead of raising
         except Exception as e:
             logger.error(f"Sparse search failed: {e}")
-            return []
+            return []  # Return empty results instead of raising
     
     def _combine_search_results(self, sparse_results: List[Dict[str, Any]], 
                                dense_results: List[Dict[str, Any]], 
@@ -424,11 +433,27 @@ class VectorRecipeStore:
             # Perform both searches - get more results initially for better RRF combination
             search_limit = min(n_results * 2, 20)  # Get up to 20 results from each method
             
-            sparse_results = self.search_recipes_sparse(query, n_results=search_limit)
-            dense_results = self.search_recipes(query, n_results=search_limit)
+            # Try sparse search first
+            try:
+                sparse_results = self.search_recipes_sparse(query, n_results=search_limit)
+            except Exception as e:
+                logger.warning(f"Sparse search failed in hybrid mode: {e}, continuing with dense only")
+                sparse_results = []
+            
+            # Try dense search
+            try:
+                dense_results = self.search_recipes(query, n_results=search_limit)
+            except Exception as e:
+                logger.warning(f"Dense search failed in hybrid mode: {e}, continuing with sparse only")
+                dense_results = []
             
             logger.debug(f"Sparse search returned {len(sparse_results)} results")
             logger.debug(f"Dense search returned {len(dense_results)} results")
+            
+            # If both methods failed, fall back to individual methods
+            if not sparse_results and not dense_results:
+                logger.info("Both search methods failed, falling back to dense search")
+                return self.search_recipes(query, n_results)
             
             # Combine results using RRF
             combined_results = self._combine_search_results(
@@ -442,9 +467,13 @@ class VectorRecipeStore:
             
         except Exception as e:
             logger.error(f"Hybrid search failed: {e}")
-            # Fallback to dense search if hybrid fails
+            # Final fallback to dense search
             logger.info("Falling back to dense search")
-            return self.search_recipes(query, n_results)
+            try:
+                return self.search_recipes(query, n_results)
+            except Exception as fallback_error:
+                logger.error(f"Fallback dense search also failed: {fallback_error}")
+                return []
     
     def search_recipes(self, query: str, n_results: Optional[int] = None, 
                       min_similarity: Optional[float] = None) -> List[Dict[str, Any]]:
@@ -496,7 +525,7 @@ class VectorRecipeStore:
             return search_results
             
         except Exception as e:
-            raise VectorStoreError(f"Failed to search recipes: {e}")
+            raise VectorSearchError(f"Failed to search recipes: {e}") from e
     
     def get_recipe_by_id(self, recipe_id: str) -> Optional[Dict[str, Any]]:
         """

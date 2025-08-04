@@ -27,3 +27,15 @@ class SafetyValidationError(CookingAssistantError):
 class EmbeddingGenerationError(CookingAssistantError):
     """Raised when embedding generation fails."""
     pass
+
+class VectorDatabaseError(CookingAssistantError):
+    """Raised when vector database operations fail."""
+    pass
+
+class VectorSearchError(VectorDatabaseError):
+    """Raised when vector search operations fail."""
+    pass
+
+class BM25IndexError(VectorDatabaseError):
+    """Raised when BM25 index operations fail."""
+    pass
