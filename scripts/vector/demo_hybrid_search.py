@@ -107,16 +107,6 @@ def demo_hybrid_search():
         # Analysis of results
         print(f"\n📈 ANALYSIS:")
         analyze_search_results(sparse_results, dense_results, hybrid_results, query)
-    
-    print(f"\n{'='*60}")
-    print("🎯 HYBRID SEARCH ADVANTAGES:")
-    print("=" * 60)
-    print("✅ Combines exact keyword matching with semantic understanding")
-    print("✅ RRF provides robust ranking that leverages both approaches")
-    print("✅ Handles both specific ingredient queries and conceptual searches")
-    print("✅ Provides fallback resilience if one search method fails")
-    print("✅ Configurable weights allow tuning for different use cases")
-    print("✅ Enhanced result transparency with score breakdowns")
 
 def analyze_search_results(sparse_results, dense_results, hybrid_results, query):
     """Analyze and compare search results."""
