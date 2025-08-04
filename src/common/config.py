@@ -149,6 +149,12 @@ class VectorConfig:
     DEFAULT_SEARCH_LIMIT: int = 10
     SIMILARITY_THRESHOLD: float = 0.7
     
+    # Sparse search settings
+    BM25_K1: float = 1.2  # Term frequency saturation parameter
+    BM25_B: float = 0.75  # Length normalization parameter
+    MIN_KEYWORD_LENGTH: int = 2  # Minimum length for keywords
+    STOPWORDS_ENABLED: bool = True  # Whether to filter common stopwords
+    
     # Embedding settings
     EMBEDDING_MODEL: str = "text-embedding-ada-002"
 

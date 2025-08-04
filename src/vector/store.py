@@ -7,10 +7,12 @@ import chromadb
 from typing import List, Dict, Any, Optional, Tuple
 import uuid
 from datetime import datetime
+from rank_bm25 import BM25Okapi
 
 from src.recipes.models import Recipe
 from src.common.config import get_vector_config, get_logger
 from .embeddings import RecipeEmbeddingGenerator, create_search_embedding
+from .keywords import extract_recipe_keywords, extract_query_keywords, build_recipe_corpus
 from src.common.exceptions import CookingAssistantError
 
 logger = get_logger(__name__)
@@ -43,6 +45,11 @@ class VectorRecipeStore:
         # Initialize Chroma client
         self._client = None
         self._collection = None
+        
+        # Initialize BM25 index for sparse search
+        self._bm25_index = None
+        self._bm25_recipes = []  # Store recipes in same order as BM25 corpus
+        self._bm25_recipe_ids = []  # Store recipe IDs in same order
         
         logger.info(f"Initialized VectorRecipeStore with collection: {self.collection_name}")
     
@@ -163,6 +170,139 @@ class VectorRecipeStore:
             
         except Exception as e:
             raise VectorStoreError(f"Failed to add recipes: {e}")
+    
+    def _build_bm25_index(self) -> None:
+        """Build BM25 index from all recipes in the collection."""
+        try:
+            # Get all recipes from collection
+            all_data = self.collection.get()
+            
+            if not all_data or not all_data.get('metadatas'):
+                logger.warning("No recipes found in collection for BM25 indexing")
+                return
+            
+            # Rebuild recipe objects and extract keywords
+            recipes = []
+            recipe_ids = []
+            
+            for i, metadata in enumerate(all_data['metadatas']):
+                try:
+                    # Handle ingredients - might be stored as string or list
+                    ingredients = metadata.get('ingredients', [])
+                    if isinstance(ingredients, str):
+                        # If stored as string, split by newlines or commas
+                        ingredients = [ing.strip() for ing in ingredients.replace('\n', ',').split(',') if ing.strip()]
+                    
+                    # Handle instructions - might be stored as string or list  
+                    instructions = metadata.get('instructions', [])
+                    if isinstance(instructions, str):
+                        # If stored as string, split by newlines
+                        instructions = [inst.strip() for inst in instructions.split('\n') if inst.strip()]
+                    
+                    # Ensure minimum requirements for recipe validation
+                    if len(ingredients) < 2:
+                        ingredients = ingredients + ['salt', 'pepper'][:2-len(ingredients)]
+                    if len(instructions) < 3:
+                        instructions = instructions + ['Prepare ingredients', 'Cook as directed', 'Serve hot'][:3-len(instructions)]
+                    
+                    # Reconstruct recipe from metadata
+                    recipe = Recipe(
+                        title=metadata.get('title', 'Unknown'),
+                        prep_time=int(metadata.get('prep_time', 0)),
+                        cook_time=int(metadata.get('cook_time', 0)),
+                        servings=int(metadata.get('servings', 4)),
+                        difficulty=metadata.get('difficulty', 'Beginner'),
+                        ingredients=ingredients,
+                        instructions=instructions
+                    )
+                    recipes.append(recipe)
+                    recipe_ids.append(all_data['ids'][i])
+                except Exception as e:
+                    logger.warning(f"Failed to reconstruct recipe from metadata: {e}")
+                    logger.debug(f"Metadata structure: {metadata}")
+                    continue
+            
+            if not recipes:
+                logger.warning("No valid recipes found for BM25 indexing")
+                return
+            
+            # Build BM25 corpus
+            corpus = build_recipe_corpus(recipes)
+            
+            # Create BM25 index
+            self._bm25_index = BM25Okapi(
+                corpus,
+                k1=self.config.BM25_K1,
+                b=self.config.BM25_B
+            )
+            self._bm25_recipes = recipes
+            self._bm25_recipe_ids = recipe_ids
+            
+            logger.info(f"Built BM25 index with {len(recipes)} recipes")
+            
+        except Exception as e:
+            logger.error(f"Failed to build BM25 index: {e}")
+            self._bm25_index = None
+    
+    def _ensure_bm25_index(self) -> None:
+        """Ensure BM25 index is built and up-to-date."""
+        if self._bm25_index is None:
+            self._build_bm25_index()
+    
+    def search_recipes_sparse(self, query: str, n_results: Optional[int] = None) -> List[Dict[str, Any]]:
+        """
+        Search recipes using BM25 sparse/keyword search.
+        
+        Args:
+            query: Search query string
+            n_results: Maximum number of results to return
+            
+        Returns:
+            List of matching recipes with BM25 scores
+        """
+        if n_results is None:
+            n_results = self.config.DEFAULT_SEARCH_LIMIT
+        
+        # Ensure BM25 index is built
+        self._ensure_bm25_index()
+        
+        if self._bm25_index is None:
+            logger.warning("BM25 index not available for sparse search")
+            return []
+        
+        try:
+            # Extract keywords from query
+            query_keywords = extract_query_keywords(query)
+            
+            if not query_keywords:
+                logger.warning(f"No keywords extracted from query: '{query}'")
+                return []
+            
+            # Get BM25 scores for all documents
+            scores = self._bm25_index.get_scores(query_keywords)
+            
+            # Get top N results with scores
+            top_indices = scores.argsort()[-n_results:][::-1]  # Descending order
+            
+            results = []
+            for idx in top_indices:
+                if scores[idx] > 0:  # Only include results with positive scores
+                    recipe = self._bm25_recipes[idx]
+                    recipe_id = self._bm25_recipe_ids[idx]
+                    
+                    results.append({
+                        'recipe': recipe,
+                        'recipe_id': recipe_id,
+                        'score': float(scores[idx]),
+                        'search_type': 'sparse'
+                    })
+            
+            logger.info(f"Sparse search for '{query}' returned {len(results)} results")
+            return results
+            
+        except Exception as e:
+            logger.error(f"Sparse search failed: {e}")
+            return []
     
     def search_recipes(self, query: str, n_results: Optional[int] = None, 
                       min_similarity: Optional[float] = None) -> List[Dict[str, Any]]:
