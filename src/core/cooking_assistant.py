@@ -5,8 +5,7 @@ Provides unified access to all cooking assistant functionality.
 
 from typing import Dict, Any, Optional
 from .conversation_memory import ConversationMemory
-from .query_classifier import classify_cooking_query, QueryComplexity
-from src.common import CookingAssistantError
+from .query_classifier import classify_cooking_query
 
 class CookingAssistant:
     """
