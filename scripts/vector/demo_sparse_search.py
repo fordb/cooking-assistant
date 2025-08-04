@@ -39,7 +39,7 @@ def demo_sparse_search():
         
         if results:
             for i, result in enumerate(results, 1):
-                title = result['recipe'].title
+                title = result['recipe'].get('title', 'Unknown Recipe')
                 score = result['score']
                 print(f"  {i}. {title} (BM25 score: {score:.2f})")
         else:

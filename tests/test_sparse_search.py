@@ -247,7 +247,7 @@ class TestSparseSearch(unittest.TestCase):
         self.assertGreater(len(chicken_results), 0)
         
         # Check that results contain chicken recipes
-        chicken_titles = [result['recipe'].title for result in chicken_results]
+        chicken_titles = [result['recipe'].get('title', '') for result in chicken_results]
         self.assertTrue(any('Chicken' in title for title in chicken_titles))
         
         # Test search for "curry" - should find curry recipes  
@@ -256,7 +256,7 @@ class TestSparseSearch(unittest.TestCase):
         self.assertGreater(len(curry_results), 0)
         
         # Check that results contain curry recipes
-        curry_titles = [result['recipe'].title for result in curry_results]
+        curry_titles = [result['recipe'].get('title', '') for result in curry_results]
         self.assertTrue(any('Curry' in title for title in curry_titles))
     
     @patch('chromadb.HttpClient')
@@ -332,7 +332,7 @@ class TestSparseSearch(unittest.TestCase):
             self.assertIn('search_type', result)
             
             # Check result values
-            self.assertIsInstance(result['recipe'], Recipe)
+            self.assertIsInstance(result['recipe'], dict)  # Now returns metadata dict
             self.assertEqual(result['search_type'], 'sparse')
             self.assertIsInstance(result['score'], float)
             self.assertGreaterEqual(result['score'], 0)

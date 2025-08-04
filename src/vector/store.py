@@ -181,64 +181,85 @@ class VectorRecipeStore:
                 logger.warning("No recipes found in collection for BM25 indexing")
                 return
             
-            # Rebuild recipe objects and extract keywords
-            recipes = []
+            # Build keyword corpus directly from metadata without creating Recipe objects
+            corpus = []
+            recipe_metadata = []
             recipe_ids = []
             
             for i, metadata in enumerate(all_data['metadatas']):
                 try:
+                    # Extract text content for BM25 indexing
+                    title = metadata.get('title', 'Unknown')
+                    
                     # Handle ingredients - might be stored as string or list
                     ingredients = metadata.get('ingredients', [])
                     if isinstance(ingredients, str):
-                        # If stored as string, split by newlines or commas
                         ingredients = [ing.strip() for ing in ingredients.replace('\n', ',').split(',') if ing.strip()]
+                    elif not isinstance(ingredients, list):
+                        ingredients = []
                     
                     # Handle instructions - might be stored as string or list  
                     instructions = metadata.get('instructions', [])
                     if isinstance(instructions, str):
-                        # If stored as string, split by newlines
                         instructions = [inst.strip() for inst in instructions.split('\n') if inst.strip()]
+                    elif not isinstance(instructions, list):
+                        instructions = []
                     
-                    # Ensure minimum requirements for recipe validation
-                    if len(ingredients) < 2:
-                        ingredients = ingredients + ['salt', 'pepper'][:2-len(ingredients)]
-                    if len(instructions) < 3:
-                        instructions = instructions + ['Prepare ingredients', 'Cook as directed', 'Serve hot'][:3-len(instructions)]
+                    # Skip recipes with no meaningful content
+                    if not title or title == 'Unknown':
+                        logger.debug(f"Skipping recipe with no title - insufficient data for BM25 indexing")
+                        continue
                     
-                    # Reconstruct recipe from metadata
-                    recipe = Recipe(
-                        title=metadata.get('title', 'Unknown'),
-                        prep_time=int(metadata.get('prep_time', 0)),
-                        cook_time=int(metadata.get('cook_time', 0)),
-                        servings=int(metadata.get('servings', 4)),
-                        difficulty=metadata.get('difficulty', 'Beginner'),
-                        ingredients=ingredients,
-                        instructions=instructions
-                    )
-                    recipes.append(recipe)
+                    # Build keyword list for this recipe (similar to extract_recipe_keywords)
+                    text_content = []
+                    # Add title (with higher weight by repeating)
+                    text_content.extend([title] * 2)
+                    # Add ingredients and instructions
+                    text_content.extend(ingredients)
+                    text_content.extend(instructions)
+                    
+                    # Join and tokenize
+                    full_text = ' '.join(text_content)
+                    from .keywords import tokenize_text
+                    from src.common.config import get_vector_config
+                    
+                    config = get_vector_config()
+                    tokens = tokenize_text(full_text)
+                    
+                    # Filter keywords
+                    from .keywords import COOKING_STOPWORDS
+                    keywords = []
+                    for token in tokens:
+                        if len(token) >= config.MIN_KEYWORD_LENGTH:
+                            if not config.STOPWORDS_ENABLED or token.lower() not in COOKING_STOPWORDS:
+                                keywords.append(token.lower())
+                    
+                    if not keywords:
+                        logger.debug(f"Skipping recipe '{title}' - no keywords extracted")
+                        continue
+                    
+                    corpus.append(keywords)
+                    recipe_metadata.append(metadata)
                     recipe_ids.append(all_data['ids'][i])
+                    
                 except Exception as e:
-                    logger.warning(f"Failed to reconstruct recipe from metadata: {e}")
-                    logger.debug(f"Metadata structure: {metadata}")
+                    logger.warning(f"Failed to process recipe metadata for BM25: {e}")
                     continue
             
-            if not recipes:
+            if not corpus:
                 logger.warning("No valid recipes found for BM25 indexing")
                 return
             
-            # Build BM25 corpus
-            corpus = build_recipe_corpus(recipes)
-            
-            # Create BM25 index
+            # Create BM25 index from corpus
             self._bm25_index = BM25Okapi(
                 corpus,
                 k1=self.config.BM25_K1,
                 b=self.config.BM25_B
             )
-            self._bm25_recipes = recipes
+            self._bm25_recipes = recipe_metadata  # Store metadata instead of Recipe objects
             self._bm25_recipe_ids = recipe_ids
             
-            logger.info(f"Built BM25 index with {len(recipes)} recipes")
+            logger.info(f"Built BM25 index with {len(corpus)} recipes")
             
         except Exception as e:
             logger.error(f"Failed to build BM25 index: {e}")
@@ -287,11 +308,11 @@ class VectorRecipeStore:
             results = []
             for idx in top_indices:
                 if scores[idx] > 0:  # Only include results with positive scores
-                    recipe = self._bm25_recipes[idx]
+                    recipe_metadata = self._bm25_recipes[idx]
                     recipe_id = self._bm25_recipe_ids[idx]
                     
                     results.append({
-                        'recipe': recipe,
+                        'recipe': recipe_metadata,  # Now contains metadata dict instead of Recipe object
                         'recipe_id': recipe_id,
                         'score': float(scores[idx]),
                         'search_type': 'sparse'
