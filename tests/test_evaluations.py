@@ -117,18 +117,25 @@ class TestEvaluationFramework(unittest.TestCase):
         mock_client.chat.completions.create.return_value = mock_response
         mock_openai_class.return_value = mock_client
         
-        # Mock recipe generation
-        with patch('evaluations.evaluator.generate_recipe') as mock_generate:
-            mock_recipe = Recipe(
-                title="Test Recipe",
-                prep_time=10,
-                cook_time=20,
-                servings=4,
-                difficulty="Beginner",
-                ingredients=["ingredient1", "ingredient2"],
-                instructions=["step1", "step2", "step3"]
-            )
-            mock_generate.return_value = mock_recipe
+        # Mock CookingAssistant
+        with patch('evaluations.evaluator.CookingAssistant') as mock_assistant_class:
+            mock_assistant = MagicMock()
+            mock_assistant.ask.return_value = {
+                'response': '''
+                {
+                    "title": "Test Recipe",
+                    "prep_time": 10,
+                    "cook_time": 20,
+                    "servings": 4,
+                    "difficulty": "Beginner",
+                    "ingredients": ["ingredient1", "ingredient2"],
+                    "instructions": ["step1", "step2", "step3"]
+                }
+                ''',
+                'strategy': 'test',
+                'success': True
+            }
+            mock_assistant_class.return_value = mock_assistant
             
             evaluator = RecipeEvaluator()
             result = evaluator.evaluate_recipe("test ingredients")

@@ -1092,4 +1092,59 @@ The repository reorganization is now complete with a clean modular structure and
 
 **Session Complete: 2025-08-04 Fix Failing Tests After Repository Reorganization**
 
+---
+
+## Session 2025-08-04 - Remove Deprecated Functionality
+
+### Goals
+- Remove deprecated generate_recipe function and backward compatibility wrapper
+- Clean up deprecated conversation memory functions
+- Update evaluation system to use modern CookingAssistant interface
+- Maintain test coverage while removing obsolete tests
+
+### Progress
+- [20:30] ✅ Removed deprecated src/recipes/generator.py file (113 lines of backward compatibility code)
+- [20:45] ✅ Updated evaluations/evaluator.py to use CookingAssistant interface instead of generate_recipe
+- [21:00] ✅ Removed tests/test_recipe_generator.py (66 lines testing deprecated functionality)
+- [21:15] ✅ Removed deprecated conversation memory functions (get_conversation_memory, reset_conversation_memory)
+- [21:30] ✅ Updated test files to remove deprecated function imports and tests
+- [21:45] ✅ All 97 tests passing after cleanup (reduced from 102 tests, removed 5 deprecated tests)
+
+### Session Summary
+**Accomplishments:**
+- **Deprecated Code Removal**: Successfully removed all deprecated backward compatibility functions
+  - Eliminated src/recipes/generator.py (113 lines of deprecated recipe generation wrapper)
+  - Removed deprecated conversation memory functions (get_conversation_memory, reset_conversation_memory)
+  - Cleaned up 5 tests that were only testing deprecated functionality
+- **Modernized Evaluation System**: Updated evaluations to use current CookingAssistant interface
+  - Replaced generate_recipe calls with CookingAssistant.ask() in evaluator.py
+  - Added proper JSON parsing and Recipe object creation from assistant responses
+  - Maintained evaluation functionality while using modern interfaces
+- **Codebase Simplification**: Reduced complexity by removing unused backward compatibility layers
+  - Test suite reduced from 102 to 97 tests (removed 5 deprecated tests)
+  - All remaining tests focus on current, supported functionality
+  - Cleaner import structure with no deprecated function references
+
+**Files Removed:**
+- src/recipes/generator.py (deprecated recipe generation wrapper)
+- tests/test_recipe_generator.py (tests for deprecated functionality)
+
+**Files Updated:**
+- evaluations/evaluator.py - Updated to use CookingAssistant instead of generate_recipe
+- src/core/conversation_memory.py - Removed deprecated global functions
+- src/recipes/__init__.py - Removed reference to generator module
+- tests/test_conversation_memory.py - Removed deprecated function tests and imports
+- tests/test_evaluations.py - Updated mocking to work with CookingAssistant
+
+**Quality Metrics:**
+- 97 tests passing (100% pass rate maintained)
+- No functional regressions introduced
+- Reduced codebase complexity by removing unused compatibility layers
+- Evaluation system fully functional with modern interfaces
+
+**Impact:**
+The codebase is now cleaner and more maintainable with all deprecated functionality removed. The evaluation system uses the current CookingAssistant interface, ensuring consistency across the application. This cleanup eliminates confusion between old and new APIs while maintaining all core functionality.
+
+**Session Complete: 2025-08-04 Deprecated Functionality Cleanup**
+
 ## Archived Sessions

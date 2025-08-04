@@ -6,8 +6,7 @@ import unittest
 from unittest.mock import patch
 from datetime import datetime, timedelta
 from src.core.conversation_memory import (
-    ConversationMemory, UserPreferences, ConversationTurn,
-    get_conversation_memory, reset_conversation_memory
+    ConversationMemory, UserPreferences, ConversationTurn
 )
 
 class TestUserPreferences(unittest.TestCase):
@@ -209,27 +208,6 @@ class TestConversationMemory(unittest.TestCase):
         self.assertIn('zero_shot', summary['strategies_used'])
         self.assertIn('few_shot', summary['strategies_used'])
 
-class TestMemoryGlobalFunctions(unittest.TestCase):
-    """Test global memory management functions."""
-    
-    def test_get_conversation_memory(self):
-        """Test getting conversation memory instance."""
-        memory1 = get_conversation_memory()
-        memory2 = get_conversation_memory()
-        
-        # Since we removed global state, these should be different instances
-        self.assertIsNot(memory1, memory2)
-        self.assertIsInstance(memory1, ConversationMemory)
-        self.assertIsInstance(memory2, ConversationMemory)
-    
-    def test_reset_conversation_memory(self):
-        """Test resetting conversation memory."""
-        # Reset function now just returns a new instance
-        memory = reset_conversation_memory()
-        
-        # Should be a new clean instance
-        self.assertIsInstance(memory, ConversationMemory)
-        self.assertEqual(len(memory.conversation_history), 0)
 
 class TestConversationTurn(unittest.TestCase):
     """Test conversation turn data structure."""

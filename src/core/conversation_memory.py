@@ -256,22 +256,7 @@ class ConversationMemory:
             'strategies_used': list(set([turn.strategy_used for turn in self.conversation_history]))
         }
 
-# Deprecated global functions - maintained for backward compatibility
-# New code should create ConversationMemory instances directly
-
-def get_conversation_memory() -> ConversationMemory:
-    """
-    DEPRECATED: Get or create conversation memory instance.
-    Use ConversationMemory() directly instead.
-    """
-    return ConversationMemory()
-
-def reset_conversation_memory() -> ConversationMemory:
-    """
-    DEPRECATED: Reset conversation memory (start new session).
-    Use ConversationMemory() directly instead.
-    """
-    return ConversationMemory()
+# Direct usage: memory = ConversationMemory()
 
 # Example usage
 if __name__ == "__main__":
