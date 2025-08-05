@@ -217,28 +217,6 @@ open docs/api/index.html
 - **Cross-References**: Links between related classes and functions
 - **Search Functionality**: Built-in search across all modules and functions
 
-### API Overview
-
-**Core Modules:**
-- `src.core.cooking_assistant` - Main CookingAssistant interface
-- `src.core.conversation_memory` - Session memory management
-- `src.core.query_classifier` - Query complexity classification
-
-**Prompting System:**
-- `src.prompting.meta_prompting` - Strategy selection and orchestration
-- `src.prompting.prompts` - Template creation functions
-- `src.prompting.examples` - Few-shot example management
-
-**Recipe Processing:**
-- `src.recipes.models` - Recipe validation and data models
-- `src.recipes.safety_validator` - AI-powered safety checking
-
-**Vector Database:**
-- `src.vector.store` - High-level vector database interface
-- `src.vector.embeddings` - OpenAI embedding generation
-- `src.vector.filters` - Advanced filtering system
-- `src.vector.keywords` - Sparse search utilities
-
 ## Architecture Overview
 
 This project demonstrates production-ready GenAI patterns:
