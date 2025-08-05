@@ -396,8 +396,7 @@ and dense search result formats.</p>
 <span>(</span><span>user_id: str, api_key: str | None = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Manages user-specific recipe collections in the vector database.
-Extends VectorRecipeStore functionality with user-specific operations.</p>
+<div class="desc"><p>Manages user-specific recipe collections in the vector database.</p>
 <p>Initialize user recipe collection.</p>
 <h2 id="args">Args</h2>
 <dl>
@@ -405,21 +404,7 @@ Extends VectorRecipeStore functionality with user-specific operations.</p>
 <dd>Unique identifier for the user</dd>
 <dt><strong><code>api_key</code></strong></dt>
 <dd>OpenAI API key for embedding generation</dd>
-</dl>
-<h2 id="raises">Raises</h2>
-<dl>
-<dt><code><a title="src.vector.UserRecipeCollectionError" href="#src.vector.UserRecipeCollectionError">UserRecipeCollectionError</a></code></dt>
-<dd>If user_id is invalid</dd>
 </dl></div>
-<h3>Instance variables</h3>
-<dl>
-<dt id="src.vector.UserRecipeCollection.stats"><code class="name">prop <span class="ident">stats</span> : Dict[str, Any]</code></dt>
-<dd>
-<div class="desc"><p>Get statistics about user's recipe collection.</p>
-<h2 id="returns">Returns</h2>
-<p>Dictionary with collection statistics</p></div>
-</dd>
-</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="src.vector.UserRecipeCollection.add_user_recipe"><code class="name flex">
@@ -430,79 +415,34 @@ Extends VectorRecipeStore functionality with user-specific operations.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>recipe</code></strong></dt>
-<dd>Recipe object to add (already validated during instantiation)</dd>
+<dd>Recipe object to add</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>Recipe ID in the collection</p>
-<h2 id="raises">Raises</h2>
-<dl>
-<dt><code><a title="src.vector.UserRecipeCollectionError" href="#src.vector.UserRecipeCollectionError">UserRecipeCollectionError</a></code></dt>
-<dd>If storage fails or user exceeds recipe limit</dd>
-</dl></div>
-</dd>
-<dt id="src.vector.UserRecipeCollection.collection_exists"><code class="name flex">
-<span>def <span class="ident">collection_exists</span></span>(<span>self) ‑> bool</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Check if user's collection exists in the database.</p>
-<h2 id="returns">Returns</h2>
-<p>True if collection exists</p></div>
+<p>Recipe ID in the collection</p></div>
 </dd>
 <dt id="src.vector.UserRecipeCollection.delete_user_recipe"><code class="name flex">
 <span>def <span class="ident">delete_user_recipe</span></span>(<span>self, recipe_id: str) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Delete a recipe from user's collection.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>recipe_id</code></strong></dt>
-<dd>ID of recipe to delete</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>True if deletion was successful</p>
-<h2 id="raises">Raises</h2>
-<dl>
-<dt><code><a title="src.vector.UserRecipeCollectionError" href="#src.vector.UserRecipeCollectionError">UserRecipeCollectionError</a></code></dt>
-<dd>If deletion fails</dd>
-</dl></div>
+<div class="desc"><p>Delete a recipe from user's collection.</p></div>
 </dd>
 <dt id="src.vector.UserRecipeCollection.get_user_recipe_count"><code class="name flex">
 <span>def <span class="ident">get_user_recipe_count</span></span>(<span>self) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get the total number of recipes in user's collection.</p>
-<h2 id="returns">Returns</h2>
-<p>Number of recipes in collection</p></div>
+<div class="desc"><p>Get the total number of recipes in user's collection.</p></div>
 </dd>
 <dt id="src.vector.UserRecipeCollection.get_user_recipes"><code class="name flex">
 <span>def <span class="ident">get_user_recipes</span></span>(<span>self, limit: int | None = None) ‑> List[Dict[str, Any]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Retrieve all recipes from user's collection.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>limit</code></strong></dt>
-<dd>Maximum number of recipes to return</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>List of user recipes with metadata</p></div>
+<div class="desc"><p>Retrieve all recipes from user's collection.</p></div>
 </dd>
 <dt id="src.vector.UserRecipeCollection.search_user_recipes"><code class="name flex">
 <span>def <span class="ident">search_user_recipes</span></span>(<span>self, query: str, n_results: int | None = None, search_type: str = 'hybrid') ‑> List[Dict[str, str | float | Dict[str, str | int | List[str]]]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Search within user's recipe collection using various search methods.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>query</code></strong></dt>
-<dd>Search query</dd>
-<dt><strong><code>n_results</code></strong></dt>
-<dd>Maximum number of results to return</dd>
-<dt><strong><code>search_type</code></strong></dt>
-<dd>Type of search ("dense", "sparse", "hybrid")</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>List of search results from user's collection</p></div>
+<div class="desc"><p>Search within user's recipe collection.</p></div>
 </dd>
 </dl>
 </dd>
@@ -872,12 +812,10 @@ Uses Reciprocal Rank Fusion (RRF) to combine and rank results.</p>
 <h4><code><a title="src.vector.UserRecipeCollection" href="#src.vector.UserRecipeCollection">UserRecipeCollection</a></code></h4>
 <ul class="">
 <li><code><a title="src.vector.UserRecipeCollection.add_user_recipe" href="#src.vector.UserRecipeCollection.add_user_recipe">add_user_recipe</a></code></li>
-<li><code><a title="src.vector.UserRecipeCollection.collection_exists" href="#src.vector.UserRecipeCollection.collection_exists">collection_exists</a></code></li>
 <li><code><a title="src.vector.UserRecipeCollection.delete_user_recipe" href="#src.vector.UserRecipeCollection.delete_user_recipe">delete_user_recipe</a></code></li>
 <li><code><a title="src.vector.UserRecipeCollection.get_user_recipe_count" href="#src.vector.UserRecipeCollection.get_user_recipe_count">get_user_recipe_count</a></code></li>
 <li><code><a title="src.vector.UserRecipeCollection.get_user_recipes" href="#src.vector.UserRecipeCollection.get_user_recipes">get_user_recipes</a></code></li>
 <li><code><a title="src.vector.UserRecipeCollection.search_user_recipes" href="#src.vector.UserRecipeCollection.search_user_recipes">search_user_recipes</a></code></li>
-<li><code><a title="src.vector.UserRecipeCollection.stats" href="#src.vector.UserRecipeCollection.stats">stats</a></code></li>
 </ul>
 </li>
 <li>

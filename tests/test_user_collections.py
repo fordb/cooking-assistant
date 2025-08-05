@@ -254,62 +254,6 @@ class TestUserRecipeCollection(unittest.TestCase):
         self.assertTrue(result)
         mock_store_instance.delete_recipe.assert_called_once_with("recipe_123")
     
-    @patch('src.vector.user_collections.get_vector_config')
-    @patch('src.vector.user_collections.VectorRecipeStore')
-    def test_collection_exists_true(self, mock_store, mock_config):
-        """Test collection exists check when collection exists."""
-        mock_config.return_value = self.mock_config
-        mock_store_instance = Mock()
-        mock_store.return_value = mock_store_instance
-        mock_store_instance.collection = Mock()
-        
-        collection = UserRecipeCollection(self.test_user_id)
-        exists = collection.collection_exists()
-        
-        self.assertTrue(exists)
-    
-    @patch('src.vector.user_collections.get_vector_config')
-    @patch('src.vector.user_collections.VectorRecipeStore')
-    def test_collection_exists_false(self, mock_store, mock_config):
-        """Test collection exists check when collection doesn't exist."""
-        mock_config.return_value = self.mock_config
-        mock_store_instance = Mock()
-        mock_store.return_value = mock_store_instance
-        
-        from chromadb.errors import NotFoundError
-        
-        # Create a mock that raises NotFoundError when .collection is accessed
-        def collection_property():
-            raise NotFoundError("Not found")
-        
-        type(mock_store_instance).collection = property(lambda self: collection_property())
-        
-        collection = UserRecipeCollection(self.test_user_id)
-        exists = collection.collection_exists()
-        
-        self.assertFalse(exists)
-    
-    @patch('src.vector.user_collections.get_vector_config')
-    @patch('src.vector.user_collections.VectorRecipeStore')
-    def test_stats_property(self, mock_store, mock_config):
-        """Test collection stats property."""
-        mock_config.return_value = self.mock_config
-        
-        collection = UserRecipeCollection(self.test_user_id)
-        collection.get_user_recipe_count = Mock(return_value=3)
-        collection.collection_exists = Mock(return_value=True)
-        
-        stats = collection.stats
-        
-        expected_stats = {
-            'user_id': self.test_user_id,
-            'collection_name': f"user_recipes_{self.test_user_id}",
-            'recipe_count': 3,
-            'collection_exists': True,
-            'max_recipes': 1000
-        }
-        
-        self.assertEqual(stats, expected_stats)
 
 
 if __name__ == '__main__':

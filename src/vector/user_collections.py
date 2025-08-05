@@ -3,14 +3,13 @@ User recipe collections management for the vector database.
 Provides functionality for user-specific recipe storage, validation, and retrieval.
 """
 
-import uuid
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 from chromadb.errors import NotFoundError
 
 from src.recipes.models import Recipe
 from src.common.config import get_vector_config, get_logger
-from src.common.exceptions import VectorDatabaseError, RecipeValidationError
+from src.common.exceptions import VectorDatabaseError
 from .types import UserRecipe, UserRecipeMetadata, SearchResult
 from .store import VectorRecipeStore
 
@@ -23,21 +22,14 @@ class UserRecipeCollectionError(VectorDatabaseError):
 
 
 class UserRecipeCollection:
-    """
-    Manages user-specific recipe collections in the vector database.
-    Extends VectorRecipeStore functionality with user-specific operations.
-    """
+    """Manages user-specific recipe collections in the vector database."""
     
     def __init__(self, user_id: str, api_key: Optional[str] = None):
-        """
-        Initialize user recipe collection.
+        """Initialize user recipe collection.
         
         Args:
             user_id: Unique identifier for the user
             api_key: OpenAI API key for embedding generation
-            
-        Raises:
-            UserRecipeCollectionError: If user_id is invalid
         """
         self.config = get_vector_config()
         self.user_id = self._validate_user_id(user_id)
@@ -45,22 +37,9 @@ class UserRecipeCollection:
         
         # Initialize the underlying vector store with user's collection
         self.store = VectorRecipeStore(api_key=api_key, collection_name=self.collection_name)
-        
-        logger.info(f"Initialized user recipe collection for user: {self.user_id}")
     
     def _validate_user_id(self, user_id: str) -> str:
-        """
-        Validate user ID format and length.
-        
-        Args:
-            user_id: User identifier to validate
-            
-        Returns:
-            Validated user ID
-            
-        Raises:
-            UserRecipeCollectionError: If user_id is invalid
-        """
+        """Validate and sanitize user ID."""
         if not user_id or not isinstance(user_id, str):
             raise UserRecipeCollectionError("User ID must be a non-empty string")
         
@@ -72,27 +51,18 @@ class UserRecipeCollection:
             raise UserRecipeCollectionError("User ID must contain at least one alphanumeric character")
             
         # Sanitize user ID for collection name (replace invalid chars)
-        sanitized = "".join(c if c.isalnum() or c in "-_" else "_" for c in user_id)
-        
-        return sanitized
+        return "".join(c if c.isalnum() or c in "-_" else "_" for c in user_id)
     
     def add_user_recipe(self, recipe: Recipe) -> str:
-        """
-        Add a user-uploaded recipe to their collection.
+        """Add a user-uploaded recipe to their collection.
         
         Args:
-            recipe: Recipe object to add (already validated during instantiation)
+            recipe: Recipe object to add
             
         Returns:
             Recipe ID in the collection
-            
-        Raises:
-            UserRecipeCollectionError: If storage fails or user exceeds recipe limit
         """
         try:
-            # Recipe is already validated during instantiation (Pydantic models validate on creation)
-            logger.debug(f"Adding recipe: {recipe.title}")
-            
             # Check user recipe count limit
             current_count = self.get_user_recipe_count() 
             if current_count >= self.config.MAX_USER_RECIPES:
@@ -101,25 +71,18 @@ class UserRecipeCollection:
                 )
             
             # Create user recipe metadata
-            timestamp = datetime.utcnow().isoformat()
             user_recipe_metadata = {
                 "title": recipe.title,
                 "difficulty": recipe.difficulty,
                 "prep_time": recipe.prep_time,
                 "cook_time": recipe.cook_time,
-                "total_time": recipe.prep_time + recipe.cook_time,
                 "servings": recipe.servings,
-                "ingredient_count": len(recipe.ingredients),
-                "instruction_count": len(recipe.instructions),
                 "user_id": self.user_id,
-                "uploaded_at": timestamp
+                "uploaded_at": datetime.utcnow().isoformat()
             }
             
             # Store recipe in user's collection
-            recipe_id = self.store.insert_recipe(recipe, metadata=user_recipe_metadata)
-            logger.info(f"Added user recipe '{recipe.title}' with ID: {recipe_id}")
-            
-            return recipe_id
+            return self.store.insert_recipe(recipe, metadata=user_recipe_metadata)
             
         except Exception as e:
             if isinstance(e, UserRecipeCollectionError):
@@ -127,15 +90,7 @@ class UserRecipeCollection:
             raise UserRecipeCollectionError(f"Failed to add user recipe: {str(e)}") from e
     
     def get_user_recipes(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
-        """
-        Retrieve all recipes from user's collection.
-        
-        Args:
-            limit: Maximum number of recipes to return
-            
-        Returns:
-            List of user recipes with metadata
-        """
+        """Retrieve all recipes from user's collection."""
         try:
             search_limit = limit or self.config.DEFAULT_SEARCH_LIMIT
             
@@ -156,45 +111,24 @@ class UserRecipeCollection:
                     }
                     user_recipes.append(user_recipe)
                     
-                except (IndexError, KeyError) as e:
-                    logger.warning(f"Skipping malformed recipe result: {e}")
+                except (IndexError, KeyError):
                     continue
             
-            logger.info(f"Retrieved {len(user_recipes)} recipes for user: {self.user_id}")
             return user_recipes
             
         except Exception as e:
             raise UserRecipeCollectionError(f"Failed to retrieve user recipes: {str(e)}") from e
     
     def get_user_recipe_count(self) -> int:
-        """
-        Get the total number of recipes in user's collection.
-        
-        Returns:
-            Number of recipes in collection
-        """
+        """Get the total number of recipes in user's collection."""
         try:
-            results = self.store.count_recipes()
-            logger.debug(f"User {self.user_id} has {results} recipes")
-            return results
-            
-        except Exception as e:
-            logger.warning(f"Failed to get recipe count for user {self.user_id}: {e}")
+            return self.store.count_recipes()
+        except Exception:
             return 0
     
     def search_user_recipes(self, query: str, n_results: Optional[int] = None, 
                            search_type: str = "hybrid") -> List[SearchResult]:
-        """
-        Search within user's recipe collection using various search methods.
-        
-        Args:
-            query: Search query
-            n_results: Maximum number of results to return
-            search_type: Type of search ("dense", "sparse", "hybrid")
-            
-        Returns:
-            List of search results from user's collection
-        """
+        """Search within user's recipe collection."""
         try:
             # Use the underlying store's search methods
             if search_type == "dense":
@@ -210,56 +144,12 @@ class UserRecipeCollection:
             raise UserRecipeCollectionError(f"Failed to search user recipes: {str(e)}") from e
     
     def delete_user_recipe(self, recipe_id: str) -> bool:
-        """
-        Delete a recipe from user's collection.
-        
-        Args:
-            recipe_id: ID of recipe to delete
-            
-        Returns:
-            True if deletion was successful
-            
-        Raises:
-            UserRecipeCollectionError: If deletion fails
-        """
+        """Delete a recipe from user's collection."""
         try:
             success = self.store.delete_recipe(recipe_id)
-            if success:
-                logger.info(f"Deleted recipe {recipe_id} for user: {self.user_id}")
-                return True
-            else:
+            if not success:
                 raise UserRecipeCollectionError(f"Failed to delete recipe {recipe_id}")
-            
+            return True
         except Exception as e:
             raise UserRecipeCollectionError(f"Failed to delete recipe {recipe_id}: {str(e)}") from e
     
-    def collection_exists(self) -> bool:
-        """
-        Check if user's collection exists in the database.
-        
-        Returns:
-            True if collection exists
-        """
-        try:
-            # Try to access the collection property (will create it if it doesn't exist)
-            # We can check if it has any recipes or just access it to trigger creation
-            _ = self.store.collection
-            return True
-        except (NotFoundError, VectorDatabaseError):
-            return False
-    
-    @property
-    def stats(self) -> Dict[str, Any]:
-        """
-        Get statistics about user's recipe collection.
-        
-        Returns:
-            Dictionary with collection statistics
-        """
-        return {
-            'user_id': self.user_id,
-            'collection_name': self.collection_name,
-            'recipe_count': self.get_user_recipe_count(),
-            'collection_exists': self.collection_exists(),
-            'max_recipes': self.config.MAX_USER_RECIPES
-        }
