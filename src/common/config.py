@@ -183,6 +183,11 @@ class VectorConfig:
     MAX_COOK_TIME_FILTER: int = 480  # 8 hours in minutes
     MIN_SERVINGS_FILTER: int = 1
     MAX_SERVINGS_FILTER: int = 50
+    
+    # User recipe settings
+    USER_COLLECTION_PREFIX: str = "user_recipes_"  # Prefix for user collections
+    MAX_USER_RECIPES: int = 1000  # Maximum recipes per user
+    USER_ID_MAX_LENGTH: int = 100  # Maximum length for user IDs
 
 
 @dataclass
