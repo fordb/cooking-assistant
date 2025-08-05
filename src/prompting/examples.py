@@ -11,6 +11,15 @@ def load_example_recipes() -> List[Recipe]:
     return [Recipe(**recipe) for recipe in data]
 
 def get_few_shot_examples(num_examples: int = 3) -> str:
+    """
+    Generate formatted few-shot examples for prompt templates.
+    
+    Args:
+        num_examples: Number of example recipes to include (default 3)
+        
+    Returns:
+        Formatted string with example recipes in JSON format
+    """
     examples = load_example_recipes()[:num_examples]
     formatted = []
     for recipe in examples:

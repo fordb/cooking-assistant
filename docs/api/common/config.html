@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>src.common.config API documentation</title>
+<meta name="description" content="Configuration settings for the Intelligent Cooking Assistant.
+Centralizes all configurable constants and magic numbers.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.common.config</code></h1>
+</header>
+<section id="section-intro">
+<p>Configuration settings for the Intelligent Cooking Assistant.
+Centralizes all configurable constants and magic numbers.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.common.config.get_config"><code class="name flex">
+<span>def <span class="ident">get_config</span></span>(<span>) ‑> <a title="src.common.config.CookingAssistantConfig" href="#src.common.config.CookingAssistantConfig">CookingAssistantConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the global configuration instance.</p></div>
+</dd>
+<dt id="src.common.config.get_logger"><code class="name flex">
+<span>def <span class="ident">get_logger</span></span>(<span>name: str) ‑> logging.Logger</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a logger with the application's logging configuration.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>name</code></strong></dt>
+<dd>Logger name (typically <strong>name</strong> from calling module)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Configured logger instance</p></div>
+</dd>
+<dt id="src.common.config.get_logging_config"><code class="name flex">
+<span>def <span class="ident">get_logging_config</span></span>(<span>) ‑> <a title="src.common.config.LoggingConfig" href="#src.common.config.LoggingConfig">LoggingConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get logging configuration.</p></div>
+</dd>
+<dt id="src.common.config.get_memory_config"><code class="name flex">
+<span>def <span class="ident">get_memory_config</span></span>(<span>) ‑> <a title="src.common.config.ConversationMemoryConfig" href="#src.common.config.ConversationMemoryConfig">ConversationMemoryConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get conversation memory configuration.</p></div>
+</dd>
+<dt id="src.common.config.get_openai_config"><code class="name flex">
+<span>def <span class="ident">get_openai_config</span></span>(<span>) ‑> <a title="src.common.config.OpenAIConfig" href="#src.common.config.OpenAIConfig">OpenAIConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get OpenAI configuration.</p></div>
+</dd>
+<dt id="src.common.config.get_prompt_config"><code class="name flex">
+<span>def <span class="ident">get_prompt_config</span></span>(<span>) ‑> <a title="src.common.config.PromptConfig" href="#src.common.config.PromptConfig">PromptConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get prompt configuration.</p></div>
+</dd>
+<dt id="src.common.config.get_query_config"><code class="name flex">
+<span>def <span class="ident">get_query_config</span></span>(<span>) ‑> <a title="src.common.config.QueryClassificationConfig" href="#src.common.config.QueryClassificationConfig">QueryClassificationConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get query classification configuration.</p></div>
+</dd>
+<dt id="src.common.config.get_recipe_config"><code class="name flex">
+<span>def <span class="ident">get_recipe_config</span></span>(<span>) ‑> <a title="src.common.config.RecipeConfig" href="#src.common.config.RecipeConfig">RecipeConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get recipe configuration.</p></div>
+</dd>
+<dt id="src.common.config.get_test_config"><code class="name flex">
+<span>def <span class="ident">get_test_config</span></span>(<span>) ‑> <a title="src.common.config.TestConfig" href="#src.common.config.TestConfig">TestConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get test configuration.</p></div>
+</dd>
+<dt id="src.common.config.get_ui_config"><code class="name flex">
+<span>def <span class="ident">get_ui_config</span></span>(<span>) ‑> <a title="src.common.config.UIConfig" href="#src.common.config.UIConfig">UIConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get UI configuration.</p></div>
+</dd>
+<dt id="src.common.config.get_vector_config"><code class="name flex">
+<span>def <span class="ident">get_vector_config</span></span>(<span>) ‑> <a title="src.common.config.VectorConfig" href="#src.common.config.VectorConfig">VectorConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get vector database configuration.</p></div>
+</dd>
+<dt id="src.common.config.reload_config"><code class="name flex">
+<span>def <span class="ident">reload_config</span></span>(<span>) ‑> <a title="src.common.config.CookingAssistantConfig" href="#src.common.config.CookingAssistantConfig">CookingAssistantConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reload configuration from environment variables.</p></div>
+</dd>
+<dt id="src.common.config.setup_logging"><code class="name flex">
+<span>def <span class="ident">setup_logging</span></span>(<span>) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Setup logging configuration for the application.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="src.common.config.ConversationMemoryConfig"><code class="flex name class">
+<span>class <span class="ident">ConversationMemoryConfig</span></span>
+<span>(</span><span>RECENT_TOPICS_LIMIT: int = 5,<br>RECENT_TURNS_LIMIT: int = 3,<br>RESPONSE_PREVIEW_LENGTH: int = 200,<br>QUICK_TIME_MINUTES: int = 30,<br>DURATION_CONVERSION_SECONDS: int = 60)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Configuration for conversation memory management.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.common.config.ConversationMemoryConfig.DURATION_CONVERSION_SECONDS"><code class="name">var <span class="ident">DURATION_CONVERSION_SECONDS</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.ConversationMemoryConfig.QUICK_TIME_MINUTES"><code class="name">var <span class="ident">QUICK_TIME_MINUTES</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.ConversationMemoryConfig.RECENT_TOPICS_LIMIT"><code class="name">var <span class="ident">RECENT_TOPICS_LIMIT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.ConversationMemoryConfig.RECENT_TURNS_LIMIT"><code class="name">var <span class="ident">RECENT_TURNS_LIMIT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.ConversationMemoryConfig.RESPONSE_PREVIEW_LENGTH"><code class="name">var <span class="ident">RESPONSE_PREVIEW_LENGTH</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.common.config.CookingAssistantConfig"><code class="flex name class">
+<span>class <span class="ident">CookingAssistantConfig</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Main configuration class that consolidates all config sections.</p></div>
+<h3>Static methods</h3>
+<dl>
+<dt id="src.common.config.CookingAssistantConfig.from_env"><code class="name flex">
+<span>def <span class="ident">from_env</span></span>(<span>) ‑> <a title="src.common.config.CookingAssistantConfig" href="#src.common.config.CookingAssistantConfig">CookingAssistantConfig</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create configuration from environment variables.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.common.config.CookingAssistantConfig.to_dict"><code class="name flex">
+<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert configuration to dictionary for inspection.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.common.config.LoggingConfig"><code class="flex name class">
+<span>class <span class="ident">LoggingConfig</span></span>
+<span>(</span><span>LOG_LEVEL: str = 'INFO',<br>CONSOLE_LOG_LEVEL: str = 'INFO',<br>FILE_LOG_LEVEL: str = 'DEBUG',<br>CONSOLE_FORMAT: str = '%(levelname)s - %(name)s - %(message)s',<br>FILE_FORMAT: str = '%(asctime)s - %(levelname)s - %(name)s - %(funcName)s:%(lineno)d - %(message)s',<br>DATE_FORMAT: str = '%Y-%m-%d %H:%M:%S',<br>LOG_FILE: str = 'logs/cooking_assistant.log',<br>MAX_LOG_SIZE: int = 10485760,<br>BACKUP_COUNT: int = 5,<br>ROOT_LOGGER: str = 'cooking_assistant',<br>SILENCE_LOGGERS: list = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Configuration for logging system.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.common.config.LoggingConfig.BACKUP_COUNT"><code class="name">var <span class="ident">BACKUP_COUNT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.LoggingConfig.CONSOLE_FORMAT"><code class="name">var <span class="ident">CONSOLE_FORMAT</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.LoggingConfig.CONSOLE_LOG_LEVEL"><code class="name">var <span class="ident">CONSOLE_LOG_LEVEL</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.LoggingConfig.DATE_FORMAT"><code class="name">var <span class="ident">DATE_FORMAT</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.LoggingConfig.FILE_FORMAT"><code class="name">var <span class="ident">FILE_FORMAT</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.LoggingConfig.FILE_LOG_LEVEL"><code class="name">var <span class="ident">FILE_LOG_LEVEL</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.LoggingConfig.LOG_FILE"><code class="name">var <span class="ident">LOG_FILE</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.LoggingConfig.LOG_LEVEL"><code class="name">var <span class="ident">LOG_LEVEL</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.LoggingConfig.MAX_LOG_SIZE"><code class="name">var <span class="ident">MAX_LOG_SIZE</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.LoggingConfig.ROOT_LOGGER"><code class="name">var <span class="ident">ROOT_LOGGER</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.LoggingConfig.SILENCE_LOGGERS"><code class="name">var <span class="ident">SILENCE_LOGGERS</span> : list</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.common.config.OpenAIConfig"><code class="flex name class">
+<span>class <span class="ident">OpenAIConfig</span></span>
+<span>(</span><span>DEFAULT_MODEL: str = 'gpt-3.5-turbo',<br>SAFETY_MODEL: str = 'gpt-3.5-turbo',<br>SIMPLE_TEMPERATURE: float = 0.3,<br>COMPLEX_TEMPERATURE: float = 0.7,<br>SAFETY_TEMPERATURE: float = 0.1,<br>SIMPLE_MAX_TOKENS: int = 150,<br>COMPLEX_MAX_TOKENS: int = 800,<br>MAX_RETRIES: int = 3,<br>RETRY_DELAY: float = 1.0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Configuration for OpenAI API calls.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.common.config.OpenAIConfig.COMPLEX_MAX_TOKENS"><code class="name">var <span class="ident">COMPLEX_MAX_TOKENS</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.OpenAIConfig.COMPLEX_TEMPERATURE"><code class="name">var <span class="ident">COMPLEX_TEMPERATURE</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.OpenAIConfig.DEFAULT_MODEL"><code class="name">var <span class="ident">DEFAULT_MODEL</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.OpenAIConfig.MAX_RETRIES"><code class="name">var <span class="ident">MAX_RETRIES</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.OpenAIConfig.RETRY_DELAY"><code class="name">var <span class="ident">RETRY_DELAY</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.OpenAIConfig.SAFETY_MODEL"><code class="name">var <span class="ident">SAFETY_MODEL</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.OpenAIConfig.SAFETY_TEMPERATURE"><code class="name">var <span class="ident">SAFETY_TEMPERATURE</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.OpenAIConfig.SIMPLE_MAX_TOKENS"><code class="name">var <span class="ident">SIMPLE_MAX_TOKENS</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.OpenAIConfig.SIMPLE_TEMPERATURE"><code class="name">var <span class="ident">SIMPLE_TEMPERATURE</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.common.config.PromptConfig"><code class="flex name class">
+<span>class <span class="ident">PromptConfig</span></span>
+<span>(</span><span>DEFAULT_EXAMPLES_COUNT: int = 3,<br>QUICK_EXAMPLES_COUNT: int = 2,<br>CHEF_EXPERIENCE_YEARS: int = 20,<br>DEFAULT_QUICK_TIME_LIMIT: int = 30,<br>SEPARATOR_LENGTH: int = 60)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Configuration for prompt generation.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.common.config.PromptConfig.CHEF_EXPERIENCE_YEARS"><code class="name">var <span class="ident">CHEF_EXPERIENCE_YEARS</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.PromptConfig.DEFAULT_EXAMPLES_COUNT"><code class="name">var <span class="ident">DEFAULT_EXAMPLES_COUNT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.PromptConfig.DEFAULT_QUICK_TIME_LIMIT"><code class="name">var <span class="ident">DEFAULT_QUICK_TIME_LIMIT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.PromptConfig.QUICK_EXAMPLES_COUNT"><code class="name">var <span class="ident">QUICK_EXAMPLES_COUNT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.PromptConfig.SEPARATOR_LENGTH"><code class="name">var <span class="ident">SEPARATOR_LENGTH</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.common.config.QueryClassificationConfig"><code class="flex name class">
+<span>class <span class="ident">QueryClassificationConfig</span></span>
+<span>(</span><span>SIMPLE_WORD_COUNT_THRESHOLD: int = 6,<br>COMPLEX_WORD_COUNT_THRESHOLD: int = 15,<br>SIMPLE_QUESTION_MARKS_THRESHOLD: int = 1,<br>COMPLEX_QUESTION_MARKS_THRESHOLD: int = 2,<br>SIMPLE_WORD_COUNT_SCORE: float = 0.3,<br>COMPLEX_WORD_COUNT_SCORE: float = 0.2,<br>CONSTRAINT_SCORE_WEIGHT: float = 0.4,<br>KEYWORD_MATCH_SCORE: float = 0.2,<br>MULTIPLE_MATCHES_BONUS: float = 0.1,<br>MIN_CONSTRAINTS_FOR_COMPLEX: int = 2,<br>MAX_SCORE_CAP: float = 1.0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Configuration for query complexity classification.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.common.config.QueryClassificationConfig.COMPLEX_QUESTION_MARKS_THRESHOLD"><code class="name">var <span class="ident">COMPLEX_QUESTION_MARKS_THRESHOLD</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.QueryClassificationConfig.COMPLEX_WORD_COUNT_SCORE"><code class="name">var <span class="ident">COMPLEX_WORD_COUNT_SCORE</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.QueryClassificationConfig.COMPLEX_WORD_COUNT_THRESHOLD"><code class="name">var <span class="ident">COMPLEX_WORD_COUNT_THRESHOLD</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.QueryClassificationConfig.CONSTRAINT_SCORE_WEIGHT"><code class="name">var <span class="ident">CONSTRAINT_SCORE_WEIGHT</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.QueryClassificationConfig.KEYWORD_MATCH_SCORE"><code class="name">var <span class="ident">KEYWORD_MATCH_SCORE</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.QueryClassificationConfig.MAX_SCORE_CAP"><code class="name">var <span class="ident">MAX_SCORE_CAP</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.QueryClassificationConfig.MIN_CONSTRAINTS_FOR_COMPLEX"><code class="name">var <span class="ident">MIN_CONSTRAINTS_FOR_COMPLEX</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.QueryClassificationConfig.MULTIPLE_MATCHES_BONUS"><code class="name">var <span class="ident">MULTIPLE_MATCHES_BONUS</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.QueryClassificationConfig.SIMPLE_QUESTION_MARKS_THRESHOLD"><code class="name">var <span class="ident">SIMPLE_QUESTION_MARKS_THRESHOLD</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.QueryClassificationConfig.SIMPLE_WORD_COUNT_SCORE"><code class="name">var <span class="ident">SIMPLE_WORD_COUNT_SCORE</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.QueryClassificationConfig.SIMPLE_WORD_COUNT_THRESHOLD"><code class="name">var <span class="ident">SIMPLE_WORD_COUNT_THRESHOLD</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.common.config.RecipeConfig"><code class="flex name class">
+<span>class <span class="ident">RecipeConfig</span></span>
+<span>(</span><span>MIN_PREP_TIME: int = 0,<br>MIN_COOK_TIME: int = 0,<br>MIN_SERVINGS: int = 1,<br>MAX_SERVINGS: int = 50,<br>MIN_INGREDIENTS: int = 2,<br>MIN_INSTRUCTIONS: int = 3,<br>DEFAULT_PREP_TIME: int = 15,<br>DEFAULT_COOK_TIME: int = 30,<br>DEFAULT_SERVINGS: int = 4,<br>DEFAULT_DIFFICULTY: str = 'Intermediate',<br>RESPONSE_PREVIEW_LENGTH: int = 200,<br>RESPONSE_FULL_LENGTH: int = 500)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Configuration for recipe validation and generation.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.common.config.RecipeConfig.DEFAULT_COOK_TIME"><code class="name">var <span class="ident">DEFAULT_COOK_TIME</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.RecipeConfig.DEFAULT_DIFFICULTY"><code class="name">var <span class="ident">DEFAULT_DIFFICULTY</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.RecipeConfig.DEFAULT_PREP_TIME"><code class="name">var <span class="ident">DEFAULT_PREP_TIME</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.RecipeConfig.DEFAULT_SERVINGS"><code class="name">var <span class="ident">DEFAULT_SERVINGS</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.RecipeConfig.MAX_SERVINGS"><code class="name">var <span class="ident">MAX_SERVINGS</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.RecipeConfig.MIN_COOK_TIME"><code class="name">var <span class="ident">MIN_COOK_TIME</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.RecipeConfig.MIN_INGREDIENTS"><code class="name">var <span class="ident">MIN_INGREDIENTS</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.RecipeConfig.MIN_INSTRUCTIONS"><code class="name">var <span class="ident">MIN_INSTRUCTIONS</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.RecipeConfig.MIN_PREP_TIME"><code class="name">var <span class="ident">MIN_PREP_TIME</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.RecipeConfig.MIN_SERVINGS"><code class="name">var <span class="ident">MIN_SERVINGS</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.RecipeConfig.RESPONSE_FULL_LENGTH"><code class="name">var <span class="ident">RESPONSE_FULL_LENGTH</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.RecipeConfig.RESPONSE_PREVIEW_LENGTH"><code class="name">var <span class="ident">RESPONSE_PREVIEW_LENGTH</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.common.config.TestConfig"><code class="flex name class">
+<span>class <span class="ident">TestConfig</span></span>
+<span>(</span><span>EXPECTED_RECIPE_COUNT: int = 15,<br>TEST_EXAMPLES_COUNT: int = 2,<br>OVER_LIMIT_EXAMPLES_COUNT: int = 20,<br>ZERO_EXAMPLES_COUNT: int = 0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Configuration for testing.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.common.config.TestConfig.EXPECTED_RECIPE_COUNT"><code class="name">var <span class="ident">EXPECTED_RECIPE_COUNT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.TestConfig.OVER_LIMIT_EXAMPLES_COUNT"><code class="name">var <span class="ident">OVER_LIMIT_EXAMPLES_COUNT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.TestConfig.TEST_EXAMPLES_COUNT"><code class="name">var <span class="ident">TEST_EXAMPLES_COUNT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.TestConfig.ZERO_EXAMPLES_COUNT"><code class="name">var <span class="ident">ZERO_EXAMPLES_COUNT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.common.config.UIConfig"><code class="flex name class">
+<span>class <span class="ident">UIConfig</span></span>
+<span>(</span><span>SEPARATOR_LENGTH: int = 60,<br>SHORT_SEPARATOR_LENGTH: int = 40,<br>MEMORY_SEPARATOR_LENGTH: int = 30,<br>RESPONSE_PREVIEW_LENGTH: int = 100)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Configuration for user interface elements.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.common.config.UIConfig.MEMORY_SEPARATOR_LENGTH"><code class="name">var <span class="ident">MEMORY_SEPARATOR_LENGTH</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.UIConfig.RESPONSE_PREVIEW_LENGTH"><code class="name">var <span class="ident">RESPONSE_PREVIEW_LENGTH</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.UIConfig.SEPARATOR_LENGTH"><code class="name">var <span class="ident">SEPARATOR_LENGTH</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.UIConfig.SHORT_SEPARATOR_LENGTH"><code class="name">var <span class="ident">SHORT_SEPARATOR_LENGTH</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.common.config.VectorConfig"><code class="flex name class">
+<span>class <span class="ident">VectorConfig</span></span>
+<span>(</span><span>HOST: str = 'localhost',<br>PORT: int = 8000,<br>PERSISTENCE_DIRECTORY: str = 'data/chroma_db',<br>RECIPE_COLLECTION_NAME: str = 'recipes',<br>EMBEDDING_DIMENSION: int = 1536,<br>DEFAULT_SEARCH_LIMIT: int = 10,<br>SIMILARITY_THRESHOLD: float = 0.7,<br>BM25_K1: float = 1.2,<br>BM25_B: float = 0.75,<br>MIN_KEYWORD_LENGTH: int = 2,<br>STOPWORDS_ENABLED: bool = True,<br>HYBRID_SPARSE_WEIGHT: float = 0.4,<br>HYBRID_DENSE_WEIGHT: float = 0.6,<br>RRF_K: int = 60,<br>HYBRID_ENABLED: bool = True,<br>EMBEDDING_MODEL: str = 'text-embedding-ada-002',<br>ENABLE_FILTERING: bool = True,<br>MAX_FILTER_RESULTS: int = 100,<br>SUPPORTED_DIFFICULTIES: List[str] = &lt;factory&gt;,<br>SUPPORTED_DIETARY_RESTRICTIONS: List[str] = &lt;factory&gt;,<br>MIN_PREP_TIME_FILTER: int = 0,<br>MAX_PREP_TIME_FILTER: int = 480,<br>MIN_COOK_TIME_FILTER: int = 0,<br>MAX_COOK_TIME_FILTER: int = 480,<br>MIN_SERVINGS_FILTER: int = 1,<br>MAX_SERVINGS_FILTER: int = 50)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Configuration for vector database (Chroma) operations.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.common.config.VectorConfig.BM25_B"><code class="name">var <span class="ident">BM25_B</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.BM25_K1"><code class="name">var <span class="ident">BM25_K1</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.DEFAULT_SEARCH_LIMIT"><code class="name">var <span class="ident">DEFAULT_SEARCH_LIMIT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.EMBEDDING_DIMENSION"><code class="name">var <span class="ident">EMBEDDING_DIMENSION</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.EMBEDDING_MODEL"><code class="name">var <span class="ident">EMBEDDING_MODEL</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.ENABLE_FILTERING"><code class="name">var <span class="ident">ENABLE_FILTERING</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.HOST"><code class="name">var <span class="ident">HOST</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.HYBRID_DENSE_WEIGHT"><code class="name">var <span class="ident">HYBRID_DENSE_WEIGHT</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.HYBRID_ENABLED"><code class="name">var <span class="ident">HYBRID_ENABLED</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.HYBRID_SPARSE_WEIGHT"><code class="name">var <span class="ident">HYBRID_SPARSE_WEIGHT</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.MAX_COOK_TIME_FILTER"><code class="name">var <span class="ident">MAX_COOK_TIME_FILTER</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.MAX_FILTER_RESULTS"><code class="name">var <span class="ident">MAX_FILTER_RESULTS</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.MAX_PREP_TIME_FILTER"><code class="name">var <span class="ident">MAX_PREP_TIME_FILTER</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.MAX_SERVINGS_FILTER"><code class="name">var <span class="ident">MAX_SERVINGS_FILTER</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.MIN_COOK_TIME_FILTER"><code class="name">var <span class="ident">MIN_COOK_TIME_FILTER</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.MIN_KEYWORD_LENGTH"><code class="name">var <span class="ident">MIN_KEYWORD_LENGTH</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.MIN_PREP_TIME_FILTER"><code class="name">var <span class="ident">MIN_PREP_TIME_FILTER</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.MIN_SERVINGS_FILTER"><code class="name">var <span class="ident">MIN_SERVINGS_FILTER</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.PERSISTENCE_DIRECTORY"><code class="name">var <span class="ident">PERSISTENCE_DIRECTORY</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.PORT"><code class="name">var <span class="ident">PORT</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.RECIPE_COLLECTION_NAME"><code class="name">var <span class="ident">RECIPE_COLLECTION_NAME</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.RRF_K"><code class="name">var <span class="ident">RRF_K</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.SIMILARITY_THRESHOLD"><code class="name">var <span class="ident">SIMILARITY_THRESHOLD</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.STOPWORDS_ENABLED"><code class="name">var <span class="ident">STOPWORDS_ENABLED</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.SUPPORTED_DIETARY_RESTRICTIONS"><code class="name">var <span class="ident">SUPPORTED_DIETARY_RESTRICTIONS</span> : List[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.SUPPORTED_DIFFICULTIES"><code class="name">var <span class="ident">SUPPORTED_DIFFICULTIES</span> : List[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.common" href="index.html">src.common</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="src.common.config.get_config" href="#src.common.config.get_config">get_config</a></code></li>
+<li><code><a title="src.common.config.get_logger" href="#src.common.config.get_logger">get_logger</a></code></li>
+<li><code><a title="src.common.config.get_logging_config" href="#src.common.config.get_logging_config">get_logging_config</a></code></li>
+<li><code><a title="src.common.config.get_memory_config" href="#src.common.config.get_memory_config">get_memory_config</a></code></li>
+<li><code><a title="src.common.config.get_openai_config" href="#src.common.config.get_openai_config">get_openai_config</a></code></li>
+<li><code><a title="src.common.config.get_prompt_config" href="#src.common.config.get_prompt_config">get_prompt_config</a></code></li>
+<li><code><a title="src.common.config.get_query_config" href="#src.common.config.get_query_config">get_query_config</a></code></li>
+<li><code><a title="src.common.config.get_recipe_config" href="#src.common.config.get_recipe_config">get_recipe_config</a></code></li>
+<li><code><a title="src.common.config.get_test_config" href="#src.common.config.get_test_config">get_test_config</a></code></li>
+<li><code><a title="src.common.config.get_ui_config" href="#src.common.config.get_ui_config">get_ui_config</a></code></li>
+<li><code><a title="src.common.config.get_vector_config" href="#src.common.config.get_vector_config">get_vector_config</a></code></li>
+<li><code><a title="src.common.config.reload_config" href="#src.common.config.reload_config">reload_config</a></code></li>
+<li><code><a title="src.common.config.setup_logging" href="#src.common.config.setup_logging">setup_logging</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="src.common.config.ConversationMemoryConfig" href="#src.common.config.ConversationMemoryConfig">ConversationMemoryConfig</a></code></h4>
+<ul class="">
+<li><code><a title="src.common.config.ConversationMemoryConfig.DURATION_CONVERSION_SECONDS" href="#src.common.config.ConversationMemoryConfig.DURATION_CONVERSION_SECONDS">DURATION_CONVERSION_SECONDS</a></code></li>
+<li><code><a title="src.common.config.ConversationMemoryConfig.QUICK_TIME_MINUTES" href="#src.common.config.ConversationMemoryConfig.QUICK_TIME_MINUTES">QUICK_TIME_MINUTES</a></code></li>
+<li><code><a title="src.common.config.ConversationMemoryConfig.RECENT_TOPICS_LIMIT" href="#src.common.config.ConversationMemoryConfig.RECENT_TOPICS_LIMIT">RECENT_TOPICS_LIMIT</a></code></li>
+<li><code><a title="src.common.config.ConversationMemoryConfig.RECENT_TURNS_LIMIT" href="#src.common.config.ConversationMemoryConfig.RECENT_TURNS_LIMIT">RECENT_TURNS_LIMIT</a></code></li>
+<li><code><a title="src.common.config.ConversationMemoryConfig.RESPONSE_PREVIEW_LENGTH" href="#src.common.config.ConversationMemoryConfig.RESPONSE_PREVIEW_LENGTH">RESPONSE_PREVIEW_LENGTH</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.common.config.CookingAssistantConfig" href="#src.common.config.CookingAssistantConfig">CookingAssistantConfig</a></code></h4>
+<ul class="">
+<li><code><a title="src.common.config.CookingAssistantConfig.from_env" href="#src.common.config.CookingAssistantConfig.from_env">from_env</a></code></li>
+<li><code><a title="src.common.config.CookingAssistantConfig.to_dict" href="#src.common.config.CookingAssistantConfig.to_dict">to_dict</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.common.config.LoggingConfig" href="#src.common.config.LoggingConfig">LoggingConfig</a></code></h4>
+<ul class="two-column">
+<li><code><a title="src.common.config.LoggingConfig.BACKUP_COUNT" href="#src.common.config.LoggingConfig.BACKUP_COUNT">BACKUP_COUNT</a></code></li>
+<li><code><a title="src.common.config.LoggingConfig.CONSOLE_FORMAT" href="#src.common.config.LoggingConfig.CONSOLE_FORMAT">CONSOLE_FORMAT</a></code></li>
+<li><code><a title="src.common.config.LoggingConfig.CONSOLE_LOG_LEVEL" href="#src.common.config.LoggingConfig.CONSOLE_LOG_LEVEL">CONSOLE_LOG_LEVEL</a></code></li>
+<li><code><a title="src.common.config.LoggingConfig.DATE_FORMAT" href="#src.common.config.LoggingConfig.DATE_FORMAT">DATE_FORMAT</a></code></li>
+<li><code><a title="src.common.config.LoggingConfig.FILE_FORMAT" href="#src.common.config.LoggingConfig.FILE_FORMAT">FILE_FORMAT</a></code></li>
+<li><code><a title="src.common.config.LoggingConfig.FILE_LOG_LEVEL" href="#src.common.config.LoggingConfig.FILE_LOG_LEVEL">FILE_LOG_LEVEL</a></code></li>
+<li><code><a title="src.common.config.LoggingConfig.LOG_FILE" href="#src.common.config.LoggingConfig.LOG_FILE">LOG_FILE</a></code></li>
+<li><code><a title="src.common.config.LoggingConfig.LOG_LEVEL" href="#src.common.config.LoggingConfig.LOG_LEVEL">LOG_LEVEL</a></code></li>
+<li><code><a title="src.common.config.LoggingConfig.MAX_LOG_SIZE" href="#src.common.config.LoggingConfig.MAX_LOG_SIZE">MAX_LOG_SIZE</a></code></li>
+<li><code><a title="src.common.config.LoggingConfig.ROOT_LOGGER" href="#src.common.config.LoggingConfig.ROOT_LOGGER">ROOT_LOGGER</a></code></li>
+<li><code><a title="src.common.config.LoggingConfig.SILENCE_LOGGERS" href="#src.common.config.LoggingConfig.SILENCE_LOGGERS">SILENCE_LOGGERS</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.common.config.OpenAIConfig" href="#src.common.config.OpenAIConfig">OpenAIConfig</a></code></h4>
+<ul class="two-column">
+<li><code><a title="src.common.config.OpenAIConfig.COMPLEX_MAX_TOKENS" href="#src.common.config.OpenAIConfig.COMPLEX_MAX_TOKENS">COMPLEX_MAX_TOKENS</a></code></li>
+<li><code><a title="src.common.config.OpenAIConfig.COMPLEX_TEMPERATURE" href="#src.common.config.OpenAIConfig.COMPLEX_TEMPERATURE">COMPLEX_TEMPERATURE</a></code></li>
+<li><code><a title="src.common.config.OpenAIConfig.DEFAULT_MODEL" href="#src.common.config.OpenAIConfig.DEFAULT_MODEL">DEFAULT_MODEL</a></code></li>
+<li><code><a title="src.common.config.OpenAIConfig.MAX_RETRIES" href="#src.common.config.OpenAIConfig.MAX_RETRIES">MAX_RETRIES</a></code></li>
+<li><code><a title="src.common.config.OpenAIConfig.RETRY_DELAY" href="#src.common.config.OpenAIConfig.RETRY_DELAY">RETRY_DELAY</a></code></li>
+<li><code><a title="src.common.config.OpenAIConfig.SAFETY_MODEL" href="#src.common.config.OpenAIConfig.SAFETY_MODEL">SAFETY_MODEL</a></code></li>
+<li><code><a title="src.common.config.OpenAIConfig.SAFETY_TEMPERATURE" href="#src.common.config.OpenAIConfig.SAFETY_TEMPERATURE">SAFETY_TEMPERATURE</a></code></li>
+<li><code><a title="src.common.config.OpenAIConfig.SIMPLE_MAX_TOKENS" href="#src.common.config.OpenAIConfig.SIMPLE_MAX_TOKENS">SIMPLE_MAX_TOKENS</a></code></li>
+<li><code><a title="src.common.config.OpenAIConfig.SIMPLE_TEMPERATURE" href="#src.common.config.OpenAIConfig.SIMPLE_TEMPERATURE">SIMPLE_TEMPERATURE</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.common.config.PromptConfig" href="#src.common.config.PromptConfig">PromptConfig</a></code></h4>
+<ul class="">
+<li><code><a title="src.common.config.PromptConfig.CHEF_EXPERIENCE_YEARS" href="#src.common.config.PromptConfig.CHEF_EXPERIENCE_YEARS">CHEF_EXPERIENCE_YEARS</a></code></li>
+<li><code><a title="src.common.config.PromptConfig.DEFAULT_EXAMPLES_COUNT" href="#src.common.config.PromptConfig.DEFAULT_EXAMPLES_COUNT">DEFAULT_EXAMPLES_COUNT</a></code></li>
+<li><code><a title="src.common.config.PromptConfig.DEFAULT_QUICK_TIME_LIMIT" href="#src.common.config.PromptConfig.DEFAULT_QUICK_TIME_LIMIT">DEFAULT_QUICK_TIME_LIMIT</a></code></li>
+<li><code><a title="src.common.config.PromptConfig.QUICK_EXAMPLES_COUNT" href="#src.common.config.PromptConfig.QUICK_EXAMPLES_COUNT">QUICK_EXAMPLES_COUNT</a></code></li>
+<li><code><a title="src.common.config.PromptConfig.SEPARATOR_LENGTH" href="#src.common.config.PromptConfig.SEPARATOR_LENGTH">SEPARATOR_LENGTH</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.common.config.QueryClassificationConfig" href="#src.common.config.QueryClassificationConfig">QueryClassificationConfig</a></code></h4>
+<ul class="">
+<li><code><a title="src.common.config.QueryClassificationConfig.COMPLEX_QUESTION_MARKS_THRESHOLD" href="#src.common.config.QueryClassificationConfig.COMPLEX_QUESTION_MARKS_THRESHOLD">COMPLEX_QUESTION_MARKS_THRESHOLD</a></code></li>
+<li><code><a title="src.common.config.QueryClassificationConfig.COMPLEX_WORD_COUNT_SCORE" href="#src.common.config.QueryClassificationConfig.COMPLEX_WORD_COUNT_SCORE">COMPLEX_WORD_COUNT_SCORE</a></code></li>
+<li><code><a title="src.common.config.QueryClassificationConfig.COMPLEX_WORD_COUNT_THRESHOLD" href="#src.common.config.QueryClassificationConfig.COMPLEX_WORD_COUNT_THRESHOLD">COMPLEX_WORD_COUNT_THRESHOLD</a></code></li>
+<li><code><a title="src.common.config.QueryClassificationConfig.CONSTRAINT_SCORE_WEIGHT" href="#src.common.config.QueryClassificationConfig.CONSTRAINT_SCORE_WEIGHT">CONSTRAINT_SCORE_WEIGHT</a></code></li>
+<li><code><a title="src.common.config.QueryClassificationConfig.KEYWORD_MATCH_SCORE" href="#src.common.config.QueryClassificationConfig.KEYWORD_MATCH_SCORE">KEYWORD_MATCH_SCORE</a></code></li>
+<li><code><a title="src.common.config.QueryClassificationConfig.MAX_SCORE_CAP" href="#src.common.config.QueryClassificationConfig.MAX_SCORE_CAP">MAX_SCORE_CAP</a></code></li>
+<li><code><a title="src.common.config.QueryClassificationConfig.MIN_CONSTRAINTS_FOR_COMPLEX" href="#src.common.config.QueryClassificationConfig.MIN_CONSTRAINTS_FOR_COMPLEX">MIN_CONSTRAINTS_FOR_COMPLEX</a></code></li>
+<li><code><a title="src.common.config.QueryClassificationConfig.MULTIPLE_MATCHES_BONUS" href="#src.common.config.QueryClassificationConfig.MULTIPLE_MATCHES_BONUS">MULTIPLE_MATCHES_BONUS</a></code></li>
+<li><code><a title="src.common.config.QueryClassificationConfig.SIMPLE_QUESTION_MARKS_THRESHOLD" href="#src.common.config.QueryClassificationConfig.SIMPLE_QUESTION_MARKS_THRESHOLD">SIMPLE_QUESTION_MARKS_THRESHOLD</a></code></li>
+<li><code><a title="src.common.config.QueryClassificationConfig.SIMPLE_WORD_COUNT_SCORE" href="#src.common.config.QueryClassificationConfig.SIMPLE_WORD_COUNT_SCORE">SIMPLE_WORD_COUNT_SCORE</a></code></li>
+<li><code><a title="src.common.config.QueryClassificationConfig.SIMPLE_WORD_COUNT_THRESHOLD" href="#src.common.config.QueryClassificationConfig.SIMPLE_WORD_COUNT_THRESHOLD">SIMPLE_WORD_COUNT_THRESHOLD</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.common.config.RecipeConfig" href="#src.common.config.RecipeConfig">RecipeConfig</a></code></h4>
+<ul class="">
+<li><code><a title="src.common.config.RecipeConfig.DEFAULT_COOK_TIME" href="#src.common.config.RecipeConfig.DEFAULT_COOK_TIME">DEFAULT_COOK_TIME</a></code></li>
+<li><code><a title="src.common.config.RecipeConfig.DEFAULT_DIFFICULTY" href="#src.common.config.RecipeConfig.DEFAULT_DIFFICULTY">DEFAULT_DIFFICULTY</a></code></li>
+<li><code><a title="src.common.config.RecipeConfig.DEFAULT_PREP_TIME" href="#src.common.config.RecipeConfig.DEFAULT_PREP_TIME">DEFAULT_PREP_TIME</a></code></li>
+<li><code><a title="src.common.config.RecipeConfig.DEFAULT_SERVINGS" href="#src.common.config.RecipeConfig.DEFAULT_SERVINGS">DEFAULT_SERVINGS</a></code></li>
+<li><code><a title="src.common.config.RecipeConfig.MAX_SERVINGS" href="#src.common.config.RecipeConfig.MAX_SERVINGS">MAX_SERVINGS</a></code></li>
+<li><code><a title="src.common.config.RecipeConfig.MIN_COOK_TIME" href="#src.common.config.RecipeConfig.MIN_COOK_TIME">MIN_COOK_TIME</a></code></li>
+<li><code><a title="src.common.config.RecipeConfig.MIN_INGREDIENTS" href="#src.common.config.RecipeConfig.MIN_INGREDIENTS">MIN_INGREDIENTS</a></code></li>
+<li><code><a title="src.common.config.RecipeConfig.MIN_INSTRUCTIONS" href="#src.common.config.RecipeConfig.MIN_INSTRUCTIONS">MIN_INSTRUCTIONS</a></code></li>
+<li><code><a title="src.common.config.RecipeConfig.MIN_PREP_TIME" href="#src.common.config.RecipeConfig.MIN_PREP_TIME">MIN_PREP_TIME</a></code></li>
+<li><code><a title="src.common.config.RecipeConfig.MIN_SERVINGS" href="#src.common.config.RecipeConfig.MIN_SERVINGS">MIN_SERVINGS</a></code></li>
+<li><code><a title="src.common.config.RecipeConfig.RESPONSE_FULL_LENGTH" href="#src.common.config.RecipeConfig.RESPONSE_FULL_LENGTH">RESPONSE_FULL_LENGTH</a></code></li>
+<li><code><a title="src.common.config.RecipeConfig.RESPONSE_PREVIEW_LENGTH" href="#src.common.config.RecipeConfig.RESPONSE_PREVIEW_LENGTH">RESPONSE_PREVIEW_LENGTH</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.common.config.TestConfig" href="#src.common.config.TestConfig">TestConfig</a></code></h4>
+<ul class="">
+<li><code><a title="src.common.config.TestConfig.EXPECTED_RECIPE_COUNT" href="#src.common.config.TestConfig.EXPECTED_RECIPE_COUNT">EXPECTED_RECIPE_COUNT</a></code></li>
+<li><code><a title="src.common.config.TestConfig.OVER_LIMIT_EXAMPLES_COUNT" href="#src.common.config.TestConfig.OVER_LIMIT_EXAMPLES_COUNT">OVER_LIMIT_EXAMPLES_COUNT</a></code></li>
+<li><code><a title="src.common.config.TestConfig.TEST_EXAMPLES_COUNT" href="#src.common.config.TestConfig.TEST_EXAMPLES_COUNT">TEST_EXAMPLES_COUNT</a></code></li>
+<li><code><a title="src.common.config.TestConfig.ZERO_EXAMPLES_COUNT" href="#src.common.config.TestConfig.ZERO_EXAMPLES_COUNT">ZERO_EXAMPLES_COUNT</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.common.config.UIConfig" href="#src.common.config.UIConfig">UIConfig</a></code></h4>
+<ul class="">
+<li><code><a title="src.common.config.UIConfig.MEMORY_SEPARATOR_LENGTH" href="#src.common.config.UIConfig.MEMORY_SEPARATOR_LENGTH">MEMORY_SEPARATOR_LENGTH</a></code></li>
+<li><code><a title="src.common.config.UIConfig.RESPONSE_PREVIEW_LENGTH" href="#src.common.config.UIConfig.RESPONSE_PREVIEW_LENGTH">RESPONSE_PREVIEW_LENGTH</a></code></li>
+<li><code><a title="src.common.config.UIConfig.SEPARATOR_LENGTH" href="#src.common.config.UIConfig.SEPARATOR_LENGTH">SEPARATOR_LENGTH</a></code></li>
+<li><code><a title="src.common.config.UIConfig.SHORT_SEPARATOR_LENGTH" href="#src.common.config.UIConfig.SHORT_SEPARATOR_LENGTH">SHORT_SEPARATOR_LENGTH</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.common.config.VectorConfig" href="#src.common.config.VectorConfig">VectorConfig</a></code></h4>
+<ul class="">
+<li><code><a title="src.common.config.VectorConfig.BM25_B" href="#src.common.config.VectorConfig.BM25_B">BM25_B</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.BM25_K1" href="#src.common.config.VectorConfig.BM25_K1">BM25_K1</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.DEFAULT_SEARCH_LIMIT" href="#src.common.config.VectorConfig.DEFAULT_SEARCH_LIMIT">DEFAULT_SEARCH_LIMIT</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.EMBEDDING_DIMENSION" href="#src.common.config.VectorConfig.EMBEDDING_DIMENSION">EMBEDDING_DIMENSION</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.EMBEDDING_MODEL" href="#src.common.config.VectorConfig.EMBEDDING_MODEL">EMBEDDING_MODEL</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.ENABLE_FILTERING" href="#src.common.config.VectorConfig.ENABLE_FILTERING">ENABLE_FILTERING</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.HOST" href="#src.common.config.VectorConfig.HOST">HOST</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.HYBRID_DENSE_WEIGHT" href="#src.common.config.VectorConfig.HYBRID_DENSE_WEIGHT">HYBRID_DENSE_WEIGHT</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.HYBRID_ENABLED" href="#src.common.config.VectorConfig.HYBRID_ENABLED">HYBRID_ENABLED</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.HYBRID_SPARSE_WEIGHT" href="#src.common.config.VectorConfig.HYBRID_SPARSE_WEIGHT">HYBRID_SPARSE_WEIGHT</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.MAX_COOK_TIME_FILTER" href="#src.common.config.VectorConfig.MAX_COOK_TIME_FILTER">MAX_COOK_TIME_FILTER</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.MAX_FILTER_RESULTS" href="#src.common.config.VectorConfig.MAX_FILTER_RESULTS">MAX_FILTER_RESULTS</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.MAX_PREP_TIME_FILTER" href="#src.common.config.VectorConfig.MAX_PREP_TIME_FILTER">MAX_PREP_TIME_FILTER</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.MAX_SERVINGS_FILTER" href="#src.common.config.VectorConfig.MAX_SERVINGS_FILTER">MAX_SERVINGS_FILTER</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.MIN_COOK_TIME_FILTER" href="#src.common.config.VectorConfig.MIN_COOK_TIME_FILTER">MIN_COOK_TIME_FILTER</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.MIN_KEYWORD_LENGTH" href="#src.common.config.VectorConfig.MIN_KEYWORD_LENGTH">MIN_KEYWORD_LENGTH</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.MIN_PREP_TIME_FILTER" href="#src.common.config.VectorConfig.MIN_PREP_TIME_FILTER">MIN_PREP_TIME_FILTER</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.MIN_SERVINGS_FILTER" href="#src.common.config.VectorConfig.MIN_SERVINGS_FILTER">MIN_SERVINGS_FILTER</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.PERSISTENCE_DIRECTORY" href="#src.common.config.VectorConfig.PERSISTENCE_DIRECTORY">PERSISTENCE_DIRECTORY</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.PORT" href="#src.common.config.VectorConfig.PORT">PORT</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.RECIPE_COLLECTION_NAME" href="#src.common.config.VectorConfig.RECIPE_COLLECTION_NAME">RECIPE_COLLECTION_NAME</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.RRF_K" href="#src.common.config.VectorConfig.RRF_K">RRF_K</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.SIMILARITY_THRESHOLD" href="#src.common.config.VectorConfig.SIMILARITY_THRESHOLD">SIMILARITY_THRESHOLD</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.STOPWORDS_ENABLED" href="#src.common.config.VectorConfig.STOPWORDS_ENABLED">STOPWORDS_ENABLED</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.SUPPORTED_DIETARY_RESTRICTIONS" href="#src.common.config.VectorConfig.SUPPORTED_DIETARY_RESTRICTIONS">SUPPORTED_DIETARY_RESTRICTIONS</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.SUPPORTED_DIFFICULTIES" href="#src.common.config.VectorConfig.SUPPORTED_DIFFICULTIES">SUPPORTED_DIFFICULTIES</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>

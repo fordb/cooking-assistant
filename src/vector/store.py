@@ -57,7 +57,19 @@ class VectorRecipeStore:
     
     @property
     def client(self):
-        """Lazy initialization of Chroma client."""
+        """
+        Get or create the Chroma database client connection.
+        
+        Lazily initializes the HTTP client connection to ChromaDB and tests
+        connectivity with a heartbeat. Connection parameters are loaded from
+        the vector configuration.
+        
+        Returns:
+            ChromaDB HttpClient instance
+            
+        Raises:
+            VectorDatabaseError: If connection to ChromaDB fails
+        """
         if self._client is None:
             try:
                 self._client = chromadb.HttpClient(
@@ -73,7 +85,18 @@ class VectorRecipeStore:
     
     @property 
     def collection(self):
-        """Lazy initialization of collection."""
+        """
+        Get or create the recipe collection in ChromaDB.
+        
+        Lazily initializes the collection, attempting to get an existing
+        collection first, then creating a new one if it doesn't exist.
+        
+        Returns:
+            ChromaDB Collection instance for recipe storage
+            
+        Raises:
+            VectorDatabaseError: If collection creation or access fails
+        """
         if self._collection is None:
             try:
                 # Try to get existing collection
@@ -174,7 +197,16 @@ class VectorRecipeStore:
             raise VectorDatabaseError(f"Failed to add recipes: {e}") from e
     
     def _build_bm25_index(self) -> None:
-        """Build BM25 index from all recipes in the collection."""
+        """
+        Build BM25 sparse search index from all recipes in the collection.
+        
+        Retrieves all recipes from ChromaDB, extracts keywords from titles,
+        ingredients, and instructions, then builds a BM25Okapi index for 
+        keyword-based sparse search.
+        
+        Raises:
+            BM25IndexError: If index building fails
+        """
         try:
             # Get all recipes from collection
             all_data = self.collection.get()
@@ -269,7 +301,15 @@ class VectorRecipeStore:
             raise BM25IndexError(f"Failed to build BM25 index: {e}") from e
     
     def _ensure_bm25_index(self) -> None:
-        """Ensure BM25 index is built and up-to-date."""
+        """
+        Ensure BM25 index is built and ready for sparse search operations.
+        
+        Checks if the BM25 index exists and builds it if necessary. This method
+        is called before performing sparse or hybrid searches.
+        
+        Raises:
+            BM25IndexError: If index building fails
+        """
         if self._bm25_index is None:
             try:
                 self._build_bm25_index()

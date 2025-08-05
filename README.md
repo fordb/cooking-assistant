@@ -195,6 +195,28 @@ The evaluation framework measures:
 4. **Document Progress**: Update session notes per CLAUDE.md guidelines
 5. **Commit**: Pre-commit hooks automatically run tests
 
+## 📚 API Documentation
+
+Comprehensive API documentation is automatically generated from docstrings using pdoc3.
+
+### Generate Documentation
+```bash
+# Generate fresh API documentation manually
+python generate_docs.py
+
+# View documentation
+open docs/api/index.html
+```
+
+**Automated Generation**: API documentation is automatically generated and updated on every commit via pre-commit hook.
+
+### Documentation Features
+- **Automatic Generation**: Generated from PEP 257 compliant docstrings
+- **Module Organization**: Clear separation by functionality (core, prompting, recipes, vector, common)
+- **Type Annotations**: Full type hint support with argument and return type documentation
+- **Cross-References**: Links between related classes and functions
+- **Search Functionality**: Built-in search across all modules and functions
+
 ## Architecture Overview
 
 This project demonstrates production-ready GenAI patterns:

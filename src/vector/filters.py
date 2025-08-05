@@ -27,7 +27,15 @@ class RecipeFilter:
     max_total_time: Optional[int] = None
     
     def __post_init__(self):
-        """Validate filter parameters."""
+        """
+        Validate filter parameters after dataclass initialization.
+        
+        Checks that difficulty values are supported, range filters are valid
+        (min <= max), and dietary restrictions are recognized.
+        
+        Raises:
+            FilterValidationError: If any filter parameters are invalid
+        """
         config = get_vector_config()
         
         # Validate difficulty
@@ -49,7 +57,12 @@ class RecipeFilter:
                     raise FilterValidationError(f"Invalid dietary restriction '{restriction}'")
     
     def has_filters(self) -> bool:
-        """Check if any filters are set."""
+        """
+        Check if any filters are set on this RecipeFilter instance.
+        
+        Returns:
+            True if any filter parameters are set, False if all are None
+        """
         return any([
             self.difficulty is not None,
             self.prep_time_min is not None, self.prep_time_max is not None,
@@ -62,7 +75,20 @@ class RecipeFilter:
 
 def apply_metadata_filters(search_results: List[SearchResult], 
                           filters: RecipeFilter) -> List[SearchResult]:
-    """Apply metadata filters to search results."""
+    """
+    Apply metadata-based filters to recipe search results.
+    
+    Filters search results based on difficulty, time ranges, servings,
+    dietary restrictions, and maximum total time. Handles both sparse
+    and dense search result formats.
+    
+    Args:
+        search_results: List of search results to filter
+        filters: RecipeFilter object with filtering criteria
+        
+    Returns:
+        Filtered list of search results matching all specified criteria
+    """
     if not filters or not filters.has_filters():
         return search_results
     
