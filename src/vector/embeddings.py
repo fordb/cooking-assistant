@@ -4,14 +4,12 @@ Handles text preparation and embedding creation for vector search.
 """
 
 from openai import OpenAI
-from typing import List, Dict, Optional, Union
+from typing import List, Optional
 import os
 from src.recipes.models import Recipe
 from src.common.config import get_vector_config, get_openai_config, get_logger
 from src.common.exceptions import EmbeddingGenerationError
-
-# Type definitions for better type safety
-EmbeddingData = Dict[str, Union[str, List[float], Dict[str, Union[str, int, List[str]]]]]
+from .types import EmbeddingData, EmbeddingMetadata
 
 logger = get_logger(__name__)
 

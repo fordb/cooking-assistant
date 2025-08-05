@@ -4,17 +4,14 @@ Tests for recipe filtering functionality.
 
 import unittest
 from unittest.mock import Mock, patch, MagicMock
-from typing import List, Dict, Union
+from typing import List
 
 from src.vector.filters import (
     RecipeFilter, create_recipe_filter, apply_metadata_filters, 
     validate_filter_ranges, FilterValidationError
 )
 from src.vector.store import VectorRecipeStore
-
-# Type definitions
-RecipeMetadata = Dict[str, Union[str, int, List[str]]]
-SearchResult = Dict[str, Union[str, float, RecipeMetadata]]
+from src.vector.types import SearchResult, RecipeMetadata
 
 
 class TestRecipeFilter(unittest.TestCase):

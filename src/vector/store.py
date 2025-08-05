@@ -4,7 +4,7 @@ Provides a high-level interface to Chroma DB operations.
 """
 
 import chromadb
-from typing import List, Dict, Optional, Tuple, Union
+from typing import List, Optional
 import uuid
 from datetime import datetime
 from rank_bm25 import BM25Okapi
@@ -14,11 +14,8 @@ from src.common.config import get_vector_config, get_logger
 from .embeddings import RecipeEmbeddingGenerator, create_search_embedding
 from .keywords import extract_recipe_keywords, extract_query_keywords, build_recipe_corpus
 from .filters import RecipeFilter, apply_metadata_filters
+from .types import SearchResult
 from src.common.exceptions import CookingAssistantError, VectorDatabaseError, VectorSearchError, BM25IndexError
-
-# Type definitions for better type safety
-RecipeMetadata = Dict[str, Union[str, int, List[str]]]
-SearchResult = Dict[str, Union[str, float, RecipeMetadata]]
 
 logger = get_logger(__name__)
 

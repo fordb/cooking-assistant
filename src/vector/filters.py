@@ -3,16 +3,12 @@ Recipe filtering utilities for vector search operations.
 Provides structured filtering based on recipe metadata.
 """
 
-from typing import List, Dict, Optional, Union, Tuple
+from typing import List, Optional, Tuple
 from dataclasses import dataclass
 
 from src.common.config import get_vector_config, get_logger
 from src.common.exceptions import CookingAssistantError
-
-# Type definitions for better type safety
-RecipeMetadata = Dict[str, Union[str, int, List[str]]]
-SearchResult = Dict[str, Union[str, float, RecipeMetadata]]
-FilterDict = Dict[str, Optional[Union[str, List[str]]]]
+from .types import SearchResult, FilterDict
 
 logger = get_logger(__name__)
 

@@ -3,7 +3,7 @@ Recipe ingestion pipeline for loading recipes into vector database.
 Handles batch processing and data migration from example recipes.
 """
 
-from typing import List, Dict, Optional, Union
+from typing import List, Optional
 from datetime import datetime
 import hashlib
 import json
@@ -11,11 +11,9 @@ import json
 from src.recipes.models import Recipe
 from src.prompting.examples import load_example_recipes
 from .store import VectorRecipeStore, VectorStoreError
+from .types import IngestionStats
 from src.common.exceptions import EmbeddingGenerationError
 from src.common.config import get_logger
-
-# Type definitions for better type safety
-IngestionStats = Dict[str, Union[str, int, List[str], bool]]
 
 logger = get_logger(__name__)
 
