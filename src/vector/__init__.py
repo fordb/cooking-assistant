@@ -3,6 +3,8 @@
 from .embeddings import RecipeEmbeddingGenerator, create_search_embedding
 from .store import VectorRecipeStore, VectorStoreError
 from .keywords import extract_recipe_keywords, extract_query_keywords, build_recipe_corpus
+from .filters import RecipeFilter, apply_metadata_filters
+from .types import EmbeddingData, EmbeddingMetadata, SearchResult, RecipeMetadata, FilterDict, IngestionStats
 # from .ingestion import RecipeIngestionPipeline, run_example_ingestion  # Commented to avoid circular imports
 
 __all__ = [
@@ -13,6 +15,15 @@ __all__ = [
     'extract_recipe_keywords',
     'extract_query_keywords', 
     'build_recipe_corpus',
+    'RecipeFilter',
+    'apply_metadata_filters',
+    # Types
+    'EmbeddingData',
+    'EmbeddingMetadata', 
+    'SearchResult',
+    'RecipeMetadata',
+    'FilterDict',
+    'IngestionStats',
     # 'RecipeIngestionPipeline',
     # 'run_example_ingestion'
 ]
