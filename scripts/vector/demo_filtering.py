@@ -11,7 +11,7 @@ project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(_
 sys.path.insert(0, project_root)
 
 from src.vector.store import VectorRecipeStore
-from src.vector.filters import RecipeFilter, create_recipe_filter
+from src.vector.filters import RecipeFilter
 
 def demo_basic_filtering():
     """Basic filtering examples."""
@@ -63,7 +63,7 @@ def demo_combined_filtering():
     store = VectorRecipeStore()
     
     # Complex filter
-    filters = create_recipe_filter(
+    filters = RecipeFilter(
         difficulty="Intermediate",
         prep_time_min=15,
         cook_time_max=45,
@@ -85,7 +85,7 @@ def demo_search_methods():
     print("-" * 24)
     
     store = VectorRecipeStore()
-    filters = create_recipe_filter(difficulty="Beginner", prep_time_max=20)
+    filters = RecipeFilter(difficulty="Beginner", prep_time_max=20)
     query = "chicken recipe"
     
     # Dense search
