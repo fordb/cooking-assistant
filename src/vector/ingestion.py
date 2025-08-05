@@ -3,7 +3,7 @@ Recipe ingestion pipeline for loading recipes into vector database.
 Handles batch processing and data migration from example recipes.
 """
 
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Optional, Union
 from datetime import datetime
 import hashlib
 import json
@@ -13,6 +13,9 @@ from src.prompting.examples import load_example_recipes
 from .store import VectorRecipeStore, VectorStoreError
 from src.common.exceptions import EmbeddingGenerationError
 from src.common.config import get_logger
+
+# Type definitions for better type safety
+IngestionStats = Dict[str, Union[str, int, List[str], bool]]
 
 logger = get_logger(__name__)
 
@@ -38,7 +41,7 @@ class RecipeIngestionPipeline:
         
         logger.info("Initialized recipe ingestion pipeline")
     
-    def ingest_example_recipes(self, clear_existing: bool = False) -> Dict[str, Any]:
+    def ingest_example_recipes(self, clear_existing: bool = False) -> IngestionStats:
         """
         Ingest recipes from data/example_recipes.json into vector database.
         
@@ -87,7 +90,7 @@ class RecipeIngestionPipeline:
                 'stats': self.stats
             }
     
-    def ingest_recipes(self, recipes: List[Recipe], recipe_ids: Optional[List[str]] = None) -> Dict[str, Any]:
+    def ingest_recipes(self, recipes: List[Recipe], recipe_ids: Optional[List[str]] = None) -> IngestionStats:
         """
         Ingest a list of recipes into the vector database.
         
@@ -197,11 +200,11 @@ class RecipeIngestionPipeline:
         
         return f"recipe_{content_hash}"
     
-    def get_ingestion_stats(self) -> Dict[str, Any]:
+    def get_ingestion_stats(self) -> IngestionStats:
         """Get current ingestion statistics."""
         return self.stats.copy()
     
-    def verify_ingestion(self) -> Dict[str, Any]:
+    def verify_ingestion(self) -> IngestionStats:
         """
         Verify the ingestion by checking recipes in the database.
         
@@ -233,7 +236,7 @@ class RecipeIngestionPipeline:
                 'error': str(e)
             }
 
-def run_example_ingestion(api_key: Optional[str] = None, clear_existing: bool = True) -> Dict[str, Any]:
+def run_example_ingestion(api_key: Optional[str] = None, clear_existing: bool = True) -> IngestionStats:
     """
     Convenience function to run example recipe ingestion.
     

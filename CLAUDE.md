@@ -68,6 +68,8 @@ At the end of each session:
 - Use Snake Case for Python code when reasonable. Avoid Camel Case usage
 - Focus on adding functionality that is necessary. Don't add extra fluff or other bells and whistles that are not needed
 - Don't use generic Exceptions and don't use bare except claues. Create a specific exception class or re-raise the original exception
+- Do not use the `Any` type. Instead, use more precise type hints
+- Follow PEP 257 conventions for Docstrings. Always add docstrings, except for very obvious or basic functions like obvious getters/setters or private methods, unless this is very complex
 
 # Project Development Overview
 

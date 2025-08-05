@@ -3,10 +3,10 @@ Configuration settings for the Intelligent Cooking Assistant.
 Centralizes all configurable constants and magic numbers.
 """
 
-from typing import Dict, Any
+from typing import Dict, Any, List
 import os
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -163,6 +163,26 @@ class VectorConfig:
     
     # Embedding settings
     EMBEDDING_MODEL: str = "text-embedding-ada-002"
+    
+    # Filtering settings
+    ENABLE_FILTERING: bool = True  # Whether filtering is enabled
+    MAX_FILTER_RESULTS: int = 100  # Maximum results before filtering to prevent performance issues
+    
+    # Supported difficulty levels
+    SUPPORTED_DIFFICULTIES: List[str] = field(default_factory=lambda: ["Beginner", "Intermediate", "Advanced"])
+    
+    # Supported dietary restrictions
+    SUPPORTED_DIETARY_RESTRICTIONS: List[str] = field(default_factory=lambda: [
+        "vegetarian", "vegan", "gluten-free", "dairy-free", "nut-free", "low-carb", "keto", "paleo"
+    ])
+    
+    # Range filter limits
+    MIN_PREP_TIME_FILTER: int = 0
+    MAX_PREP_TIME_FILTER: int = 480  # 8 hours in minutes
+    MIN_COOK_TIME_FILTER: int = 0
+    MAX_COOK_TIME_FILTER: int = 480  # 8 hours in minutes
+    MIN_SERVINGS_FILTER: int = 1
+    MAX_SERVINGS_FILTER: int = 50
 
 
 @dataclass

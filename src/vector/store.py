@@ -4,7 +4,7 @@ Provides a high-level interface to Chroma DB operations.
 """
 
 import chromadb
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Union
 import uuid
 from datetime import datetime
 from rank_bm25 import BM25Okapi
@@ -13,7 +13,12 @@ from src.recipes.models import Recipe
 from src.common.config import get_vector_config, get_logger
 from .embeddings import RecipeEmbeddingGenerator, create_search_embedding
 from .keywords import extract_recipe_keywords, extract_query_keywords, build_recipe_corpus
+from .filters import RecipeFilter, apply_metadata_filters
 from src.common.exceptions import CookingAssistantError, VectorDatabaseError, VectorSearchError, BM25IndexError
+
+# Type definitions for better type safety
+RecipeMetadata = Dict[str, Union[str, int, List[str]]]
+SearchResult = Dict[str, Union[str, float, RecipeMetadata]]
 
 logger = get_logger(__name__)
 
@@ -276,13 +281,15 @@ class VectorRecipeStore:
                 logger.warning("BM25 index building failed, sparse search unavailable")
                 pass
     
-    def search_recipes_sparse(self, query: str, n_results: Optional[int] = None) -> List[Dict[str, Any]]:
+    def search_recipes_sparse(self, query: str, n_results: Optional[int] = None, 
+                             filters: Optional[RecipeFilter] = None) -> List[SearchResult]:
         """
         Search recipes using BM25 sparse/keyword search.
         
         Args:
             query: Search query string
             n_results: Maximum number of results to return
+            filters: Optional RecipeFilter for metadata filtering
             
         Returns:
             List of matching recipes with BM25 scores
@@ -324,6 +331,10 @@ class VectorRecipeStore:
                         'search_type': 'sparse'
                     })
             
+            # Apply filters if provided
+            if filters and filters.has_filters():
+                results = apply_metadata_filters(results, filters)
+            
             logger.info(f"Sparse search for '{query}' returned {len(results)} results")
             return results
             
@@ -334,10 +345,10 @@ class VectorRecipeStore:
             logger.error(f"Sparse search failed: {e}")
             return []  # Return empty results instead of raising
     
-    def _combine_search_results(self, sparse_results: List[Dict[str, Any]], 
-                               dense_results: List[Dict[str, Any]], 
+    def _combine_search_results(self, sparse_results: List[SearchResult], 
+                               dense_results: List[SearchResult], 
                                sparse_weight: float, dense_weight: float, 
-                               n_results: int) -> List[Dict[str, Any]]:
+                               n_results: int) -> List[SearchResult]:
         """
         Combine sparse and dense search results using Reciprocal Rank Fusion (RRF).
         
@@ -405,7 +416,8 @@ class VectorRecipeStore:
     
     def search_recipes_hybrid(self, query: str, n_results: Optional[int] = None,
                              sparse_weight: Optional[float] = None,
-                             dense_weight: Optional[float] = None) -> List[Dict[str, Any]]:
+                             dense_weight: Optional[float] = None,
+                             filters: Optional[RecipeFilter] = None) -> List[SearchResult]:
         """
         Search recipes using hybrid approach combining sparse (BM25) and dense (semantic) search.
         Uses Reciprocal Rank Fusion (RRF) to combine and rank results.
@@ -415,6 +427,7 @@ class VectorRecipeStore:
             n_results: Maximum number of results to return
             sparse_weight: Weight for sparse results (defaults to config)
             dense_weight: Weight for dense results (defaults to config)
+            filters: Optional RecipeFilter for metadata filtering
             
         Returns:
             List of combined and ranked results with RRF scores
@@ -435,14 +448,14 @@ class VectorRecipeStore:
             
             # Try sparse search first
             try:
-                sparse_results = self.search_recipes_sparse(query, n_results=search_limit)
+                sparse_results = self.search_recipes_sparse(query, n_results=search_limit, filters=filters)
             except Exception as e:
                 logger.warning(f"Sparse search failed in hybrid mode: {e}, continuing with dense only")
                 sparse_results = []
             
             # Try dense search
             try:
-                dense_results = self.search_recipes(query, n_results=search_limit)
+                dense_results = self.search_recipes(query, n_results=search_limit, filters=filters)
             except Exception as e:
                 logger.warning(f"Dense search failed in hybrid mode: {e}, continuing with sparse only")
                 dense_results = []
@@ -453,7 +466,7 @@ class VectorRecipeStore:
             # If both methods failed, fall back to individual methods
             if not sparse_results and not dense_results:
                 logger.info("Both search methods failed, falling back to dense search")
-                return self.search_recipes(query, n_results)
+                return self.search_recipes(query, n_results, filters=filters)
             
             # Combine results using RRF
             combined_results = self._combine_search_results(
@@ -470,13 +483,14 @@ class VectorRecipeStore:
             # Final fallback to dense search
             logger.info("Falling back to dense search")
             try:
-                return self.search_recipes(query, n_results)
+                return self.search_recipes(query, n_results, filters=filters)
             except Exception as fallback_error:
                 logger.error(f"Fallback dense search also failed: {fallback_error}")
                 return []
     
     def search_recipes(self, query: str, n_results: Optional[int] = None, 
-                      min_similarity: Optional[float] = None) -> List[Dict[str, Any]]:
+                      min_similarity: Optional[float] = None,
+                      filters: Optional[RecipeFilter] = None) -> List[SearchResult]:
         """
         Search for recipes using semantic similarity.
         
@@ -484,6 +498,7 @@ class VectorRecipeStore:
             query: Search query text
             n_results: Maximum number of results (defaults to config)
             min_similarity: Minimum similarity threshold (0-1)
+            filters: Optional RecipeFilter for metadata filtering
             
         Returns:
             List of search results with metadata and similarity scores
@@ -521,13 +536,17 @@ class VectorRecipeStore:
                 }
                 search_results.append(result)
             
+            # Apply filters if provided
+            if filters and filters.has_filters():
+                search_results = apply_metadata_filters(search_results, filters)
+            
             logger.info(f"Found {len(search_results)} recipes matching '{query}'")
             return search_results
             
         except Exception as e:
             raise VectorSearchError(f"Failed to search recipes: {e}") from e
     
-    def get_recipe_by_id(self, recipe_id: str) -> Optional[Dict[str, Any]]:
+    def get_recipe_by_id(self, recipe_id: str) -> Optional[SearchResult]:
         """
         Retrieve a recipe by its ID.
         

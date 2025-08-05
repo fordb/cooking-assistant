@@ -4,7 +4,7 @@ Tests for hybrid search functionality combining sparse and dense search.
 
 import unittest
 from unittest.mock import Mock, patch, MagicMock
-from typing import List, Dict, Any
+from typing import List, Dict, Union
 
 from src.vector.store import VectorRecipeStore
 

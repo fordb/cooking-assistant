@@ -4,11 +4,14 @@ Handles text preparation and embedding creation for vector search.
 """
 
 from openai import OpenAI
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Optional, Union
 import os
 from src.recipes.models import Recipe
 from src.common.config import get_vector_config, get_openai_config, get_logger
 from src.common.exceptions import EmbeddingGenerationError
+
+# Type definitions for better type safety
+EmbeddingData = Dict[str, Union[str, List[float], Dict[str, Union[str, int, List[str]]]]]
 
 logger = get_logger(__name__)
 
@@ -91,7 +94,7 @@ class RecipeEmbeddingGenerator:
             logger.error(f"Failed to generate embedding: {e}")
             raise EmbeddingGenerationError(f"OpenAI embedding generation failed: {e}") from e
     
-    def generate_recipe_embedding(self, recipe: Recipe) -> Dict[str, Any]:
+    def generate_recipe_embedding(self, recipe: Recipe) -> EmbeddingData:
         """
         Generate embedding and metadata for a recipe.
         
@@ -131,7 +134,7 @@ class RecipeEmbeddingGenerator:
         logger.info(f"Successfully generated embedding for '{recipe.title}'")
         return result
     
-    def generate_batch_embeddings(self, recipes: List[Recipe]) -> List[Dict[str, Any]]:
+    def generate_batch_embeddings(self, recipes: List[Recipe]) -> List[EmbeddingData]:
         """
         Generate embeddings for multiple recipes.
         
