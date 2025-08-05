@@ -78,22 +78,20 @@ class UserRecipeCollection:
     
     def add_user_recipe(self, recipe: Recipe) -> str:
         """
-        Add a user-uploaded recipe to their collection with validation.
+        Add a user-uploaded recipe to their collection.
         
         Args:
-            recipe: Recipe object to add (will be validated)
+            recipe: Recipe object to add (already validated during instantiation)
             
         Returns:
             Recipe ID in the collection
             
         Raises:
-            RecipeValidationError: If recipe validation fails
             UserRecipeCollectionError: If storage fails or user exceeds recipe limit
         """
         try:
-            # Validate the recipe using the Recipe model validation
-            recipe.model_validate(recipe.model_dump())
-            logger.debug(f"Recipe validation passed for: {recipe.title}")
+            # Recipe is already validated during instantiation (Pydantic models validate on creation)
+            logger.debug(f"Adding recipe: {recipe.title}")
             
             # Check user recipe count limit
             current_count = self.get_user_recipe_count() 
@@ -124,7 +122,7 @@ class UserRecipeCollection:
             return recipe_id
             
         except Exception as e:
-            if isinstance(e, (RecipeValidationError, UserRecipeCollectionError)):
+            if isinstance(e, UserRecipeCollectionError):
                 raise
             raise UserRecipeCollectionError(f"Failed to add user recipe: {str(e)}") from e
     

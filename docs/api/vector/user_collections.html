@@ -84,18 +84,16 @@ Extends VectorRecipeStore functionality with user-specific operations.</p>
 <span>def <span class="ident">add_user_recipe</span></span>(<span>self,<br>recipe: <a title="src.recipes.models.Recipe" href="../recipes/models.html#src.recipes.models.Recipe">Recipe</a>) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add a user-uploaded recipe to their collection with validation.</p>
+<div class="desc"><p>Add a user-uploaded recipe to their collection.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>recipe</code></strong></dt>
-<dd>Recipe object to add (will be validated)</dd>
+<dd>Recipe object to add (already validated during instantiation)</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>Recipe ID in the collection</p>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><code>RecipeValidationError</code></dt>
-<dd>If recipe validation fails</dd>
 <dt><code><a title="src.vector.user_collections.UserRecipeCollectionError" href="#src.vector.user_collections.UserRecipeCollectionError">UserRecipeCollectionError</a></code></dt>
 <dd>If storage fails or user exceeds recipe limit</dd>
 </dl></div>
