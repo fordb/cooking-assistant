@@ -5,8 +5,6 @@ Provides structured filtering based on recipe metadata.
 
 from typing import List, Dict, Optional, Union, Tuple
 from dataclasses import dataclass
-from pydantic import BaseModel, Field, field_validator
-import logging
 
 from src.common.config import get_vector_config, get_logger
 from src.common.exceptions import CookingAssistantError
