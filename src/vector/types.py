@@ -36,23 +36,3 @@ class EmbeddingData(TypedDict):
     text: str
     metadata: EmbeddingMetadata
     recipe: Recipe
-
-# User-specific types
-class UserRecipeMetadata(TypedDict):
-    """Metadata structure for user recipe embeddings."""
-    title: str
-    difficulty: str
-    prep_time: int
-    cook_time: int
-    total_time: int
-    servings: int
-    ingredient_count: int
-    instruction_count: int
-    user_id: str
-    uploaded_at: str
-
-class UserRecipe(TypedDict):
-    """Structure for user-uploaded recipes."""
-    recipe: Recipe
-    user_id: str
-    uploaded_at: str

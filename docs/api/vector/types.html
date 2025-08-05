@@ -125,86 +125,6 @@ Centralized location for all vector-related type definitions.</p>
 </dd>
 </dl>
 </dd>
-<dt id="src.vector.types.UserRecipe"><code class="flex name class">
-<span>class <span class="ident">UserRecipe</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Structure for user-uploaded recipes.</p></div>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>builtins.dict</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="src.vector.types.UserRecipe.recipe"><code class="name">var <span class="ident">recipe</span> : <a title="src.recipes.models.Recipe" href="../recipes/models.html#src.recipes.models.Recipe">Recipe</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.vector.types.UserRecipe.uploaded_at"><code class="name">var <span class="ident">uploaded_at</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.vector.types.UserRecipe.user_id"><code class="name">var <span class="ident">user_id</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="src.vector.types.UserRecipeMetadata"><code class="flex name class">
-<span>class <span class="ident">UserRecipeMetadata</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Metadata structure for user recipe embeddings.</p></div>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>builtins.dict</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="src.vector.types.UserRecipeMetadata.cook_time"><code class="name">var <span class="ident">cook_time</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.vector.types.UserRecipeMetadata.difficulty"><code class="name">var <span class="ident">difficulty</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.vector.types.UserRecipeMetadata.ingredient_count"><code class="name">var <span class="ident">ingredient_count</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.vector.types.UserRecipeMetadata.instruction_count"><code class="name">var <span class="ident">instruction_count</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.vector.types.UserRecipeMetadata.prep_time"><code class="name">var <span class="ident">prep_time</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.vector.types.UserRecipeMetadata.servings"><code class="name">var <span class="ident">servings</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.vector.types.UserRecipeMetadata.title"><code class="name">var <span class="ident">title</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.vector.types.UserRecipeMetadata.total_time"><code class="name">var <span class="ident">total_time</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.vector.types.UserRecipeMetadata.uploaded_at"><code class="name">var <span class="ident">uploaded_at</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.vector.types.UserRecipeMetadata.user_id"><code class="name">var <span class="ident">user_id</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
 </dl>
 </section>
 </article>
@@ -240,29 +160,6 @@ Centralized location for all vector-related type definitions.</p>
 <li><code><a title="src.vector.types.EmbeddingMetadata.servings" href="#src.vector.types.EmbeddingMetadata.servings">servings</a></code></li>
 <li><code><a title="src.vector.types.EmbeddingMetadata.title" href="#src.vector.types.EmbeddingMetadata.title">title</a></code></li>
 <li><code><a title="src.vector.types.EmbeddingMetadata.total_time" href="#src.vector.types.EmbeddingMetadata.total_time">total_time</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="src.vector.types.UserRecipe" href="#src.vector.types.UserRecipe">UserRecipe</a></code></h4>
-<ul class="">
-<li><code><a title="src.vector.types.UserRecipe.recipe" href="#src.vector.types.UserRecipe.recipe">recipe</a></code></li>
-<li><code><a title="src.vector.types.UserRecipe.uploaded_at" href="#src.vector.types.UserRecipe.uploaded_at">uploaded_at</a></code></li>
-<li><code><a title="src.vector.types.UserRecipe.user_id" href="#src.vector.types.UserRecipe.user_id">user_id</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="src.vector.types.UserRecipeMetadata" href="#src.vector.types.UserRecipeMetadata">UserRecipeMetadata</a></code></h4>
-<ul class="two-column">
-<li><code><a title="src.vector.types.UserRecipeMetadata.cook_time" href="#src.vector.types.UserRecipeMetadata.cook_time">cook_time</a></code></li>
-<li><code><a title="src.vector.types.UserRecipeMetadata.difficulty" href="#src.vector.types.UserRecipeMetadata.difficulty">difficulty</a></code></li>
-<li><code><a title="src.vector.types.UserRecipeMetadata.ingredient_count" href="#src.vector.types.UserRecipeMetadata.ingredient_count">ingredient_count</a></code></li>
-<li><code><a title="src.vector.types.UserRecipeMetadata.instruction_count" href="#src.vector.types.UserRecipeMetadata.instruction_count">instruction_count</a></code></li>
-<li><code><a title="src.vector.types.UserRecipeMetadata.prep_time" href="#src.vector.types.UserRecipeMetadata.prep_time">prep_time</a></code></li>
-<li><code><a title="src.vector.types.UserRecipeMetadata.servings" href="#src.vector.types.UserRecipeMetadata.servings">servings</a></code></li>
-<li><code><a title="src.vector.types.UserRecipeMetadata.title" href="#src.vector.types.UserRecipeMetadata.title">title</a></code></li>
-<li><code><a title="src.vector.types.UserRecipeMetadata.total_time" href="#src.vector.types.UserRecipeMetadata.total_time">total_time</a></code></li>
-<li><code><a title="src.vector.types.UserRecipeMetadata.uploaded_at" href="#src.vector.types.UserRecipeMetadata.uploaded_at">uploaded_at</a></code></li>
-<li><code><a title="src.vector.types.UserRecipeMetadata.user_id" href="#src.vector.types.UserRecipeMetadata.user_id">user_id</a></code></li>
 </ul>
 </li>
 </ul>
