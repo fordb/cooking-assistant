@@ -23,7 +23,22 @@ Return JSON in this exact format:
 Return only the JSON, no other text."""
 
 def validate_recipe_safety(recipe: Recipe) -> SafetyValidation:
-    """Validate recipe safety using AI analysis."""
+    """
+    Validate recipe safety using AI analysis to identify potential hazards.
+    
+    Uses OpenAI GPT-3.5-turbo to analyze recipe ingredients, instructions, and cooking 
+    methods for potential safety issues including dangerous ingredient combinations,
+    unsafe cooking temperatures, and missing critical safety steps.
+    
+    Args:
+        recipe: Recipe object to validate for safety
+        
+    Returns:
+        SafetyValidation object with safety status and any warnings
+        
+    Raises:
+        SafetyValidationError: If validation fails or response cannot be parsed
+    """
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
         

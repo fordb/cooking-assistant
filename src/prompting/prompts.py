@@ -10,6 +10,16 @@ TEMPLATE_TYPES = {
 }
 
 def create_basic_recipe_prompt(ingredients: str, skill_level: str = "intermediate") -> str:
+    """
+    Create a comprehensive recipe prompt with Chef Marcus persona and chain-of-thought reasoning.
+    
+    Args:
+        ingredients: Comma-separated list of ingredients to use
+        skill_level: Target skill level (beginner/intermediate/advanced)
+        
+    Returns:
+        Formatted prompt string with examples and structured reasoning process
+    """
     ingredient_list = [ing.strip() for ing in ingredients.split(',') if ing.strip()]
     few_shot_examples = get_few_shot_examples(3)
     
@@ -104,6 +114,16 @@ Based on your analysis above, create the final recipe as valid JSON matching thi
 Remember: Great recipes work reliably, taste excellent, and teach something along the way."""
 
 def create_quick_meal_prompt(ingredients: str, max_time: int = 30) -> str:
+    """
+    Create a prompt for quick meal recipes under time constraints.
+    
+    Args:
+        ingredients: Comma-separated list of ingredients to use
+        max_time: Maximum total cooking time in minutes (default 30)
+        
+    Returns:
+        Formatted prompt string optimized for speed and efficiency
+    """
     examples = get_few_shot_examples(2)  # Use fewer for speed
     return f"""Create a quick meal recipe using: {ingredients}
     
@@ -118,6 +138,16 @@ def create_quick_meal_prompt(ingredients: str, max_time: int = 30) -> str:
     Return only JSON recipe matching the example format."""
 
 def create_dietary_prompt(ingredients: str, dietary_type: str) -> str:
+    """
+    Create a prompt for recipes with specific dietary restrictions.
+    
+    Args:
+        ingredients: Comma-separated list of ingredients to use
+        dietary_type: Type of dietary restriction (vegan, vegetarian, keto, etc.)
+        
+    Returns:
+        Formatted prompt string with dietary compliance requirements
+    """
     examples = get_few_shot_examples(2)
     return f"""Create a {dietary_type} recipe using: {ingredients}
     
@@ -132,6 +162,16 @@ def create_dietary_prompt(ingredients: str, dietary_type: str) -> str:
     Return only JSON recipe matching the example format."""
 
 def create_cuisine_prompt(ingredients: str, cuisine: str) -> str:
+    """
+    Create a prompt for recipes in a specific cuisine style.
+    
+    Args:
+        ingredients: Comma-separated list of ingredients to use
+        cuisine: Target cuisine style (Italian, Mexican, Asian, etc.)
+        
+    Returns:
+        Formatted prompt string with authentic cuisine requirements
+    """
     examples = get_few_shot_examples(2)
     return f"""Create a {cuisine} style recipe using: {ingredients}
     
@@ -146,6 +186,17 @@ def create_cuisine_prompt(ingredients: str, cuisine: str) -> str:
     Return only JSON recipe matching the example format."""
 
 def create_substitution_prompt(original_recipe: str, missing_ingredients: str, available_ingredients: str) -> str:
+    """
+    Create a prompt for modifying recipes with ingredient substitutions.
+    
+    Args:
+        original_recipe: The original recipe to modify
+        missing_ingredients: Ingredients that are not available
+        available_ingredients: Ingredients that can be used as substitutes
+        
+    Returns:
+        Formatted prompt string for ingredient substitution modifications
+    """
     return f"""Modify this recipe by substituting ingredients:
     
     Original Recipe: {original_recipe}

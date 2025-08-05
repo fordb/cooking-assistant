@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>src.vector.store API documentation</title>
+<meta name="description" content="Vector database operations for recipe storage and retrieval.
+Provides a high-level interface to Chroma DB operations.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.vector.store</code></h1>
+</header>
+<section id="section-intro">
+<p>Vector database operations for recipe storage and retrieval.
+Provides a high-level interface to Chroma DB operations.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="src.vector.store.VectorRecipeStore"><code class="flex name class">
+<span>class <span class="ident">VectorRecipeStore</span></span>
+<span>(</span><span>api_key: str | None = None, collection_name: str | None = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>High-level interface for storing and searching recipes in vector database.
+Handles Chroma DB operations with recipe-specific logic.</p>
+<p>Initialize the vector recipe store.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>api_key</code></strong></dt>
+<dd>OpenAI API key for embedding generation</dd>
+<dt><strong><code>collection_name</code></strong></dt>
+<dd>Name of the collection to use (defaults to config)</dd>
+</dl></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.vector.store.VectorRecipeStore.client"><code class="name">prop <span class="ident">client</span></code></dt>
+<dd>
+<div class="desc"><p>Get or create the Chroma database client connection.</p>
+<p>Lazily initializes the HTTP client connection to ChromaDB and tests
+connectivity with a heartbeat. Connection parameters are loaded from
+the vector configuration.</p>
+<h2 id="returns">Returns</h2>
+<p>ChromaDB HttpClient instance</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>VectorDatabaseError</code></dt>
+<dd>If connection to ChromaDB fails</dd>
+</dl></div>
+</dd>
+<dt id="src.vector.store.VectorRecipeStore.collection"><code class="name">prop <span class="ident">collection</span></code></dt>
+<dd>
+<div class="desc"><p>Get or create the recipe collection in ChromaDB.</p>
+<p>Lazily initializes the collection, attempting to get an existing
+collection first, then creating a new one if it doesn't exist.</p>
+<h2 id="returns">Returns</h2>
+<p>ChromaDB Collection instance for recipe storage</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>VectorDatabaseError</code></dt>
+<dd>If collection creation or access fails</dd>
+</dl></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.vector.store.VectorRecipeStore.add_recipe"><code class="name flex">
+<span>def <span class="ident">add_recipe</span></span>(<span>self,<br>recipe: <a title="src.recipes.models.Recipe" href="../recipes/models.html#src.recipes.models.Recipe">Recipe</a>,<br>recipe_id: str | None = None) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a single recipe to the vector store.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>recipe</code></strong></dt>
+<dd>Recipe object to add</dd>
+<dt><strong><code>recipe_id</code></strong></dt>
+<dd>Optional custom ID (generates UUID if not provided)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>ID of the added recipe</p></div>
+</dd>
+<dt id="src.vector.store.VectorRecipeStore.add_recipes"><code class="name flex">
+<span>def <span class="ident">add_recipes</span></span>(<span>self,<br>recipes: List[<a title="src.recipes.models.Recipe" href="../recipes/models.html#src.recipes.models.Recipe">Recipe</a>],<br>recipe_ids: List[str] | None = None) ‑> List[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add multiple recipes to the vector store.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>recipes</code></strong></dt>
+<dd>List of Recipe objects to add</dd>
+<dt><strong><code>recipe_ids</code></strong></dt>
+<dd>Optional list of custom IDs</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of IDs for added recipes</p></div>
+</dd>
+<dt id="src.vector.store.VectorRecipeStore.clear_collection"><code class="name flex">
+<span>def <span class="ident">clear_collection</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Clear all recipes from the collection.</p>
+<h2 id="returns">Returns</h2>
+<p>True if successful</p></div>
+</dd>
+<dt id="src.vector.store.VectorRecipeStore.count_recipes"><code class="name flex">
+<span>def <span class="ident">count_recipes</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get total number of recipes in the store.</p></div>
+</dd>
+<dt id="src.vector.store.VectorRecipeStore.delete_recipe"><code class="name flex">
+<span>def <span class="ident">delete_recipe</span></span>(<span>self, recipe_id: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Delete a recipe from the vector store.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>recipe_id</code></strong></dt>
+<dd>ID of recipe to delete</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>True if successful, False otherwise</p></div>
+</dd>
+<dt id="src.vector.store.VectorRecipeStore.get_recipe_by_id"><code class="name flex">
+<span>def <span class="ident">get_recipe_by_id</span></span>(<span>self, recipe_id: str) ‑> Dict[str, str | float | Dict[str, str | int | List[str]]] | None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieve a recipe by its ID.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>recipe_id</code></strong></dt>
+<dd>ID of the recipe to retrieve</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Recipe data or None if not found</p></div>
+</dd>
+<dt id="src.vector.store.VectorRecipeStore.search_recipes"><code class="name flex">
+<span>def <span class="ident">search_recipes</span></span>(<span>self,<br>query: str,<br>n_results: int | None = None,<br>min_similarity: float | None = None,<br>filters: <a title="src.vector.filters.RecipeFilter" href="filters.html#src.vector.filters.RecipeFilter">RecipeFilter</a> | None = None) ‑> List[Dict[str, str | float | Dict[str, str | int | List[str]]]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Search for recipes using semantic similarity.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>query</code></strong></dt>
+<dd>Search query text</dd>
+<dt><strong><code>n_results</code></strong></dt>
+<dd>Maximum number of results (defaults to config)</dd>
+<dt><strong><code>min_similarity</code></strong></dt>
+<dd>Minimum similarity threshold (0-1)</dd>
+<dt><strong><code>filters</code></strong></dt>
+<dd>Optional RecipeFilter for metadata filtering</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of search results with metadata and similarity scores</p></div>
+</dd>
+<dt id="src.vector.store.VectorRecipeStore.search_recipes_hybrid"><code class="name flex">
+<span>def <span class="ident">search_recipes_hybrid</span></span>(<span>self,<br>query: str,<br>n_results: int | None = None,<br>sparse_weight: float | None = None,<br>dense_weight: float | None = None,<br>filters: <a title="src.vector.filters.RecipeFilter" href="filters.html#src.vector.filters.RecipeFilter">RecipeFilter</a> | None = None) ‑> List[Dict[str, str | float | Dict[str, str | int | List[str]]]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Search recipes using hybrid approach combining sparse (BM25) and dense (semantic) search.
+Uses Reciprocal Rank Fusion (RRF) to combine and rank results.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>query</code></strong></dt>
+<dd>Search query string</dd>
+<dt><strong><code>n_results</code></strong></dt>
+<dd>Maximum number of results to return</dd>
+<dt><strong><code>sparse_weight</code></strong></dt>
+<dd>Weight for sparse results (defaults to config)</dd>
+<dt><strong><code>dense_weight</code></strong></dt>
+<dd>Weight for dense results (defaults to config)</dd>
+<dt><strong><code>filters</code></strong></dt>
+<dd>Optional RecipeFilter for metadata filtering</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of combined and ranked results with RRF scores</p></div>
+</dd>
+<dt id="src.vector.store.VectorRecipeStore.search_recipes_sparse"><code class="name flex">
+<span>def <span class="ident">search_recipes_sparse</span></span>(<span>self,<br>query: str,<br>n_results: int | None = None,<br>filters: <a title="src.vector.filters.RecipeFilter" href="filters.html#src.vector.filters.RecipeFilter">RecipeFilter</a> | None = None) ‑> List[Dict[str, str | float | Dict[str, str | int | List[str]]]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Search recipes using BM25 sparse/keyword search.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>query</code></strong></dt>
+<dd>Search query string</dd>
+<dt><strong><code>n_results</code></strong></dt>
+<dd>Maximum number of results to return</dd>
+<dt><strong><code>filters</code></strong></dt>
+<dd>Optional RecipeFilter for metadata filtering</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of matching recipes with BM25 scores</p></div>
+</dd>
+<dt id="src.vector.store.VectorRecipeStore.update_recipe"><code class="name flex">
+<span>def <span class="ident">update_recipe</span></span>(<span>self,<br>recipe_id: str,<br>recipe: <a title="src.recipes.models.Recipe" href="../recipes/models.html#src.recipes.models.Recipe">Recipe</a>) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Update an existing recipe in the vector store.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>recipe_id</code></strong></dt>
+<dd>ID of recipe to update</dd>
+<dt><strong><code>recipe</code></strong></dt>
+<dd>New recipe data</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>True if successful, False otherwise</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.vector.store.VectorStoreError"><code class="flex name class">
+<span>class <span class="ident">VectorStoreError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Exception raised for vector store operations.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="src.common.exceptions.CookingAssistantError" href="../common/exceptions.html#src.common.exceptions.CookingAssistantError">CookingAssistantError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src.vector" href="index.html">src.vector</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="src.vector.store.VectorRecipeStore" href="#src.vector.store.VectorRecipeStore">VectorRecipeStore</a></code></h4>
+<ul class="">
+<li><code><a title="src.vector.store.VectorRecipeStore.add_recipe" href="#src.vector.store.VectorRecipeStore.add_recipe">add_recipe</a></code></li>
+<li><code><a title="src.vector.store.VectorRecipeStore.add_recipes" href="#src.vector.store.VectorRecipeStore.add_recipes">add_recipes</a></code></li>
+<li><code><a title="src.vector.store.VectorRecipeStore.clear_collection" href="#src.vector.store.VectorRecipeStore.clear_collection">clear_collection</a></code></li>
+<li><code><a title="src.vector.store.VectorRecipeStore.client" href="#src.vector.store.VectorRecipeStore.client">client</a></code></li>
+<li><code><a title="src.vector.store.VectorRecipeStore.collection" href="#src.vector.store.VectorRecipeStore.collection">collection</a></code></li>
+<li><code><a title="src.vector.store.VectorRecipeStore.count_recipes" href="#src.vector.store.VectorRecipeStore.count_recipes">count_recipes</a></code></li>
+<li><code><a title="src.vector.store.VectorRecipeStore.delete_recipe" href="#src.vector.store.VectorRecipeStore.delete_recipe">delete_recipe</a></code></li>
+<li><code><a title="src.vector.store.VectorRecipeStore.get_recipe_by_id" href="#src.vector.store.VectorRecipeStore.get_recipe_by_id">get_recipe_by_id</a></code></li>
+<li><code><a title="src.vector.store.VectorRecipeStore.search_recipes" href="#src.vector.store.VectorRecipeStore.search_recipes">search_recipes</a></code></li>
+<li><code><a title="src.vector.store.VectorRecipeStore.search_recipes_hybrid" href="#src.vector.store.VectorRecipeStore.search_recipes_hybrid">search_recipes_hybrid</a></code></li>
+<li><code><a title="src.vector.store.VectorRecipeStore.search_recipes_sparse" href="#src.vector.store.VectorRecipeStore.search_recipes_sparse">search_recipes_sparse</a></code></li>
+<li><code><a title="src.vector.store.VectorRecipeStore.update_recipe" href="#src.vector.store.VectorRecipeStore.update_recipe">update_recipe</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.vector.store.VectorStoreError" href="#src.vector.store.VectorStoreError">VectorStoreError</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>
