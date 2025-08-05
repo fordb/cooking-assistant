@@ -70,6 +70,11 @@ Provides a high-level interface to Chroma DB operations.</p></div>
 <div class="desc"><p>Type definitions for vector database operations.
 Centralized location for all vector-related type definitions.</p></div>
 </dd>
+<dt><code class="name"><a title="src.vector.user_collections" href="user_collections.html">src.vector.user_collections</a></code></dt>
+<dd>
+<div class="desc"><p>User recipe collections management for the vector database.
+Provides functionality for user-specific recipe storage, validation, and retrieval.</p></div>
+</dd>
 </dl>
 </section>
 <section>
@@ -360,6 +365,155 @@ and dense search result formats.</p>
 </dd>
 </dl>
 </dd>
+<dt id="src.vector.UserRecipe"><code class="flex name class">
+<span>class <span class="ident">UserRecipe</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Structure for user-uploaded recipes.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.dict</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="src.vector.UserRecipe.recipe"><code class="name">var <span class="ident">recipe</span> : <a title="src.recipes.models.Recipe" href="../recipes/models.html#src.recipes.models.Recipe">Recipe</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.vector.UserRecipe.uploaded_at"><code class="name">var <span class="ident">uploaded_at</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.vector.UserRecipe.user_id"><code class="name">var <span class="ident">user_id</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.vector.UserRecipeCollection"><code class="flex name class">
+<span>class <span class="ident">UserRecipeCollection</span></span>
+<span>(</span><span>user_id: str, api_key: str | None = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Manages user-specific recipe collections in the vector database.</p>
+<p>Initialize user recipe collection.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>user_id</code></strong></dt>
+<dd>Unique identifier for the user</dd>
+<dt><strong><code>api_key</code></strong></dt>
+<dd>OpenAI API key for embedding generation</dd>
+</dl></div>
+<h3>Methods</h3>
+<dl>
+<dt id="src.vector.UserRecipeCollection.add_user_recipe"><code class="name flex">
+<span>def <span class="ident">add_user_recipe</span></span>(<span>self,<br>recipe: <a title="src.recipes.models.Recipe" href="../recipes/models.html#src.recipes.models.Recipe">Recipe</a>) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a user-uploaded recipe to their collection.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>recipe</code></strong></dt>
+<dd>Recipe object to add</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Recipe ID in the collection</p></div>
+</dd>
+<dt id="src.vector.UserRecipeCollection.delete_user_recipe"><code class="name flex">
+<span>def <span class="ident">delete_user_recipe</span></span>(<span>self, recipe_id: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Delete a recipe from user's collection.</p></div>
+</dd>
+<dt id="src.vector.UserRecipeCollection.get_user_recipe_count"><code class="name flex">
+<span>def <span class="ident">get_user_recipe_count</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the total number of recipes in user's collection.</p></div>
+</dd>
+<dt id="src.vector.UserRecipeCollection.get_user_recipes"><code class="name flex">
+<span>def <span class="ident">get_user_recipes</span></span>(<span>self, limit: int | None = None) ‑> List[Dict[str, Any]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Retrieve all recipes from user's collection.</p></div>
+</dd>
+<dt id="src.vector.UserRecipeCollection.search_user_recipes"><code class="name flex">
+<span>def <span class="ident">search_user_recipes</span></span>(<span>self, query: str, n_results: int | None = None, search_type: str = 'hybrid') ‑> List[Dict[str, str | float | Dict[str, str | int | List[str]]]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Search within user's recipe collection.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.vector.UserRecipeCollectionError"><code class="flex name class">
+<span>class <span class="ident">UserRecipeCollectionError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Exception raised for user recipe collection operations.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="src.common.exceptions.VectorDatabaseError" href="../common/exceptions.html#src.common.exceptions.VectorDatabaseError">VectorDatabaseError</a></li>
+<li><a title="src.common.exceptions.CookingAssistantError" href="../common/exceptions.html#src.common.exceptions.CookingAssistantError">CookingAssistantError</a></li>
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="src.vector.UserRecipeMetadata"><code class="flex name class">
+<span>class <span class="ident">UserRecipeMetadata</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Metadata structure for user recipe embeddings.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.dict</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="src.vector.UserRecipeMetadata.cook_time"><code class="name">var <span class="ident">cook_time</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.vector.UserRecipeMetadata.difficulty"><code class="name">var <span class="ident">difficulty</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.vector.UserRecipeMetadata.ingredient_count"><code class="name">var <span class="ident">ingredient_count</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.vector.UserRecipeMetadata.instruction_count"><code class="name">var <span class="ident">instruction_count</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.vector.UserRecipeMetadata.prep_time"><code class="name">var <span class="ident">prep_time</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.vector.UserRecipeMetadata.servings"><code class="name">var <span class="ident">servings</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.vector.UserRecipeMetadata.title"><code class="name">var <span class="ident">title</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.vector.UserRecipeMetadata.total_time"><code class="name">var <span class="ident">total_time</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.vector.UserRecipeMetadata.uploaded_at"><code class="name">var <span class="ident">uploaded_at</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.vector.UserRecipeMetadata.user_id"><code class="name">var <span class="ident">user_id</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
 <dt id="src.vector.VectorRecipeStore"><code class="flex name class">
 <span>class <span class="ident">VectorRecipeStore</span></span>
 <span>(</span><span>api_key: str | None = None, collection_name: str | None = None)</span>
@@ -586,6 +740,7 @@ Uses Reciprocal Rank Fusion (RRF) to combine and rank results.</p>
 <li><code><a title="src.vector.keywords" href="keywords.html">src.vector.keywords</a></code></li>
 <li><code><a title="src.vector.store" href="store.html">src.vector.store</a></code></li>
 <li><code><a title="src.vector.types" href="types.html">src.vector.types</a></code></li>
+<li><code><a title="src.vector.user_collections" href="user_collections.html">src.vector.user_collections</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
@@ -643,6 +798,42 @@ Uses Reciprocal Rank Fusion (RRF) to combine and rank results.</p>
 <li><code><a title="src.vector.RecipeFilter.prep_time_min" href="#src.vector.RecipeFilter.prep_time_min">prep_time_min</a></code></li>
 <li><code><a title="src.vector.RecipeFilter.servings_max" href="#src.vector.RecipeFilter.servings_max">servings_max</a></code></li>
 <li><code><a title="src.vector.RecipeFilter.servings_min" href="#src.vector.RecipeFilter.servings_min">servings_min</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.vector.UserRecipe" href="#src.vector.UserRecipe">UserRecipe</a></code></h4>
+<ul class="">
+<li><code><a title="src.vector.UserRecipe.recipe" href="#src.vector.UserRecipe.recipe">recipe</a></code></li>
+<li><code><a title="src.vector.UserRecipe.uploaded_at" href="#src.vector.UserRecipe.uploaded_at">uploaded_at</a></code></li>
+<li><code><a title="src.vector.UserRecipe.user_id" href="#src.vector.UserRecipe.user_id">user_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.vector.UserRecipeCollection" href="#src.vector.UserRecipeCollection">UserRecipeCollection</a></code></h4>
+<ul class="">
+<li><code><a title="src.vector.UserRecipeCollection.add_user_recipe" href="#src.vector.UserRecipeCollection.add_user_recipe">add_user_recipe</a></code></li>
+<li><code><a title="src.vector.UserRecipeCollection.delete_user_recipe" href="#src.vector.UserRecipeCollection.delete_user_recipe">delete_user_recipe</a></code></li>
+<li><code><a title="src.vector.UserRecipeCollection.get_user_recipe_count" href="#src.vector.UserRecipeCollection.get_user_recipe_count">get_user_recipe_count</a></code></li>
+<li><code><a title="src.vector.UserRecipeCollection.get_user_recipes" href="#src.vector.UserRecipeCollection.get_user_recipes">get_user_recipes</a></code></li>
+<li><code><a title="src.vector.UserRecipeCollection.search_user_recipes" href="#src.vector.UserRecipeCollection.search_user_recipes">search_user_recipes</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.vector.UserRecipeCollectionError" href="#src.vector.UserRecipeCollectionError">UserRecipeCollectionError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="src.vector.UserRecipeMetadata" href="#src.vector.UserRecipeMetadata">UserRecipeMetadata</a></code></h4>
+<ul class="two-column">
+<li><code><a title="src.vector.UserRecipeMetadata.cook_time" href="#src.vector.UserRecipeMetadata.cook_time">cook_time</a></code></li>
+<li><code><a title="src.vector.UserRecipeMetadata.difficulty" href="#src.vector.UserRecipeMetadata.difficulty">difficulty</a></code></li>
+<li><code><a title="src.vector.UserRecipeMetadata.ingredient_count" href="#src.vector.UserRecipeMetadata.ingredient_count">ingredient_count</a></code></li>
+<li><code><a title="src.vector.UserRecipeMetadata.instruction_count" href="#src.vector.UserRecipeMetadata.instruction_count">instruction_count</a></code></li>
+<li><code><a title="src.vector.UserRecipeMetadata.prep_time" href="#src.vector.UserRecipeMetadata.prep_time">prep_time</a></code></li>
+<li><code><a title="src.vector.UserRecipeMetadata.servings" href="#src.vector.UserRecipeMetadata.servings">servings</a></code></li>
+<li><code><a title="src.vector.UserRecipeMetadata.title" href="#src.vector.UserRecipeMetadata.title">title</a></code></li>
+<li><code><a title="src.vector.UserRecipeMetadata.total_time" href="#src.vector.UserRecipeMetadata.total_time">total_time</a></code></li>
+<li><code><a title="src.vector.UserRecipeMetadata.uploaded_at" href="#src.vector.UserRecipeMetadata.uploaded_at">uploaded_at</a></code></li>
+<li><code><a title="src.vector.UserRecipeMetadata.user_id" href="#src.vector.UserRecipeMetadata.user_id">user_id</a></code></li>
 </ul>
 </li>
 <li>
