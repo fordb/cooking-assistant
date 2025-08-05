@@ -149,7 +149,7 @@ class TestUserRecipeCollection(unittest.TestCase):
         
         # Mock collection results
         mock_collection = Mock()
-        mock_store_instance._collection = mock_collection
+        mock_store_instance.collection = mock_collection
         mock_collection.get.return_value = {
             'ids': ['recipe1', 'recipe2'],
             'documents': ['Recipe 1 content', 'Recipe 2 content'],
@@ -175,9 +175,7 @@ class TestUserRecipeCollection(unittest.TestCase):
         mock_store_instance = Mock()
         mock_store.return_value = mock_store_instance
         
-        mock_collection = Mock()
-        mock_store_instance._collection = mock_collection
-        mock_collection.count.return_value = 5
+        mock_store_instance.count_recipes.return_value = 5
         
         collection = UserRecipeCollection(self.test_user_id)
         count = collection.get_user_recipe_count()
@@ -248,14 +246,13 @@ class TestUserRecipeCollection(unittest.TestCase):
         mock_store_instance = Mock()
         mock_store.return_value = mock_store_instance
         
-        mock_collection = Mock()
-        mock_store_instance._collection = mock_collection
+        mock_store_instance.delete_recipe.return_value = True
         
         collection = UserRecipeCollection(self.test_user_id)
         result = collection.delete_user_recipe("recipe_123")
         
         self.assertTrue(result)
-        mock_collection.delete.assert_called_once_with(ids=["recipe_123"])
+        mock_store_instance.delete_recipe.assert_called_once_with("recipe_123")
     
     @patch('src.vector.user_collections.get_vector_config')
     @patch('src.vector.user_collections.VectorRecipeStore')
@@ -264,7 +261,7 @@ class TestUserRecipeCollection(unittest.TestCase):
         mock_config.return_value = self.mock_config
         mock_store_instance = Mock()
         mock_store.return_value = mock_store_instance
-        mock_store_instance._get_collection.return_value = Mock()
+        mock_store_instance.collection = Mock()
         
         collection = UserRecipeCollection(self.test_user_id)
         exists = collection.collection_exists()
@@ -280,7 +277,12 @@ class TestUserRecipeCollection(unittest.TestCase):
         mock_store.return_value = mock_store_instance
         
         from chromadb.errors import NotFoundError
-        mock_store_instance._get_collection.side_effect = NotFoundError("Not found")
+        
+        # Create a mock that raises NotFoundError when .collection is accessed
+        def collection_property():
+            raise NotFoundError("Not found")
+        
+        type(mock_store_instance).collection = property(lambda self: collection_property())
         
         collection = UserRecipeCollection(self.test_user_id)
         exists = collection.collection_exists()

@@ -139,8 +139,8 @@ class UserRecipeCollection:
         try:
             search_limit = limit or self.config.DEFAULT_SEARCH_LIMIT
             
-            # Get all recipes from user collection (using empty query gets all)
-            results = self.store._collection.get(limit=search_limit)
+            # Get all recipes from user collection using the public collection property
+            results = self.store.collection.get(limit=search_limit)
             
             user_recipes = []
             for i, doc_id in enumerate(results['ids']):
@@ -174,7 +174,7 @@ class UserRecipeCollection:
             Number of recipes in collection
         """
         try:
-            results = self.store._collection.count()
+            results = self.store.count_recipes()
             logger.debug(f"User {self.user_id} has {results} recipes")
             return results
             
@@ -223,9 +223,12 @@ class UserRecipeCollection:
             UserRecipeCollectionError: If deletion fails
         """
         try:
-            self.store._collection.delete(ids=[recipe_id])
-            logger.info(f"Deleted recipe {recipe_id} for user: {self.user_id}")
-            return True
+            success = self.store.delete_recipe(recipe_id)
+            if success:
+                logger.info(f"Deleted recipe {recipe_id} for user: {self.user_id}")
+                return True
+            else:
+                raise UserRecipeCollectionError(f"Failed to delete recipe {recipe_id}")
             
         except Exception as e:
             raise UserRecipeCollectionError(f"Failed to delete recipe {recipe_id}: {str(e)}") from e
@@ -238,8 +241,9 @@ class UserRecipeCollection:
             True if collection exists
         """
         try:
-            # Try to access the collection
-            self.store._get_collection()
+            # Try to access the collection property (will create it if it doesn't exist)
+            # We can check if it has any recipes or just access it to trigger creation
+            _ = self.store.collection
             return True
         except (NotFoundError, VectorDatabaseError):
             return False
