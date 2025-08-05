@@ -487,7 +487,7 @@ Centralizes all configurable constants and magic numbers.</p>
 </dd>
 <dt id="src.common.config.VectorConfig"><code class="flex name class">
 <span>class <span class="ident">VectorConfig</span></span>
-<span>(</span><span>HOST: str = 'localhost',<br>PORT: int = 8000,<br>PERSISTENCE_DIRECTORY: str = 'data/chroma_db',<br>RECIPE_COLLECTION_NAME: str = 'recipes',<br>EMBEDDING_DIMENSION: int = 1536,<br>DEFAULT_SEARCH_LIMIT: int = 10,<br>SIMILARITY_THRESHOLD: float = 0.7,<br>BM25_K1: float = 1.2,<br>BM25_B: float = 0.75,<br>MIN_KEYWORD_LENGTH: int = 2,<br>STOPWORDS_ENABLED: bool = True,<br>HYBRID_SPARSE_WEIGHT: float = 0.4,<br>HYBRID_DENSE_WEIGHT: float = 0.6,<br>RRF_K: int = 60,<br>HYBRID_ENABLED: bool = True,<br>EMBEDDING_MODEL: str = 'text-embedding-ada-002',<br>ENABLE_FILTERING: bool = True,<br>MAX_FILTER_RESULTS: int = 100,<br>SUPPORTED_DIFFICULTIES: List[str] = &lt;factory&gt;,<br>SUPPORTED_DIETARY_RESTRICTIONS: List[str] = &lt;factory&gt;,<br>MIN_PREP_TIME_FILTER: int = 0,<br>MAX_PREP_TIME_FILTER: int = 480,<br>MIN_COOK_TIME_FILTER: int = 0,<br>MAX_COOK_TIME_FILTER: int = 480,<br>MIN_SERVINGS_FILTER: int = 1,<br>MAX_SERVINGS_FILTER: int = 50)</span>
+<span>(</span><span>HOST: str = 'localhost',<br>PORT: int = 8000,<br>PERSISTENCE_DIRECTORY: str = 'data/chroma_db',<br>RECIPE_COLLECTION_NAME: str = 'recipes',<br>EMBEDDING_DIMENSION: int = 1536,<br>DEFAULT_SEARCH_LIMIT: int = 10,<br>SIMILARITY_THRESHOLD: float = 0.7,<br>BM25_K1: float = 1.2,<br>BM25_B: float = 0.75,<br>MIN_KEYWORD_LENGTH: int = 2,<br>STOPWORDS_ENABLED: bool = True,<br>HYBRID_SPARSE_WEIGHT: float = 0.4,<br>HYBRID_DENSE_WEIGHT: float = 0.6,<br>RRF_K: int = 60,<br>HYBRID_ENABLED: bool = True,<br>EMBEDDING_MODEL: str = 'text-embedding-ada-002',<br>ENABLE_FILTERING: bool = True,<br>MAX_FILTER_RESULTS: int = 100,<br>SUPPORTED_DIFFICULTIES: List[str] = &lt;factory&gt;,<br>SUPPORTED_DIETARY_RESTRICTIONS: List[str] = &lt;factory&gt;,<br>MIN_PREP_TIME_FILTER: int = 0,<br>MAX_PREP_TIME_FILTER: int = 480,<br>MIN_COOK_TIME_FILTER: int = 0,<br>MAX_COOK_TIME_FILTER: int = 480,<br>MIN_SERVINGS_FILTER: int = 1,<br>MAX_SERVINGS_FILTER: int = 50,<br>USER_COLLECTION_PREFIX: str = 'user_recipes_',<br>MAX_USER_RECIPES: int = 1000,<br>USER_ID_MAX_LENGTH: int = 100)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Configuration for vector database (Chroma) operations.</p></div>
@@ -549,6 +549,10 @@ Centralizes all configurable constants and magic numbers.</p>
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="src.common.config.VectorConfig.MAX_USER_RECIPES"><code class="name">var <span class="ident">MAX_USER_RECIPES</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="src.common.config.VectorConfig.MIN_COOK_TIME_FILTER"><code class="name">var <span class="ident">MIN_COOK_TIME_FILTER</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
@@ -594,6 +598,14 @@ Centralizes all configurable constants and magic numbers.</p>
 <div class="desc"></div>
 </dd>
 <dt id="src.common.config.VectorConfig.SUPPORTED_DIFFICULTIES"><code class="name">var <span class="ident">SUPPORTED_DIFFICULTIES</span> : List[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.USER_COLLECTION_PREFIX"><code class="name">var <span class="ident">USER_COLLECTION_PREFIX</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.common.config.VectorConfig.USER_ID_MAX_LENGTH"><code class="name">var <span class="ident">USER_ID_MAX_LENGTH</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -756,6 +768,7 @@ Centralizes all configurable constants and magic numbers.</p>
 <li><code><a title="src.common.config.VectorConfig.MAX_FILTER_RESULTS" href="#src.common.config.VectorConfig.MAX_FILTER_RESULTS">MAX_FILTER_RESULTS</a></code></li>
 <li><code><a title="src.common.config.VectorConfig.MAX_PREP_TIME_FILTER" href="#src.common.config.VectorConfig.MAX_PREP_TIME_FILTER">MAX_PREP_TIME_FILTER</a></code></li>
 <li><code><a title="src.common.config.VectorConfig.MAX_SERVINGS_FILTER" href="#src.common.config.VectorConfig.MAX_SERVINGS_FILTER">MAX_SERVINGS_FILTER</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.MAX_USER_RECIPES" href="#src.common.config.VectorConfig.MAX_USER_RECIPES">MAX_USER_RECIPES</a></code></li>
 <li><code><a title="src.common.config.VectorConfig.MIN_COOK_TIME_FILTER" href="#src.common.config.VectorConfig.MIN_COOK_TIME_FILTER">MIN_COOK_TIME_FILTER</a></code></li>
 <li><code><a title="src.common.config.VectorConfig.MIN_KEYWORD_LENGTH" href="#src.common.config.VectorConfig.MIN_KEYWORD_LENGTH">MIN_KEYWORD_LENGTH</a></code></li>
 <li><code><a title="src.common.config.VectorConfig.MIN_PREP_TIME_FILTER" href="#src.common.config.VectorConfig.MIN_PREP_TIME_FILTER">MIN_PREP_TIME_FILTER</a></code></li>
@@ -768,6 +781,8 @@ Centralizes all configurable constants and magic numbers.</p>
 <li><code><a title="src.common.config.VectorConfig.STOPWORDS_ENABLED" href="#src.common.config.VectorConfig.STOPWORDS_ENABLED">STOPWORDS_ENABLED</a></code></li>
 <li><code><a title="src.common.config.VectorConfig.SUPPORTED_DIETARY_RESTRICTIONS" href="#src.common.config.VectorConfig.SUPPORTED_DIETARY_RESTRICTIONS">SUPPORTED_DIETARY_RESTRICTIONS</a></code></li>
 <li><code><a title="src.common.config.VectorConfig.SUPPORTED_DIFFICULTIES" href="#src.common.config.VectorConfig.SUPPORTED_DIFFICULTIES">SUPPORTED_DIFFICULTIES</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.USER_COLLECTION_PREFIX" href="#src.common.config.VectorConfig.USER_COLLECTION_PREFIX">USER_COLLECTION_PREFIX</a></code></li>
+<li><code><a title="src.common.config.VectorConfig.USER_ID_MAX_LENGTH" href="#src.common.config.VectorConfig.USER_ID_MAX_LENGTH">USER_ID_MAX_LENGTH</a></code></li>
 </ul>
 </li>
 </ul>
