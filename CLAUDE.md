@@ -63,6 +63,7 @@ At the end of each session:
 - Be sure to typecheck when you're done making a series of code changes
 - Prefer running single tests, and not the whole test suite, for performance during development
 - **API documentation is auto-generated**: Pre-commit hook automatically runs `python generate_docs.py` and adds docs/api/ to commits
+- If you have issues with `Python not found`, make sure to check that you are in the virtual environment before trying again
 
 # Development Pratcies
 - Split changes up into meaningful chunks. Avoid changing too many things at once to make the review and development easier to follow and review
