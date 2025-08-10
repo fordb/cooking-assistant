@@ -51,7 +51,8 @@ Uses flexible few-shot prompting to detect user intentions for recipe operations
 <span>def <span class="ident">classify_recipe_intent</span></span>(<span>query: str, context: Dict | None = None) ‑> Tuple[<a title="src.core.recipe_intent_classifier.RecipeIntent" href="#src.core.recipe_intent_classifier.RecipeIntent">RecipeIntent</a>, float, str]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Convenience function to classify recipe intent.</p>
+<div class="desc"><p>Convenience function to classify recipe intent.
+Uses a singleton classifier instance to avoid recreating OpenAI client on each call.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>query</code></strong></dt>

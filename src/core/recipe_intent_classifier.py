@@ -151,10 +151,23 @@ Format: Intent: [INTENT] | Confidence: [0.0-1.0] | Reasoning: [brief explanation
     
 
 
+# Module-level singleton instance for performance
+_classifier_instance: Optional[RecipeIntentClassifier] = None
+
+
+def _get_classifier() -> RecipeIntentClassifier:
+    """Get or create the singleton classifier instance."""
+    global _classifier_instance
+    if _classifier_instance is None:
+        _classifier_instance = RecipeIntentClassifier()
+    return _classifier_instance
+
+
 # Convenience function for easy integration
 def classify_recipe_intent(query: str, context: Optional[Dict] = None) -> Tuple[RecipeIntent, float, str]:
     """
     Convenience function to classify recipe intent.
+    Uses a singleton classifier instance to avoid recreating OpenAI client on each call.
     
     Args:
         query: User query to classify
@@ -163,5 +176,5 @@ def classify_recipe_intent(query: str, context: Optional[Dict] = None) -> Tuple[
     Returns:
         Tuple of (intent, confidence, reasoning)
     """
-    classifier = RecipeIntentClassifier()
+    classifier = _get_classifier()
     return classifier.classify_intent(query, context)
