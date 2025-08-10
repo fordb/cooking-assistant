@@ -178,6 +178,19 @@ Handles conversations, memory, and intelligent prompting.</p>
 <dd>
 <div class="desc"><p>Get user preferences from memory.</p></div>
 </dd>
+<dt id="src.core.CookingAssistant.manage_recipe"><code class="name flex">
+<span>def <span class="ident">manage_recipe</span></span>(<span>self, query: str) ‑> Dict[str, Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Handle recipe management queries (save, find, list, delete, create).</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>query</code></strong></dt>
+<dd>User's recipe management request</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Dictionary with result, intent, user info, and any recipe data</p></div>
+</dd>
 <dt id="src.core.CookingAssistant.reset_memory"><code class="name flex">
 <span>def <span class="ident">reset_memory</span></span>(<span>self) ‑> None</span>
 </code></dt>
@@ -302,6 +315,7 @@ Handles conversations, memory, and intelligent prompting.</p>
 <li><code><a title="src.core.CookingAssistant.get_conversation_history" href="#src.core.CookingAssistant.get_conversation_history">get_conversation_history</a></code></li>
 <li><code><a title="src.core.CookingAssistant.get_memory_status" href="#src.core.CookingAssistant.get_memory_status">get_memory_status</a></code></li>
 <li><code><a title="src.core.CookingAssistant.get_preferences" href="#src.core.CookingAssistant.get_preferences">get_preferences</a></code></li>
+<li><code><a title="src.core.CookingAssistant.manage_recipe" href="#src.core.CookingAssistant.manage_recipe">manage_recipe</a></code></li>
 <li><code><a title="src.core.CookingAssistant.reset_memory" href="#src.core.CookingAssistant.reset_memory">reset_memory</a></code></li>
 </ul>
 </li>
