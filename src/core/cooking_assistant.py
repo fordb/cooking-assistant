@@ -6,6 +6,7 @@ Provides unified access to all cooking assistant functionality.
 from typing import Dict, Any, Optional
 from .conversation_memory import ConversationMemory
 from .query_classifier import classify_cooking_query
+from .recipe_coordinator import process_recipe_input
 
 class CookingAssistant:
     """
@@ -17,6 +18,7 @@ class CookingAssistant:
         """Initialize the cooking assistant with memory and meta-prompting."""
         self.memory = ConversationMemory()
         self._meta_prompting = None
+        self._session_id = None
     
     def ask(self, query: str) -> Dict[str, Any]:
         """
@@ -107,6 +109,38 @@ class CookingAssistant:
             }
             for turn in self.memory.conversation_history
         ]
+    
+    def manage_recipe(self, query: str) -> Dict[str, Any]:
+        """
+        Handle recipe management queries (save, find, list, delete, create).
+        
+        Args:
+            query: User's recipe management request
+            
+        Returns:
+            Dictionary with result, intent, user info, and any recipe data
+        """
+        result = process_recipe_input(query, self._session_id)
+        
+        # Update session ID if a new user was created
+        if result.user and not self._session_id:
+            # Create session for the user (simplified - we'll use user_id as session_id for now)
+            self._session_id = result.user.user_id
+        
+        return {
+            'success': result.success,
+            'message': result.message,
+            'intent': result.intent.value if result.intent else None,
+            'recipe': {
+                'title': result.recipe.title,
+                'ingredients': result.recipe.ingredients,
+                'instructions': result.recipe.instructions,
+                'prep_time': result.recipe.prep_time,
+                'cook_time': result.recipe.cook_time,
+                'servings': result.recipe.servings
+            } if result.recipe else None,
+            'user_recipe_count': result.user.recipe_count if result.user else 0
+        }
 
 # Convenience functions for backward compatibility
 def ask_cooking_question(query: str, assistant: Optional[CookingAssistant] = None) -> Dict[str, Any]:
@@ -127,3 +161,18 @@ def ask_cooking_question(query: str, assistant: Optional[CookingAssistant] = Non
 def create_cooking_assistant() -> CookingAssistant:
     """Create a new cooking assistant instance."""
     return CookingAssistant()
+
+def manage_recipe(query: str, assistant: Optional[CookingAssistant] = None) -> Dict[str, Any]:
+    """
+    Convenience function for recipe management.
+    
+    Args:
+        query: Recipe management request (save, find, create, etc.)
+        assistant: Optional existing assistant instance
+        
+    Returns:
+        Recipe management result dictionary
+    """
+    if assistant is None:
+        assistant = CookingAssistant()
+    return assistant.manage_recipe(query)
