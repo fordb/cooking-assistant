@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.6">
 <title>src.core.recipe_extractor API documentation</title>
-<meta name="description" content="Simple recipe extraction from conversational text.">
+<meta name="description" content="LLM-based recipe extraction from conversational text.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
@@ -36,7 +36,7 @@ el.replaceWith(d);
 <h1 class="title">Module <code>src.core.recipe_extractor</code></h1>
 </header>
 <section id="section-intro">
-<p>Simple recipe extraction from conversational text.</p>
+<p>LLM-based recipe extraction from conversational text.</p>
 </section>
 <section>
 </section>
@@ -101,14 +101,15 @@ el.replaceWith(d);
 <span>class <span class="ident">RecipeExtractor</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Simple recipe extraction from text.</p></div>
+<div class="desc"><p>LLM-based recipe extraction from text.</p>
+<p>Initialize with OpenAI client.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="src.core.recipe_extractor.RecipeExtractor.extract_recipe"><code class="name flex">
 <span>def <span class="ident">extract_recipe</span></span>(<span>self, text: str, recipe_name: str | None = None) ‑> <a title="src.core.recipe_extractor.RecipeExtractionResult" href="#src.core.recipe_extractor.RecipeExtractionResult">RecipeExtractionResult</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Extract recipe from text.</p></div>
+<div class="desc"><p>Extract recipe using LLM structured extraction.</p></div>
 </dd>
 </dl>
 </dd>
