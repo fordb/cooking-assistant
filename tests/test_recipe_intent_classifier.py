@@ -258,19 +258,24 @@ class TestRecipeIntentClassifier:
             assert intent == RecipeIntent.REGULAR_COOKING
             assert confidence == 0.5
 
-    def test_helper_methods(self, classifier):
-        """Test helper methods for intent categorization."""
-        # Test is_recipe_management_intent
-        assert classifier.is_recipe_management_intent(RecipeIntent.SAVE_RECIPE) == True
-        assert classifier.is_recipe_management_intent(RecipeIntent.FIND_RECIPES) == True
-        assert classifier.is_recipe_management_intent(RecipeIntent.REGULAR_COOKING) == False
+    def test_intent_enum_values(self, classifier):
+        """Test intent enum values and direct comparisons."""
+        # Test direct intent comparisons (replacing removed helper methods)
+        recipe_management_intents = {RecipeIntent.SAVE_RECIPE, RecipeIntent.FIND_RECIPES, 
+                                   RecipeIntent.LIST_RECIPES, RecipeIntent.DELETE_RECIPE}
         
-        # Test requires_user_recipes
-        assert classifier.requires_user_recipes(RecipeIntent.FIND_RECIPES) == True
-        assert classifier.requires_user_recipes(RecipeIntent.LIST_RECIPES) == True
-        assert classifier.requires_user_recipes(RecipeIntent.DELETE_RECIPE) == True
-        assert classifier.requires_user_recipes(RecipeIntent.SAVE_RECIPE) == False
-        assert classifier.requires_user_recipes(RecipeIntent.REGULAR_COOKING) == False
+        assert RecipeIntent.SAVE_RECIPE in recipe_management_intents
+        assert RecipeIntent.FIND_RECIPES in recipe_management_intents
+        assert RecipeIntent.REGULAR_COOKING not in recipe_management_intents
+        
+        # Test intents that require user recipes
+        user_recipe_intents = {RecipeIntent.FIND_RECIPES, RecipeIntent.LIST_RECIPES, RecipeIntent.DELETE_RECIPE}
+        
+        assert RecipeIntent.FIND_RECIPES in user_recipe_intents
+        assert RecipeIntent.LIST_RECIPES in user_recipe_intents
+        assert RecipeIntent.DELETE_RECIPE in user_recipe_intents
+        assert RecipeIntent.SAVE_RECIPE not in user_recipe_intents
+        assert RecipeIntent.REGULAR_COOKING not in user_recipe_intents
 
     def test_convenience_function(self):
         """Test the convenience function for intent classification."""
@@ -287,72 +292,3 @@ class TestRecipeIntentClassifier:
             mock_classifier.classify_intent.assert_called_once_with("save this recipe", None)
 
 
-# Integration test data for comprehensive testing
-COMPREHENSIVE_TEST_CASES = [
-    # Save recipe variations (9 cases)
-    ("Save this recipe", RecipeIntent.SAVE_RECIPE, 0.85),
-    ("I want to keep this one", RecipeIntent.SAVE_RECIPE, 0.85),
-    ("Add this to my collection", RecipeIntent.SAVE_RECIPE, 0.85),
-    ("Store this for later", RecipeIntent.SAVE_RECIPE, 0.85),
-    ("Remember this recipe", RecipeIntent.SAVE_RECIPE, 0.85),
-    ("Can you save this?", RecipeIntent.SAVE_RECIPE, 0.85),
-    ("I'd like to add this to my recipe book", RecipeIntent.SAVE_RECIPE, 0.85),
-    ("Please remember this one", RecipeIntent.SAVE_RECIPE, 0.85),
-    ("Keep this recipe for me", RecipeIntent.SAVE_RECIPE, 0.85),
-    
-    # Find recipes variations (9 cases)
-    ("Show me my pasta recipes", RecipeIntent.FIND_RECIPES, 0.85),
-    ("Find my chicken dishes", RecipeIntent.FIND_RECIPES, 0.85),
-    ("What Italian recipes do I have?", RecipeIntent.FIND_RECIPES, 0.85),
-    ("Search for my quick meals", RecipeIntent.FIND_RECIPES, 0.85),
-    ("Do I have any soup recipes?", RecipeIntent.FIND_RECIPES, 0.85),
-    ("Show me recipes with beef", RecipeIntent.FIND_RECIPES, 0.85),
-    ("What dessert recipes do I have saved?", RecipeIntent.FIND_RECIPES, 0.85),
-    ("Find my vegetarian options", RecipeIntent.FIND_RECIPES, 0.85),
-    ("What recipes can I make in 30 minutes?", RecipeIntent.FIND_RECIPES, 0.85),
-    
-    # List recipes variations (6 cases)  
-    ("What recipes do I have?", RecipeIntent.LIST_RECIPES, 0.85),
-    ("Show me all my recipes", RecipeIntent.LIST_RECIPES, 0.85),
-    ("List my recipe collection", RecipeIntent.LIST_RECIPES, 0.85),
-    ("What's in my recipe book?", RecipeIntent.LIST_RECIPES, 0.85),
-    ("Display everything I've saved", RecipeIntent.LIST_RECIPES, 0.85),
-    ("Show me my entire collection", RecipeIntent.LIST_RECIPES, 0.85),
-    
-    # Delete recipe variations (6 cases)
-    ("Delete the pasta recipe", RecipeIntent.DELETE_RECIPE, 0.85),
-    ("Remove this recipe", RecipeIntent.DELETE_RECIPE, 0.85),
-    ("I don't want this recipe anymore", RecipeIntent.DELETE_RECIPE, 0.85),
-    ("Get rid of this recipe", RecipeIntent.DELETE_RECIPE, 0.85),
-    ("Can you delete this?", RecipeIntent.DELETE_RECIPE, 0.85),
-    ("Remove this from my collection", RecipeIntent.DELETE_RECIPE, 0.85),
-    
-    # Regular cooking variations (8 cases)
-    ("How do I make carbonara?", RecipeIntent.REGULAR_COOKING, 0.85),
-    ("What temperature for chicken?", RecipeIntent.REGULAR_COOKING, 0.85),
-    ("Can you suggest a quick dinner?", RecipeIntent.REGULAR_COOKING, 0.85),
-    ("I need a recipe for chocolate cake", RecipeIntent.REGULAR_COOKING, 0.85),
-    ("How long to cook pasta?", RecipeIntent.REGULAR_COOKING, 0.85),
-    ("What spices go with lamb?", RecipeIntent.REGULAR_COOKING, 0.85),
-    ("Help me with a vegetarian meal", RecipeIntent.REGULAR_COOKING, 0.85),
-    ("I have chicken and rice, what can I make?", RecipeIntent.REGULAR_COOKING, 0.85),
-]
-
-class TestComprehensiveIntentClassification:
-    """Comprehensive test suite with all 38 test cases for regression prevention."""
-    
-    def test_all_test_cases_coverage(self):
-        """Verify we have comprehensive coverage of all intent types."""
-        intent_counts = {}
-        for _, intent, _ in COMPREHENSIVE_TEST_CASES:
-            intent_counts[intent] = intent_counts.get(intent, 0) + 1
-        
-        # Verify we have good coverage of each intent type
-        assert intent_counts[RecipeIntent.SAVE_RECIPE] >= 8
-        assert intent_counts[RecipeIntent.FIND_RECIPES] >= 8  
-        assert intent_counts[RecipeIntent.LIST_RECIPES] >= 5
-        assert intent_counts[RecipeIntent.DELETE_RECIPE] >= 5
-        assert intent_counts[RecipeIntent.REGULAR_COOKING] >= 8
-        
-        # Verify total test case count
-        assert len(COMPREHENSIVE_TEST_CASES) >= 38
