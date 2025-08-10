@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.6">
 <title>src.core.user_identity API documentation</title>
-<meta name="description" content="User identity management system for conversational recipe management.
-Handles user identification, session management, and basic user data storage.">
+<meta name="description" content="Simple user identity management for conversational recipe management.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
@@ -37,8 +36,7 @@ el.replaceWith(d);
 <h1 class="title">Module <code>src.core.user_identity</code></h1>
 </header>
 <section id="section-intro">
-<p>User identity management system for conversational recipe management.
-Handles user identification, session management, and basic user data storage.</p>
+<p>Simple user identity management for conversational recipe management.</p>
 </section>
 <section>
 </section>
@@ -47,35 +45,23 @@ Handles user identification, session management, and basic user data storage.</p
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="src.core.user_identity.create_session"><code class="name flex">
-<span>def <span class="ident">create_session</span></span>(<span>user_id: str) ‑> str</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Create a new session for a user.</p></div>
-</dd>
 <dt id="src.core.user_identity.create_user"><code class="name flex">
-<span>def <span class="ident">create_user</span></span>(<span>display_name: str | None = None, email: str | None = None) ‑> <a title="src.core.user_identity.UserProfile" href="#src.core.user_identity.UserProfile">UserProfile</a></span>
+<span>def <span class="ident">create_user</span></span>(<span>) ‑> <a title="src.core.user_identity.UserProfile" href="#src.core.user_identity.UserProfile">UserProfile</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Create a new user profile.</p></div>
+<div class="desc"><p>Create new user.</p></div>
 </dd>
 <dt id="src.core.user_identity.get_identity_manager"><code class="name flex">
 <span>def <span class="ident">get_identity_manager</span></span>(<span>) ‑> <a title="src.core.user_identity.UserIdentityManager" href="#src.core.user_identity.UserIdentityManager">UserIdentityManager</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get or create the singleton identity manager instance.</p></div>
-</dd>
-<dt id="src.core.user_identity.get_user"><code class="name flex">
-<span>def <span class="ident">get_user</span></span>(<span>user_id: str) ‑> <a title="src.core.user_identity.UserProfile" href="#src.core.user_identity.UserProfile">UserProfile</a> | None</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Get user profile by ID.</p></div>
+<div class="desc"><p>Get singleton identity manager.</p></div>
 </dd>
 <dt id="src.core.user_identity.get_user_from_session"><code class="name flex">
 <span>def <span class="ident">get_user_from_session</span></span>(<span>session_id: str) ‑> <a title="src.core.user_identity.UserProfile" href="#src.core.user_identity.UserProfile">UserProfile</a> | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get user profile from session ID.</p></div>
+<div class="desc"><p>Get user from session.</p></div>
 </dd>
 </dl>
 </section>
@@ -99,197 +85,54 @@ Handles user identification, session management, and basic user data storage.</p
 <span>class <span class="ident">UserIdentityManager</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Manages user identity and session data for conversational recipe management.
-Provides simple in-memory storage for development/demo purposes.</p>
-<p>Initialize the user identity manager.</p></div>
+<div class="desc"><p>Simple user identity and session management.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="src.core.user_identity.UserIdentityManager.create_session"><code class="name flex">
 <span>def <span class="ident">create_session</span></span>(<span>self, user_id: str) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Create a new session for a user.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>user_id</code></strong></dt>
-<dd>User identifier</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>Session ID</p>
-<h2 id="raises">Raises</h2>
-<dl>
-<dt><code><a title="src.core.user_identity.UserIdentificationError" href="#src.core.user_identity.UserIdentificationError">UserIdentificationError</a></code></dt>
-<dd>If user not found</dd>
-</dl></div>
+<div class="desc"><p>Create session for user.</p></div>
 </dd>
 <dt id="src.core.user_identity.UserIdentityManager.create_user"><code class="name flex">
-<span>def <span class="ident">create_user</span></span>(<span>self, display_name: str | None = None, email: str | None = None) ‑> <a title="src.core.user_identity.UserProfile" href="#src.core.user_identity.UserProfile">UserProfile</a></span>
+<span>def <span class="ident">create_user</span></span>(<span>self) ‑> <a title="src.core.user_identity.UserProfile" href="#src.core.user_identity.UserProfile">UserProfile</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Create a new user profile.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>display_name</code></strong></dt>
-<dd>Optional display name for the user</dd>
-<dt><strong><code>email</code></strong></dt>
-<dd>Optional email for the user</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>Created user profile</p></div>
+<div class="desc"><p>Create new user.</p></div>
 </dd>
 <dt id="src.core.user_identity.UserIdentityManager.get_user"><code class="name flex">
 <span>def <span class="ident">get_user</span></span>(<span>self, user_id: str) ‑> <a title="src.core.user_identity.UserProfile" href="#src.core.user_identity.UserProfile">UserProfile</a> | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get user profile by ID.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>user_id</code></strong></dt>
-<dd>User identifier</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>User profile if found, None otherwise</p></div>
+<div class="desc"><p>Get user by ID.</p></div>
 </dd>
 <dt id="src.core.user_identity.UserIdentityManager.get_user_from_session"><code class="name flex">
 <span>def <span class="ident">get_user_from_session</span></span>(<span>self, session_id: str) ‑> <a title="src.core.user_identity.UserProfile" href="#src.core.user_identity.UserProfile">UserProfile</a> | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get user profile from session ID.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>session_id</code></strong></dt>
-<dd>Session identifier</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>User profile if found, None otherwise</p></div>
-</dd>
-<dt id="src.core.user_identity.UserIdentityManager.get_user_stats"><code class="name flex">
-<span>def <span class="ident">get_user_stats</span></span>(<span>self, user_id: str) ‑> Dict[str, Any] | None</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Get user statistics.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>user_id</code></strong></dt>
-<dd>User identifier</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>Statistics dictionary if user found, None otherwise</p></div>
+<div class="desc"><p>Get user from session.</p></div>
 </dd>
 <dt id="src.core.user_identity.UserIdentityManager.increment_recipe_count"><code class="name flex">
 <span>def <span class="ident">increment_recipe_count</span></span>(<span>self, user_id: str) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Increment user's recipe count.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>user_id</code></strong></dt>
-<dd>User identifier</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>True if updated successfully, False if user not found</p></div>
-</dd>
-<dt id="src.core.user_identity.UserIdentityManager.list_users"><code class="name flex">
-<span>def <span class="ident">list_users</span></span>(<span>self) ‑> Dict[str, Dict[str, Any]]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>List all users (for admin/debug purposes).</p>
-<h2 id="returns">Returns</h2>
-<p>Dictionary of user data</p></div>
-</dd>
-<dt id="src.core.user_identity.UserIdentityManager.update_user_activity"><code class="name flex">
-<span>def <span class="ident">update_user_activity</span></span>(<span>self, user_id: str) ‑> bool</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Update user's last activity timestamp.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>user_id</code></strong></dt>
-<dd>User identifier</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>True if updated successfully, False if user not found</p></div>
-</dd>
-<dt id="src.core.user_identity.UserIdentityManager.update_user_preferences"><code class="name flex">
-<span>def <span class="ident">update_user_preferences</span></span>(<span>self, user_id: str, preferences: Dict[str, Any]) ‑> bool</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Update user preferences.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>user_id</code></strong></dt>
-<dd>User identifier</dd>
-<dt><strong><code>preferences</code></strong></dt>
-<dd>Preferences dictionary to merge</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>True if updated successfully, False if user not found</p></div>
+<div class="desc"><p>Increment user's recipe count.</p></div>
 </dd>
 </dl>
 </dd>
 <dt id="src.core.user_identity.UserProfile"><code class="flex name class">
 <span>class <span class="ident">UserProfile</span></span>
-<span>(</span><span>user_id: str,<br>display_name: str | None = None,<br>email: str | None = None,<br>created_at: float = None,<br>last_active: float = None,<br>status: <a title="src.core.user_identity.UserStatus" href="#src.core.user_identity.UserStatus">UserStatus</a> = UserStatus.NEW,<br>preferences: Dict[str, Any] = None,<br>recipe_count: int = 0)</span>
+<span>(</span><span>user_id: str, recipe_count: int = 0)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>User profile data structure.</p></div>
+<div class="desc"><p>Simple user profile.</p></div>
 <h3>Instance variables</h3>
 <dl>
-<dt id="src.core.user_identity.UserProfile.created_at"><code class="name">var <span class="ident">created_at</span> : float</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.core.user_identity.UserProfile.display_name"><code class="name">var <span class="ident">display_name</span> : str | None</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.core.user_identity.UserProfile.email"><code class="name">var <span class="ident">email</span> : str | None</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.core.user_identity.UserProfile.last_active"><code class="name">var <span class="ident">last_active</span> : float</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.core.user_identity.UserProfile.preferences"><code class="name">var <span class="ident">preferences</span> : Dict[str, Any]</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
 <dt id="src.core.user_identity.UserProfile.recipe_count"><code class="name">var <span class="ident">recipe_count</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="src.core.user_identity.UserProfile.status"><code class="name">var <span class="ident">status</span> : <a title="src.core.user_identity.UserStatus" href="#src.core.user_identity.UserStatus">UserStatus</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
 <dt id="src.core.user_identity.UserProfile.user_id"><code class="name">var <span class="ident">user_id</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="src.core.user_identity.UserStatus"><code class="flex name class">
-<span>class <span class="ident">UserStatus</span></span>
-<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>User session status.</p></div>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="src.core.user_identity.UserStatus.ACTIVE"><code class="name">var <span class="ident">ACTIVE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.core.user_identity.UserStatus.INACTIVE"><code class="name">var <span class="ident">INACTIVE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="src.core.user_identity.UserStatus.NEW"><code class="name">var <span class="ident">NEW</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -310,10 +153,8 @@ Provides simple in-memory storage for development/demo purposes.</p>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="src.core.user_identity.create_session" href="#src.core.user_identity.create_session">create_session</a></code></li>
 <li><code><a title="src.core.user_identity.create_user" href="#src.core.user_identity.create_user">create_user</a></code></li>
 <li><code><a title="src.core.user_identity.get_identity_manager" href="#src.core.user_identity.get_identity_manager">get_identity_manager</a></code></li>
-<li><code><a title="src.core.user_identity.get_user" href="#src.core.user_identity.get_user">get_user</a></code></li>
 <li><code><a title="src.core.user_identity.get_user_from_session" href="#src.core.user_identity.get_user_from_session">get_user_from_session</a></code></li>
 </ul>
 </li>
@@ -329,32 +170,14 @@ Provides simple in-memory storage for development/demo purposes.</p>
 <li><code><a title="src.core.user_identity.UserIdentityManager.create_user" href="#src.core.user_identity.UserIdentityManager.create_user">create_user</a></code></li>
 <li><code><a title="src.core.user_identity.UserIdentityManager.get_user" href="#src.core.user_identity.UserIdentityManager.get_user">get_user</a></code></li>
 <li><code><a title="src.core.user_identity.UserIdentityManager.get_user_from_session" href="#src.core.user_identity.UserIdentityManager.get_user_from_session">get_user_from_session</a></code></li>
-<li><code><a title="src.core.user_identity.UserIdentityManager.get_user_stats" href="#src.core.user_identity.UserIdentityManager.get_user_stats">get_user_stats</a></code></li>
 <li><code><a title="src.core.user_identity.UserIdentityManager.increment_recipe_count" href="#src.core.user_identity.UserIdentityManager.increment_recipe_count">increment_recipe_count</a></code></li>
-<li><code><a title="src.core.user_identity.UserIdentityManager.list_users" href="#src.core.user_identity.UserIdentityManager.list_users">list_users</a></code></li>
-<li><code><a title="src.core.user_identity.UserIdentityManager.update_user_activity" href="#src.core.user_identity.UserIdentityManager.update_user_activity">update_user_activity</a></code></li>
-<li><code><a title="src.core.user_identity.UserIdentityManager.update_user_preferences" href="#src.core.user_identity.UserIdentityManager.update_user_preferences">update_user_preferences</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="src.core.user_identity.UserProfile" href="#src.core.user_identity.UserProfile">UserProfile</a></code></h4>
-<ul class="two-column">
-<li><code><a title="src.core.user_identity.UserProfile.created_at" href="#src.core.user_identity.UserProfile.created_at">created_at</a></code></li>
-<li><code><a title="src.core.user_identity.UserProfile.display_name" href="#src.core.user_identity.UserProfile.display_name">display_name</a></code></li>
-<li><code><a title="src.core.user_identity.UserProfile.email" href="#src.core.user_identity.UserProfile.email">email</a></code></li>
-<li><code><a title="src.core.user_identity.UserProfile.last_active" href="#src.core.user_identity.UserProfile.last_active">last_active</a></code></li>
-<li><code><a title="src.core.user_identity.UserProfile.preferences" href="#src.core.user_identity.UserProfile.preferences">preferences</a></code></li>
-<li><code><a title="src.core.user_identity.UserProfile.recipe_count" href="#src.core.user_identity.UserProfile.recipe_count">recipe_count</a></code></li>
-<li><code><a title="src.core.user_identity.UserProfile.status" href="#src.core.user_identity.UserProfile.status">status</a></code></li>
-<li><code><a title="src.core.user_identity.UserProfile.user_id" href="#src.core.user_identity.UserProfile.user_id">user_id</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="src.core.user_identity.UserStatus" href="#src.core.user_identity.UserStatus">UserStatus</a></code></h4>
 <ul class="">
-<li><code><a title="src.core.user_identity.UserStatus.ACTIVE" href="#src.core.user_identity.UserStatus.ACTIVE">ACTIVE</a></code></li>
-<li><code><a title="src.core.user_identity.UserStatus.INACTIVE" href="#src.core.user_identity.UserStatus.INACTIVE">INACTIVE</a></code></li>
-<li><code><a title="src.core.user_identity.UserStatus.NEW" href="#src.core.user_identity.UserStatus.NEW">NEW</a></code></li>
+<li><code><a title="src.core.user_identity.UserProfile.recipe_count" href="#src.core.user_identity.UserProfile.recipe_count">recipe_count</a></code></li>
+<li><code><a title="src.core.user_identity.UserProfile.user_id" href="#src.core.user_identity.UserProfile.user_id">user_id</a></code></li>
 </ul>
 </li>
 </ul>
