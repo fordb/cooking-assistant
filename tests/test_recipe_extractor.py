@@ -1,8 +1,10 @@
 """
-Tests for simplified recipe extraction system.
+Tests for LLM-based recipe extraction system.
 """
 
 import pytest
+from unittest.mock import Mock, patch
+import json
 
 from src.core.recipe_extractor import (
     RecipeExtractor, RecipeExtractionResult, 
@@ -13,29 +15,35 @@ from src.core.recipe_extractor import (
 class TestRecipeExtractor:
     """Test RecipeExtractor class."""
     
-    def setup_method(self):
-        """Set up test environment."""
-        self.extractor = RecipeExtractor()
-    
-    def test_extract_simple_recipe_success(self):
-        """Test extracting a simple recipe."""
-        text = """
-        Simple Pasta Recipe
+    @patch('src.core.recipe_extractor.OpenAI')
+    def test_extract_recipe_success(self, mock_openai_class):
+        """Test successful LLM-based recipe extraction."""
+        # Mock the OpenAI response structure
+        mock_choice = Mock()
+        mock_choice.message.content = json.dumps({
+            "title": "Simple Pasta Recipe",
+            "ingredients": ["1 lb pasta", "2 cups tomato sauce", "1/2 cup parmesan cheese"],
+            "instructions": [
+                "Cook pasta in boiling water for 10 minutes",
+                "Heat tomato sauce in a pan", 
+                "Mix pasta with sauce and serve with cheese"
+            ],
+            "prep_time": 5,
+            "cook_time": 15,
+            "servings": 4
+        })
         
-        - 1 lb pasta
-        - 2 cups tomato sauce
-        - 1/2 cup parmesan cheese
+        mock_response = Mock()
+        mock_response.choices = [mock_choice]
         
-        1. Cook pasta in boiling water for 10 minutes
-        2. Heat tomato sauce in a pan
-        3. Mix pasta with sauce and serve with cheese
+        mock_client = Mock()
+        mock_client.chat.completions.create.return_value = mock_response
+        mock_openai_class.return_value = mock_client
         
-        Prep time: 5 minutes
-        Cook time: 15 minutes
-        Serves: 4
-        """
+        extractor = RecipeExtractor()
         
-        result = self.extractor.extract_recipe(text)
+        text = "Simple pasta with tomato sauce and cheese"
+        result = extractor.extract_recipe(text)
         
         assert result.success is True
         assert result.recipe is not None
@@ -47,86 +55,125 @@ class TestRecipeExtractor:
         assert recipe.prep_time == 5
         assert recipe.cook_time == 15
         assert recipe.servings == 4
+        
+        # Verify LLM was called with proper prompt
+        mock_client.chat.completions.create.assert_called_once()
+        call_args = mock_client.chat.completions.create.call_args
+        assert "Extract recipe information" in call_args[1]['messages'][0]['content']
     
-    def test_extract_recipe_with_override_name(self):
+    @patch('src.core.recipe_extractor.OpenAI')
+    def test_extract_recipe_with_override_name(self, mock_openai_class):
         """Test extraction with name override."""
-        text = """
-        - 2 cups flour
-        - 1 cup sugar
+        mock_choice = Mock()
+        mock_choice.message.content = json.dumps({
+            "title": "Custom Recipe Name",
+            "ingredients": ["2 cups flour", "1 cup sugar"],
+            "instructions": ["Mix ingredients", "Bake for 30 minutes", "Cool before serving"],
+            "prep_time": 10,
+            "cook_time": 30,
+            "servings": 8
+        })
         
-        1. Mix ingredients together
-        2. Bake for thirty minutes
-        3. Cool before serving
-        """
+        mock_response = Mock()
+        mock_response.choices = [mock_choice]
         
-        result = self.extractor.extract_recipe(text, recipe_name="Custom Cake")
+        mock_client = Mock()
+        mock_client.chat.completions.create.return_value = mock_response
+        mock_openai_class.return_value = mock_client
+        
+        extractor = RecipeExtractor()
+        
+        result = extractor.extract_recipe("Some recipe text", recipe_name="Custom Recipe Name")
         
         assert result.success is True
-        assert result.recipe.title == "Custom Cake"
+        assert result.recipe.title == "Custom Recipe Name"
+        
+        # Verify prompt included the custom name
+        call_args = mock_client.chat.completions.create.call_args
+        prompt = call_args[1]['messages'][0]['content']
+        assert 'Use "Custom Recipe Name" as the title' in prompt
     
-    def test_extract_recipe_minimal_content(self):
-        """Test extraction with minimal content using defaults."""
-        text = "Short"  # Too short to be a valid title
+    @patch('src.core.recipe_extractor.OpenAI')
+    def test_extract_recipe_malformed_json(self, mock_openai_class):
+        """Test handling of malformed JSON response."""
+        mock_choice = Mock()
+        mock_choice.message.content = "This is not valid JSON"
         
-        result = self.extractor.extract_recipe(text)
+        mock_response = Mock()
+        mock_response.choices = [mock_choice]
         
-        # Should still succeed with defaults
+        mock_client = Mock()
+        mock_client.chat.completions.create.return_value = mock_response
+        mock_openai_class.return_value = mock_client
+        
+        extractor = RecipeExtractor()
+        
+        result = extractor.extract_recipe("Some text")
+        
+        # Should still succeed with fallback data
         assert result.success is True
-        recipe = result.recipe
-        assert recipe.title == "Extracted Recipe"
-        assert len(recipe.ingredients) >= 2  # Uses defaults
-        assert len(recipe.instructions) >= 3  # Uses defaults
+        assert result.recipe.title == "Extracted Recipe"
+        assert len(result.recipe.ingredients) >= 2
+        assert len(result.recipe.instructions) >= 3
     
-    def test_extract_name_from_first_line(self):
-        """Test name extraction from first line."""
-        text = "Chocolate Chip Cookies\n\nSome other content"
-        name = self.extractor._extract_name(text)
-        assert name == "Chocolate Chip Cookies"
+    @patch('src.core.recipe_extractor.OpenAI')
+    def test_parse_json_with_code_blocks(self, mock_openai_class):
+        """Test JSON parsing with code block formatting."""
+        mock_choice = Mock()
+        mock_choice.message.content = '''```json
+        {
+            "title": "Test Recipe",
+            "ingredients": ["ingredient 1", "ingredient 2"],
+            "instructions": ["step 1", "step 2", "step 3"],
+            "prep_time": 5,
+            "cook_time": 10,
+            "servings": 2
+        }
+        ```'''
+        
+        mock_response = Mock()
+        mock_response.choices = [mock_choice]
+        
+        mock_client = Mock()
+        mock_client.chat.completions.create.return_value = mock_response
+        mock_openai_class.return_value = mock_client
+        
+        extractor = RecipeExtractor()
+        
+        result = extractor.extract_recipe("Test recipe text")
+        
+        assert result.success is True
+        assert result.recipe.title == "Test Recipe"
+        assert len(result.recipe.ingredients) == 2
+        assert len(result.recipe.instructions) == 3
     
-    def test_extract_bullet_points(self):
-        """Test bullet point extraction."""
-        text = """
-        - First ingredient
-        - Second ingredient  
-        • Third ingredient
-        * Fourth ingredient
-        """
+    def test_build_extraction_prompt(self):
+        """Test prompt building logic."""
+        with patch('src.core.recipe_extractor.OpenAI'):
+            extractor = RecipeExtractor()
         
-        items = self.extractor._extract_bullet_points(text)
+        # Test without custom name
+        prompt = extractor._build_extraction_prompt("Test recipe text")
+        assert "Extract recipe information" in prompt
+        assert "Test recipe text" in prompt
+        assert "Required JSON format" in prompt
         
-        assert len(items) == 4
-        assert "First ingredient" in items
-        assert "Third ingredient" in items
+        # Test with custom name
+        prompt_with_name = extractor._build_extraction_prompt("Test text", "Custom Name")
+        assert 'Use "Custom Name" as the title' in prompt_with_name
     
-    def test_extract_numbered_steps(self):
-        """Test numbered step extraction."""
-        text = """
-        1. First step here
-        2. Second step here
-        3. Third step here
-        """
+    def test_parse_json_response_fallback(self):
+        """Test JSON parsing fallback behavior."""
+        with patch('src.core.recipe_extractor.OpenAI'):
+            extractor = RecipeExtractor()
         
-        steps = self.extractor._extract_numbered_steps(text)
+        # Test with invalid JSON
+        result = extractor._parse_json_response("invalid json")
         
-        assert len(steps) == 3
-        assert "First step here" in steps
-        assert "Third step here" in steps
-    
-    def test_extract_time_patterns(self):
-        """Test time extraction."""
-        text = "Prep time: 15 minutes, Cook: 30 min"
-        
-        prep_time = self.extractor._extract_time(text, "prep")
-        cook_time = self.extractor._extract_time(text, "cook")
-        
-        assert prep_time == 15
-        assert cook_time == 30
-    
-    def test_extract_servings(self):
-        """Test servings extraction."""
-        text = "Serves 6 people"
-        servings = self.extractor._extract_servings(text)
-        assert servings == 6
+        assert result["title"] == "Extracted Recipe"
+        assert len(result["ingredients"]) == 2
+        assert len(result["instructions"]) == 3
+        assert result["prep_time"] == 10
 
 
 class TestConvenienceFunctions:
@@ -137,27 +184,34 @@ class TestConvenienceFunctions:
         import src.core.recipe_extractor
         src.core.recipe_extractor._extractor = None
     
-    def test_extract_recipe_from_text_convenience(self):
+    @patch('src.core.recipe_extractor.OpenAI')
+    def test_extract_recipe_from_text_convenience(self, mock_openai_class):
         """Test convenience function."""
-        text = """
-        Salt Water Recipe
+        mock_choice = Mock()
+        mock_choice.message.content = json.dumps({
+            "title": "Simple Recipe",
+            "ingredients": ["ingredient 1", "ingredient 2"],
+            "instructions": ["step 1", "step 2", "step 3"],
+            "prep_time": 5,
+            "cook_time": 10,
+            "servings": 2
+        })
         
-        - 1 cup water
-        - 2 tbsp salt
+        mock_response = Mock()
+        mock_response.choices = [mock_choice]
         
-        1. Boil the water carefully
-        2. Add salt and stir well
-        3. Serve when ready
-        """
+        mock_client = Mock()
+        mock_client.chat.completions.create.return_value = mock_response
+        mock_openai_class.return_value = mock_client
         
-        result = extract_recipe_from_text(text)
+        result = extract_recipe_from_text("Test recipe text")
         
         assert result.success is True
-        assert result.recipe.title == "Salt Water Recipe"
-        assert len(result.recipe.ingredients) == 2
+        assert result.recipe.title == "Simple Recipe"
     
     def test_singleton_pattern(self):
         """Test singleton pattern works."""
-        extractor1 = get_recipe_extractor()
-        extractor2 = get_recipe_extractor()
-        assert extractor1 is extractor2
+        with patch('src.core.recipe_extractor.OpenAI'):
+            extractor1 = get_recipe_extractor()
+            extractor2 = get_recipe_extractor()
+            assert extractor1 is extractor2

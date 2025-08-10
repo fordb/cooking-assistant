@@ -1,13 +1,18 @@
 """
-Simple recipe extraction from conversational text.
+LLM-based recipe extraction from conversational text.
 """
 
-from typing import Optional, List
-import re
+from typing import Optional
+import json
+import os
 from dataclasses import dataclass
+from openai import OpenAI
 
 from src.recipes.models import Recipe
 from src.common.exceptions import CookingAssistantError
+from src.common.config import get_openai_config, get_logger
+
+logger = get_logger(__name__)
 
 
 class RecipeExtractionError(CookingAssistantError):
@@ -24,92 +29,118 @@ class RecipeExtractionResult:
 
 
 class RecipeExtractor:
-    """Simple recipe extraction from text."""
+    """LLM-based recipe extraction from text."""
+    
+    def __init__(self):
+        """Initialize with OpenAI client."""
+        api_key = os.getenv('OPENAI_API_KEY')
+        if not api_key:
+            raise RecipeExtractionError("OpenAI API key not found")
+        
+        self.client = OpenAI(api_key=api_key)
+        self.config = get_openai_config()
     
     def extract_recipe(self, text: str, recipe_name: Optional[str] = None) -> RecipeExtractionResult:
-        """Extract recipe from text."""
+        """Extract recipe using LLM structured extraction."""
         try:
-            # Use provided name or extract from text
-            title = recipe_name or self._extract_name(text)
+            # Build extraction prompt
+            prompt = self._build_extraction_prompt(text, recipe_name)
             
-            # Extract basic components
-            ingredients = self._extract_bullet_points(text, is_ingredient=True)
-            instructions = self._extract_numbered_steps(text)
+            # Get LLM response
+            response = self.client.chat.completions.create(
+                model=self.config.DEFAULT_MODEL,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.1,
+                max_tokens=1000
+            )
             
-            # Ensure minimum requirements with defaults
-            if not ingredients:
-                ingredients = ["Main ingredient", "Additional ingredient"]
-            elif len(ingredients) < 2:
-                ingredients.append("Additional ingredient")
-                
-            if not instructions:
-                instructions = ["Prepare ingredients", "Cook as directed", "Serve when ready"]
-            elif len(instructions) < 3:
-                while len(instructions) < 3:
-                    instructions.append(f"Complete step {len(instructions) + 1}")
+            # Parse JSON response
+            result_text = response.choices[0].message.content.strip()
+            recipe_data = self._parse_json_response(result_text)
             
-            # Create recipe
+            # Create Recipe object
             recipe = Recipe(
-                title=title,
-                ingredients=ingredients,
-                instructions=instructions,
-                prep_time=self._extract_time(text, "prep") or 10,
-                cook_time=self._extract_time(text, "cook") or 20,
-                servings=self._extract_servings(text) or 4,
+                title=recipe_data.get("title", "Extracted Recipe"),
+                ingredients=recipe_data.get("ingredients", ["Main ingredient", "Additional ingredient"]),
+                instructions=recipe_data.get("instructions", ["Prepare ingredients", "Cook as directed", "Serve when ready"]),
+                prep_time=recipe_data.get("prep_time", 10),
+                cook_time=recipe_data.get("cook_time", 20),
+                servings=recipe_data.get("servings", 4),
                 difficulty="Beginner"
             )
             
             return RecipeExtractionResult(success=True, recipe=recipe)
             
         except Exception as e:
+            logger.error(f"Recipe extraction failed: {str(e)}")
             return RecipeExtractionResult(
                 success=False,
                 error=f"Extraction failed: {str(e)}"
             )
     
-    def _extract_name(self, text: str) -> str:
-        """Extract recipe name from text."""
-        lines = [line.strip() for line in text.split('\n') if line.strip()]
-        if lines:
-            first_line = lines[0]
-            if 5 < len(first_line) < 50:
-                return first_line
-        return "Extracted Recipe"
+    def _build_extraction_prompt(self, text: str, recipe_name: Optional[str] = None) -> str:
+        """Build prompt for LLM-based recipe extraction."""
+        name_instruction = f' Use "{recipe_name}" as the title.' if recipe_name else ''
+        
+        return f"""Extract recipe information from the following text and return it as valid JSON.{name_instruction}
+
+Required JSON format:
+{{
+  "title": "recipe name",
+  "ingredients": ["ingredient with amount", "another ingredient"],
+  "instructions": ["step 1", "step 2", "step 3"],
+  "prep_time": 10,
+  "cook_time": 20, 
+  "servings": 4
+}}
+
+Rules:
+- Extract ALL ingredients with their amounts/measurements
+- Extract ALL instruction steps in order
+- If prep_time, cook_time, or servings aren't specified, estimate reasonable values
+- Ensure at least 2 ingredients and 3 instruction steps
+- Keep ingredient and instruction text clear and concise
+
+Text to extract from:
+{text}
+
+Return only the JSON object:"""
     
-    def _extract_bullet_points(self, text: str, is_ingredient: bool = True) -> List[str]:
-        """Extract bullet point items."""
-        items = []
-        for line in text.split('\n'):
-            line = line.strip()
-            if re.match(r'^[-*•]\s*(.+)', line):
-                content = re.match(r'^[-*•]\s*(.+)', line).group(1).strip()
-                if len(content) > 2:
-                    items.append(content)
-        return items
-    
-    def _extract_numbered_steps(self, text: str) -> List[str]:
-        """Extract numbered instruction steps."""
-        steps = []
-        for line in text.split('\n'):
-            line = line.strip()
-            match = re.match(r'^\d+\.?\s*(.+)', line)
-            if match:
-                step = match.group(1).strip()
-                if len(step) > 5:
-                    steps.append(step)
-        return steps
-    
-    def _extract_time(self, text: str, time_type: str) -> Optional[int]:
-        """Extract prep or cook time."""
-        pattern = f"{time_type}(?:\\s+time)?:?\\s*(\\d+)\\s*(?:min|minutes?)"
-        match = re.search(pattern, text, re.IGNORECASE)
-        return int(match.group(1)) if match else None
-    
-    def _extract_servings(self, text: str) -> Optional[int]:
-        """Extract servings."""
-        pattern = r"serves?:?\s*(\d+)|(\d+)\s*servings?"
-        match = re.search(pattern, text, re.IGNORECASE)
-        return int(match.group(1) or match.group(2)) if match else None
+    def _parse_json_response(self, response_text: str) -> dict:
+        """Parse JSON response from LLM, with fallback handling."""
+        try:
+            # Try to extract JSON from response
+            response_text = response_text.strip()
+            
+            # Handle cases where LLM adds extra text
+            if '```json' in response_text:
+                start = response_text.find('```json') + 7
+                end = response_text.find('```', start)
+                response_text = response_text[start:end].strip()
+            elif '```' in response_text:
+                start = response_text.find('```') + 3
+                end = response_text.find('```', start)
+                response_text = response_text[start:end].strip()
+            
+            # Try to find JSON object bounds
+            if '{' in response_text and '}' in response_text:
+                start = response_text.find('{')
+                end = response_text.rfind('}') + 1
+                response_text = response_text[start:end]
+            
+            return json.loads(response_text)
+            
+        except (json.JSONDecodeError, ValueError) as e:
+            logger.warning(f"Failed to parse JSON response: {e}. Response: {response_text}")
+            # Return minimal valid structure
+            return {
+                "title": "Extracted Recipe",
+                "ingredients": ["Main ingredient", "Additional ingredient"],
+                "instructions": ["Prepare ingredients", "Cook as directed", "Serve when ready"],
+                "prep_time": 10,
+                "cook_time": 20,
+                "servings": 4
+            }
 
 
 # Module-level singleton
