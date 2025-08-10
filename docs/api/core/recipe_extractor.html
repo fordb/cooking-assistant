@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.6">
-<title>src.common API documentation</title>
-<meta name="description" content="Common utilities and shared functionality.">
+<title>src.core.recipe_extractor API documentation</title>
+<meta name="description" content="Simple recipe extraction from conversational text.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
@@ -33,98 +33,84 @@ el.replaceWith(d);
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>src.common</code></h1>
+<h1 class="title">Module <code>src.core.recipe_extractor</code></h1>
 </header>
 <section id="section-intro">
-<p>Common utilities and shared functionality.</p>
+<p>Simple recipe extraction from conversational text.</p>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
-<dl>
-<dt><code class="name"><a title="src.common.config" href="config.html">src.common.config</a></code></dt>
-<dd>
-<div class="desc"><p>Configuration settings for the Intelligent Cooking Assistant.
-Centralizes all configurable constants and magic numbers.</p></div>
-</dd>
-<dt><code class="name"><a title="src.common.exceptions" href="exceptions.html">src.common.exceptions</a></code></dt>
-<dd>
-<div class="desc"><p>Custom exceptions for the cooking assistant application.</p></div>
-</dd>
-<dt><code class="name"><a title="src.common.utils" href="utils.html">src.common.utils</a></code></dt>
-<dd>
-<div class="desc"><p>Utility functions for the cooking assistant application.
-Shared utilities that don't belong to specific modules.</p></div>
-</dd>
-</dl>
 </section>
 <section>
 </section>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="src.common.get_config"><code class="name flex">
-<span>def <span class="ident">get_config</span></span>(<span>) ‑> <a title="src.common.config.CookingAssistantConfig" href="config.html#src.common.config.CookingAssistantConfig">CookingAssistantConfig</a></span>
+<dt id="src.core.recipe_extractor.extract_recipe_from_text"><code class="name flex">
+<span>def <span class="ident">extract_recipe_from_text</span></span>(<span>text: str, recipe_name: str | None = None) ‑> <a title="src.core.recipe_extractor.RecipeExtractionResult" href="#src.core.recipe_extractor.RecipeExtractionResult">RecipeExtractionResult</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get the global configuration instance.</p></div>
+<div class="desc"><p>Extract recipe from text.</p></div>
 </dd>
-<dt id="src.common.get_logger"><code class="name flex">
-<span>def <span class="ident">get_logger</span></span>(<span>name: str) ‑> logging.Logger</span>
+<dt id="src.core.recipe_extractor.get_recipe_extractor"><code class="name flex">
+<span>def <span class="ident">get_recipe_extractor</span></span>(<span>) ‑> <a title="src.core.recipe_extractor.RecipeExtractor" href="#src.core.recipe_extractor.RecipeExtractor">RecipeExtractor</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get a logger with the application's logging configuration.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>name</code></strong></dt>
-<dd>Logger name (typically <strong>name</strong> from calling module)</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>Configured logger instance</p></div>
+<div class="desc"><p>Get singleton recipe extractor.</p></div>
 </dd>
 </dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="src.common.CookingAssistantError"><code class="flex name class">
-<span>class <span class="ident">CookingAssistantError</span></span>
+<dt id="src.core.recipe_extractor.RecipeExtractionError"><code class="flex name class">
+<span>class <span class="ident">RecipeExtractionError</span></span>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Base exception for all cooking assistant errors.</p></div>
+<div class="desc"><p>Exception raised during recipe extraction.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li><a title="src.common.exceptions.CookingAssistantError" href="../common/exceptions.html#src.common.exceptions.CookingAssistantError">CookingAssistantError</a></li>
 <li>builtins.Exception</li>
 <li>builtins.BaseException</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="src.common.exceptions.ConfigurationError" href="exceptions.html#src.common.exceptions.ConfigurationError">ConfigurationError</a></li>
-<li><a title="src.common.exceptions.EmbeddingGenerationError" href="exceptions.html#src.common.exceptions.EmbeddingGenerationError">EmbeddingGenerationError</a></li>
-<li><a title="src.common.exceptions.RecipeGenerationError" href="exceptions.html#src.common.exceptions.RecipeGenerationError">RecipeGenerationError</a></li>
-<li><a title="src.common.exceptions.RecipeValidationError" href="exceptions.html#src.common.exceptions.RecipeValidationError">RecipeValidationError</a></li>
-<li><a title="src.common.exceptions.SafetyValidationError" href="exceptions.html#src.common.exceptions.SafetyValidationError">SafetyValidationError</a></li>
-<li><a title="src.common.exceptions.TemplateError" href="exceptions.html#src.common.exceptions.TemplateError">TemplateError</a></li>
-<li><a title="src.common.exceptions.VectorDatabaseError" href="exceptions.html#src.common.exceptions.VectorDatabaseError">VectorDatabaseError</a></li>
-<li><a title="src.core.recipe_extractor.RecipeExtractionError" href="../core/recipe_extractor.html#src.core.recipe_extractor.RecipeExtractionError">RecipeExtractionError</a></li>
-<li><a title="src.core.recipe_intent_classifier.RecipeIntentClassificationError" href="../core/recipe_intent_classifier.html#src.core.recipe_intent_classifier.RecipeIntentClassificationError">RecipeIntentClassificationError</a></li>
-<li><a title="src.core.user_identity.UserIdentificationError" href="../core/user_identity.html#src.core.user_identity.UserIdentificationError">UserIdentificationError</a></li>
-<li><a title="src.vector.filters.FilterValidationError" href="../vector/filters.html#src.vector.filters.FilterValidationError">FilterValidationError</a></li>
-<li><a title="src.vector.store.VectorStoreError" href="../vector/store.html#src.vector.store.VectorStoreError">VectorStoreError</a></li>
 </ul>
 </dd>
-<dt id="src.common.EmbeddingGenerationError"><code class="flex name class">
-<span>class <span class="ident">EmbeddingGenerationError</span></span>
-<span>(</span><span>*args, **kwargs)</span>
+<dt id="src.core.recipe_extractor.RecipeExtractionResult"><code class="flex name class">
+<span>class <span class="ident">RecipeExtractionResult</span></span>
+<span>(</span><span>success: bool,<br>recipe: <a title="src.recipes.models.Recipe" href="../recipes/models.html#src.recipes.models.Recipe">Recipe</a> | None = None,<br>error: str | None = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Raised when embedding generation fails.</p></div>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="src.common.exceptions.CookingAssistantError" href="exceptions.html#src.common.exceptions.CookingAssistantError">CookingAssistantError</a></li>
-<li>builtins.Exception</li>
-<li>builtins.BaseException</li>
-</ul>
+<div class="desc"><p>Result of recipe extraction.</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="src.core.recipe_extractor.RecipeExtractionResult.error"><code class="name">var <span class="ident">error</span> : str | None</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.core.recipe_extractor.RecipeExtractionResult.recipe"><code class="name">var <span class="ident">recipe</span> : <a title="src.recipes.models.Recipe" href="../recipes/models.html#src.recipes.models.Recipe">Recipe</a> | None</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.core.recipe_extractor.RecipeExtractionResult.success"><code class="name">var <span class="ident">success</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="src.core.recipe_extractor.RecipeExtractor"><code class="flex name class">
+<span>class <span class="ident">RecipeExtractor</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Simple recipe extraction from text.</p></div>
+<h3>Methods</h3>
+<dl>
+<dt id="src.core.recipe_extractor.RecipeExtractor.extract_recipe"><code class="name flex">
+<span>def <span class="ident">extract_recipe</span></span>(<span>self, text: str, recipe_name: str | None = None) ‑> <a title="src.core.recipe_extractor.RecipeExtractionResult" href="#src.core.recipe_extractor.RecipeExtractionResult">RecipeExtractionResult</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Extract recipe from text.</p></div>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -136,29 +122,33 @@ Shared utilities that don't belong to specific modules.</p></div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="src" href="../index.html">src</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
-<ul>
-<li><code><a title="src.common.config" href="config.html">src.common.config</a></code></li>
-<li><code><a title="src.common.exceptions" href="exceptions.html">src.common.exceptions</a></code></li>
-<li><code><a title="src.common.utils" href="utils.html">src.common.utils</a></code></li>
+<li><code><a title="src.core" href="index.html">src.core</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="src.common.get_config" href="#src.common.get_config">get_config</a></code></li>
-<li><code><a title="src.common.get_logger" href="#src.common.get_logger">get_logger</a></code></li>
+<li><code><a title="src.core.recipe_extractor.extract_recipe_from_text" href="#src.core.recipe_extractor.extract_recipe_from_text">extract_recipe_from_text</a></code></li>
+<li><code><a title="src.core.recipe_extractor.get_recipe_extractor" href="#src.core.recipe_extractor.get_recipe_extractor">get_recipe_extractor</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="src.common.CookingAssistantError" href="#src.common.CookingAssistantError">CookingAssistantError</a></code></h4>
+<h4><code><a title="src.core.recipe_extractor.RecipeExtractionError" href="#src.core.recipe_extractor.RecipeExtractionError">RecipeExtractionError</a></code></h4>
 </li>
 <li>
-<h4><code><a title="src.common.EmbeddingGenerationError" href="#src.common.EmbeddingGenerationError">EmbeddingGenerationError</a></code></h4>
+<h4><code><a title="src.core.recipe_extractor.RecipeExtractionResult" href="#src.core.recipe_extractor.RecipeExtractionResult">RecipeExtractionResult</a></code></h4>
+<ul class="">
+<li><code><a title="src.core.recipe_extractor.RecipeExtractionResult.error" href="#src.core.recipe_extractor.RecipeExtractionResult.error">error</a></code></li>
+<li><code><a title="src.core.recipe_extractor.RecipeExtractionResult.recipe" href="#src.core.recipe_extractor.RecipeExtractionResult.recipe">recipe</a></code></li>
+<li><code><a title="src.core.recipe_extractor.RecipeExtractionResult.success" href="#src.core.recipe_extractor.RecipeExtractionResult.success">success</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.core.recipe_extractor.RecipeExtractor" href="#src.core.recipe_extractor.RecipeExtractor">RecipeExtractor</a></code></h4>
+<ul class="">
+<li><code><a title="src.core.recipe_extractor.RecipeExtractor.extract_recipe" href="#src.core.recipe_extractor.RecipeExtractor.extract_recipe">extract_recipe</a></code></li>
+</ul>
 </li>
 </ul>
 </li>
